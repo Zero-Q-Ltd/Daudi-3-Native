@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "684188079317",
+    "firebase_url": "https://emkaybeta.firebaseio.com",
+    "project_id": "emkaybeta",
+    "storage_bucket": "emkaybeta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684188079317:android:c2f3013900457e90",
+        "android_client_info": {
+          "package_name": "com.emkaynow.io"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684188079317-jeaf88s4re02s2lbliinft1j7eg0evsf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.emkaynow.io",
+            "certificate_hash": "f9c3aba79bda38b841cb713f8158d10e9a7496ab"
+          }
+        },
+        {
+          "client_id": "684188079317-9kd1i6o4dnbv7abica5ms74m4c8nl9ur.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo1xWmjtwJ1ECHfXpTURBrxH-6IXx0jfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684188079317-9kd1i6o4dnbv7abica5ms74m4c8nl9ur.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "684188079317-vodhriudl3q1i2secpf9hh4bt4k6c1fo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.emkaynow.io"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684188079317:android:901676abc508393e",
+        "android_client_info": {
+          "package_name": "com.zeroq.daudi_3_native"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684188079317-9kd1i6o4dnbv7abica5ms74m4c8nl9ur.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo1xWmjtwJ1ECHfXpTURBrxH-6IXx0jfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684188079317-9kd1i6o4dnbv7abica5ms74m4c8nl9ur.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "684188079317-vodhriudl3q1i2secpf9hh4bt4k6c1fo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.emkaynow.io"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

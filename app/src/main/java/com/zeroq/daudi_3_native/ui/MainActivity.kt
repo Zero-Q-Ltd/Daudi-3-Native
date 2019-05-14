@@ -1,12 +1,16 @@
 package com.zeroq.daudi_3_native.ui
 
 
+import android.content.Context
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.utils.Info
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
+import android.content.Intent
+
 
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -16,7 +20,11 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
 
-        test.text = info.text
+    companion object {
+        fun startActivity(context: Context) {
+            context.startActivity(Intent(context, MainActivity::class.java))
+        }
     }
 }
