@@ -1,10 +1,11 @@
-package com.zeroq.daudi_3_native
+package com.zeroq.daudi_3_native.ui
 
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.zeroq.daudi_3_native.R
+import dagger.android.support.DaggerAppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
