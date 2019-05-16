@@ -5,11 +5,12 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.2.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -19,12 +20,16 @@ buildscript {
  * project versions
  * */
 ext.dagger_version = '2.22.1'
+ext.firebase_core_version = '16.0.9'
+ext.firebase_auth_version = '17.0.0'
+ext.play_services_auth_version = '16.0.1'
+
 
 allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
