@@ -51,10 +51,10 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-                Log.e("UUUU", it.currentUser?.displayName)
+
             }
         }
-        firebaseAuth.addAuthStateListener { fireAuthListener }
+        firebaseAuth.addAuthStateListener(fireAuthListener)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -83,9 +83,9 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     fun initCommons() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         firebaseAuth = FirebaseAuth.getInstance()
@@ -95,12 +95,12 @@ class LoginActivity : DaggerAppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
 
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (!task.isSuccessful) {
-                        Log.e("LOGIN", "signInWithCredential:failure", task.exception)
-                        Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
-                    }
+            .addOnCompleteListener(this) { task ->
+                if (!task.isSuccessful) {
+                    Log.e("LOGIN", "signInWithCredential:failure", task.exception)
+                    Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
                 }
+            }
     }
 
 
@@ -108,6 +108,5 @@ class LoginActivity : DaggerAppCompatActivity() {
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
-
 
 }
