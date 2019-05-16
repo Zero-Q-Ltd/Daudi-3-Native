@@ -59,6 +59,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "684188079317-26aa14r9rk6i90gr0rnee2lqhjtfsmic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeroq.daudi_3_native",
+            "certificate_hash": "f9c3aba79bda38b841cb713f8158d10e9a7496ab"
+          }
+        },
+        {
           "client_id": "684188079317-9kd1i6o4dnbv7abica5ms74m4c8nl9ur.apps.googleusercontent.com",
           "client_type": 3
         }
