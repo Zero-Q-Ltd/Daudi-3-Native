@@ -31,9 +31,9 @@ class LoginActivity : DaggerAppCompatActivity() {
     // init firebase auth
 
 
-    var RC_SIGN_IN = 2;
-
     companion object {
+        private var RC_SIGN_IN = 2
+
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, LoginActivity::class.java))
         }
@@ -52,7 +52,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-                Timber.d("Logged in $it.currentUser?.displayName");
+                Timber.e("Logged in ${it.currentUser?.displayName}")
             }
         }
         firebaseAuth.addAuthStateListener(fireAuthListener)
@@ -107,5 +107,6 @@ class LoginActivity : DaggerAppCompatActivity() {
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
+
 
 }
