@@ -20,6 +20,7 @@ import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.ui.MainActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
+import timber.log.Timber
 
 class LoginActivity : DaggerAppCompatActivity() {
 
@@ -51,7 +52,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-
+                Timber.d("Logged in $it.currentUser?.displayName");
             }
         }
         firebaseAuth.addAuthStateListener(fireAuthListener)
@@ -59,8 +60,6 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        Log.e("XXX", "data is here $requestCode")
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -70,7 +69,7 @@ class LoginActivity : DaggerAppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Log.e("EEE", "An error occured", e)
+                Timber.e(e)
             }
         }
     }
@@ -97,7 +96,7 @@ class LoginActivity : DaggerAppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (!task.isSuccessful) {
-                    Log.e("LOGIN", "signInWithCredential:failure", task.exception)
+                    Timber.e(task.exception)
                     Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
                 }
             }

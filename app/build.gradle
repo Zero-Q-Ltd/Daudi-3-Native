@@ -41,6 +41,10 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
     implementation "com.google.android.gms:play-services-auth:$play_services_auth_version"
 
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+
 
     // testing
     testImplementation 'junit:junit:4.12'
