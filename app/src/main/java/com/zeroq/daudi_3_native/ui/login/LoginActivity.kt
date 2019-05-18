@@ -20,6 +20,7 @@ import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.ui.MainActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
+import timber.log.Timber
 
 class LoginActivity : DaggerAppCompatActivity() {
 
@@ -30,9 +31,9 @@ class LoginActivity : DaggerAppCompatActivity() {
     // init firebase auth
 
 
-    var RC_SIGN_IN = 2;
-
     companion object {
+        private var RC_SIGN_IN = 2
+
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, LoginActivity::class.java))
         }
@@ -51,16 +52,14 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-                Log.e("UUUU", it.currentUser?.displayName)
+                Timber.e("Logged in ${it.currentUser?.displayName}")
             }
         }
-        firebaseAuth.addAuthStateListener { fireAuthListener }
+        firebaseAuth.addAuthStateListener(fireAuthListener)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        Log.e("XXX", "data is here $requestCode")
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -70,7 +69,7 @@ class LoginActivity : DaggerAppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Log.e("EEE", "An error occured", e)
+                Timber.e(e)
             }
         }
     }
@@ -83,9 +82,9 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     fun initCommons() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         firebaseAuth = FirebaseAuth.getInstance()
@@ -95,12 +94,12 @@ class LoginActivity : DaggerAppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
 
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (!task.isSuccessful) {
-                        Log.e("LOGIN", "signInWithCredential:failure", task.exception)
-                        Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
-                    }
+            .addOnCompleteListener(this) { task ->
+                if (!task.isSuccessful) {
+                    Timber.e(task.exception)
+                    Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
                 }
+            }
     }
 
 

@@ -40,6 +40,18 @@ dependencies {
     implementation "com.google.firebase:firebase-core:$firebase_core_version"
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
     implementation "com.google.android.gms:play-services-auth:$play_services_auth_version"
+    implementation "com.google.firebase:firebase-firestore:$firestore_version"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // android architecture components
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+
 
 
     // testing
