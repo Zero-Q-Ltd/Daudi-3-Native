@@ -15,7 +15,7 @@ class FirestoreRepository @Inject constructor() {
 
     // get single user
     fun getUser(userId: String): DocumentReference {
-        return fireStore.document("admins/${userId}")
+        return fireStore.document("admins/$userId")
     }
 
 

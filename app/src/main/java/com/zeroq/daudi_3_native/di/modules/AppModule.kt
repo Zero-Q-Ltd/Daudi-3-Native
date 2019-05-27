@@ -6,6 +6,10 @@ import dagger.Module
  * This will expose class modules
  * eg, network, storageModule, etc
  * **/
-@Module
-class AppModule{
+@Module(
+    includes = [
+        ViewModelModule::class
+    ]
+)
+class AppModule {
 }

@@ -3,24 +3,24 @@ package com.zeroq.daudi_3_native.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import com.google.android.gms.auth.api.Auth
+import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.zeroq.daudi_3_native.R
-import com.zeroq.daudi_3_native.ui.MainActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
+import androidx.lifecycle.ViewModelProvider
+import com.zeroq.daudi_3_native.viewmodel.UserViewModel
+import javax.inject.Inject
+import androidx.lifecycle.ViewModelProviders
+
 
 class LoginActivity : DaggerAppCompatActivity() {
 
@@ -30,6 +30,10 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     // init firebase auth
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var userViewModel: UserViewModel;
 
     companion object {
         private var RC_SIGN_IN = 2
@@ -43,8 +47,8 @@ class LoginActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        initCommons()
         initViews()
+        initCommons()
     }
 
 
@@ -52,7 +56,9 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-                Timber.e("Logged in ${it.currentUser?.displayName}")
+                userViewModel.getUser(it.uid.toString()).observe(this, Observer { u ->
+                    Timber.e("The user is: ${u.email}")
+                })
             }
         }
         firebaseAuth.addAuthStateListener(fireAuthListener)
@@ -88,6 +94,9 @@ class LoginActivity : DaggerAppCompatActivity() {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         firebaseAuth = FirebaseAuth.getInstance()
+
+        userViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(UserViewModel::class.java)
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
@@ -106,6 +115,10 @@ class LoginActivity : DaggerAppCompatActivity() {
     private fun signIn() {
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    private fun handleUser(x: Any) {
+
     }
 
 
