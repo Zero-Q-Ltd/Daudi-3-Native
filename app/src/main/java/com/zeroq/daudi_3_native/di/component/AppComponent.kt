@@ -1,5 +1,6 @@
 package com.zeroq.daudi_3_native.di.component
 
+import android.app.Application
 import com.zeroq.daudi_3_native.DaudiApplication
 import com.zeroq.daudi_3_native.di.modules.ActivityBuilder
 import com.zeroq.daudi_3_native.di.modules.AppModule
@@ -21,10 +22,15 @@ import javax.inject.Singleton
 
 interface AppComponent : AndroidInjector<DaudiApplication> {
 
+    fun inject(app: Application)
+
     @Component.Builder
     interface Builder {
+//        @BindsInstance
+//        fun application(application: DaudiApplication): Builder
+
         @BindsInstance
-        fun application(application: DaudiApplication): Builder
+        fun application(application: Application): Builder
 
         fun build(): AppComponent
     }

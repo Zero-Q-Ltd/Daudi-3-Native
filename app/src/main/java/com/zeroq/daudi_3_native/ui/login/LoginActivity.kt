@@ -20,12 +20,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import javax.inject.Inject
 import androidx.lifecycle.ViewModelProviders
+import com.zeroq.daudi_3_native.viewmodel.AuthenticationViewModel
 
 
 class LoginActivity : DaggerAppCompatActivity() {
 
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var fireAuthListener: FirebaseAuth.AuthStateListener
 
     // init firebase auth
@@ -33,7 +32,15 @@ class LoginActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var userViewModel: UserViewModel;
+    @Inject
+    lateinit var firebaseAuth : FirebaseAuth
+
+    @Inject
+    lateinit var googleSignInClient: GoogleSignInClient
+
+    lateinit var userViewModel: UserViewModel
+    lateinit var authenticationViewModel: AuthenticationViewModel
+
 
     companion object {
         private var RC_SIGN_IN = 2
@@ -65,19 +72,8 @@ class LoginActivity : DaggerAppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        authenticationViewModel.onResultFromActivity(requestCode,resultCode,data)
         super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account!!)
-            } catch (e: ApiException) {
-                Timber.e(e)
-            }
-        }
     }
 
 
@@ -92,11 +88,13 @@ class LoginActivity : DaggerAppCompatActivity() {
             .requestEmail()
             .build()
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-        firebaseAuth = FirebaseAuth.getInstance()
-
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
+
+        authenticationViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(AuthenticationViewModel::class.java)
+
+
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
@@ -113,13 +111,7 @@ class LoginActivity : DaggerAppCompatActivity() {
 
 
     private fun signIn() {
-        val signInIntent = mGoogleSignInClient.signInIntent
+        val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
-
-    private fun handleUser(x: Any) {
-
-    }
-
-
 }
