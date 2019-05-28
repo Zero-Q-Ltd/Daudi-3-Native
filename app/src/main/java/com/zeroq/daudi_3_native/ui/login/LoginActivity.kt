@@ -3,6 +3,7 @@ package com.zeroq.daudi_3_native.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -33,7 +34,7 @@ class LoginActivity : DaggerAppCompatActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var firebaseAuth : FirebaseAuth
+    lateinit var firebaseAuth: FirebaseAuth
 
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
@@ -43,8 +44,6 @@ class LoginActivity : DaggerAppCompatActivity() {
 
 
     companion object {
-        private var RC_SIGN_IN = 2
-
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, LoginActivity::class.java))
         }
@@ -54,8 +53,14 @@ class LoginActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        initViews()
-        initCommons()
+
+        userViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(UserViewModel::class.java)
+
+        authenticationViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(AuthenticationViewModel::class.java)
+
+        sign_in_button.setOnClickListener { signIn() }
     }
 
 
@@ -72,46 +77,12 @@ class LoginActivity : DaggerAppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        authenticationViewModel.onResultFromActivity(requestCode,resultCode,data)
+        authenticationViewModel.onResultFromActivity(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    fun initViews() {
-        sign_in_button.setOnClickListener { signIn() }
-    }
-
-
-    fun initCommons() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
-
-        authenticationViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(AuthenticationViewModel::class.java)
-
-
-    }
-
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (!task.isSuccessful) {
-                    Timber.e(task.exception)
-                    Snackbar.make(main_layout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
-                }
-            }
-    }
-
-
-    private fun signIn() {
+    fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        startActivityForResult(signInIntent, 200)
     }
 }
