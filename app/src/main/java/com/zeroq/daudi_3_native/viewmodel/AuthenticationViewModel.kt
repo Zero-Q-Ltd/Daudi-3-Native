@@ -22,18 +22,14 @@ import com.zeroq.daudi_3_native.vo.Status
 const val RC_SIGN_IN: Int = 200
 
 class AuthenticationViewModel @Inject constructor(
-    var fireStoreRepo: FirestoreRepository,
-    var firebaseAuth: FirebaseAuth,
-    var googleSignInClient: GoogleSignInClient
-) :
-    ViewModel() {
+        var firebaseAuth: FirebaseAuth) : ViewModel() {
 
     var loginData = MutableLiveData<Resource<AuthResult>>()
 
     //Called from Activity receving result
     fun onResultFromActivity(requestCode: Int, resultCode: Int, data: Intent?) {
         loginData.value = Resource(Status.LOADING, null, "")
-        
+
         when (RC_SIGN_IN) {
             RC_SIGN_IN -> {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -53,12 +49,12 @@ class AuthenticationViewModel @Inject constructor(
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
 
         firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener() { task ->
-                if (!task.isSuccessful) {
-                    loginData.value = Resource(Status.ERROR, null, task.exception?.message)
-                    Timber.e(task.exception)
+                .addOnCompleteListener() { task ->
+                    if (!task.isSuccessful) {
+                        loginData.value = Resource(Status.ERROR, null, task.exception?.message)
+                        Timber.e(task.exception)
+                    }
+                    loginData.value = Resource(Status.SUCCESS, task.result, "")
                 }
-                loginData.value = Resource(Status.SUCCESS, task.result, "")
-            }
     }
 }

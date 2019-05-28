@@ -2,8 +2,10 @@ package com.zeroq.daudi_3_native.ui.login
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -22,6 +24,7 @@ import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import javax.inject.Inject
 import androidx.lifecycle.ViewModelProviders
 import com.zeroq.daudi_3_native.viewmodel.AuthenticationViewModel
+import com.zeroq.daudi_3_native.vo.Status
 
 
 class LoginActivity : DaggerAppCompatActivity() {
@@ -61,6 +64,26 @@ class LoginActivity : DaggerAppCompatActivity() {
                 .get(AuthenticationViewModel::class.java)
 
         sign_in_button.setOnClickListener { signIn() }
+
+        /**
+         * Authentication response
+         * */
+        authenticationViewModel.loginData.observe(this, Observer {
+
+            if (it.status == Status.LOADING) {
+                progressBar2.visibility = View.VISIBLE
+            } else {
+                progressBar2.visibility = View.GONE
+            }
+
+            when (it.status) {
+                Status.SUCCESS ->
+                    Snackbar.make(main_layout, "Logged in successfully", Snackbar.LENGTH_SHORT).show()
+
+                Status.ERROR ->
+                    Snackbar.make(main_layout, "Sorry an error occured, try again", Snackbar.LENGTH_SHORT).show()
+            }
+        })
     }
 
 
