@@ -24,6 +24,7 @@ import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import javax.inject.Inject
 import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseUser
+import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
 import com.zeroq.daudi_3_native.viewmodel.AuthenticationViewModel
 import com.zeroq.daudi_3_native.vo.Status
 
@@ -60,10 +61,10 @@ class LoginActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         authenticationViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(AuthenticationViewModel::class.java)
+                .get(AuthenticationViewModel::class.java)
 
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
+                .get(UserViewModel::class.java)
 
         sign_in_button.setOnClickListener { signIn() }
 
@@ -94,11 +95,13 @@ class LoginActivity : DaggerAppCompatActivity() {
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
                 // # TODO: do something
-                userViewModel.setAdminId(it.uid.toString()).getAdmin().observe(this, Observer { t ->
+                userViewModel.setAdminId("x" + it.uid.toString()).getAdmin().observe(this, Observer { t ->
                     if (t.isSuccessful) {
                         Timber.d("xxx" + t.data()?.email)
                     } else {
-                        Timber.e("Major error occurred")
+                        // no data was pulled
+                        // push to activate page
+                        ActivateActivity.startActivity(this)
                     }
                 })
             }
