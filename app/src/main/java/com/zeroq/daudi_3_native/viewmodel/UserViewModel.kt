@@ -31,4 +31,6 @@ class UserViewModel @Inject constructor(var fireStoreRepo: FirestoreRepository) 
         })
         return user;
     }
+
+
 }
