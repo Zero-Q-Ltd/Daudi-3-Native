@@ -9,7 +9,8 @@ import dagger.Module
 @Module(
     includes = [
         ViewModelModule::class,
-        AuthModule::class
+        AuthModule::class,
+        FirestoreModule::class
     ]
 )
 class AppModule {

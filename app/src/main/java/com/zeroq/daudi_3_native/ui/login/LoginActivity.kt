@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import javax.inject.Inject
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.auth.FirebaseUser
 import com.zeroq.daudi_3_native.viewmodel.AuthenticationViewModel
 import com.zeroq.daudi_3_native.vo.Status
 
@@ -42,8 +43,9 @@ class LoginActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
 
-    lateinit var userViewModel: UserViewModel
+
     lateinit var authenticationViewModel: AuthenticationViewModel
+    lateinit var userViewModel: UserViewModel
 
 
     companion object {
@@ -57,11 +59,11 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        userViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(UserViewModel::class.java)
-
         authenticationViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(AuthenticationViewModel::class.java)
+            .get(AuthenticationViewModel::class.java)
+
+        userViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(UserViewModel::class.java)
 
         sign_in_button.setOnClickListener { signIn() }
 
@@ -91,8 +93,13 @@ class LoginActivity : DaggerAppCompatActivity() {
         super.onStart()
         fireAuthListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser != null) {
-                userViewModel.getUser(it.uid.toString()).observe(this, Observer { u ->
-                    Timber.e("The user is: ${u.email}")
+                // # TODO: do something
+                userViewModel.setAdminId(it.uid.toString()).getAdmin().observe(this, Observer { t ->
+                    if (t.isSuccessful) {
+                        Timber.d("xxx" + t.data()?.email)
+                    } else {
+                        Timber.e("Major error occurred")
+                    }
                 })
             }
         }

@@ -1,6 +1,5 @@
 package com.zeroq.daudi_3_native.ui
 
-
 import android.content.Context
 import android.os.Bundle
 import com.zeroq.daudi_3_native.R

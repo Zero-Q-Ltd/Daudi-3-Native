@@ -15,6 +15,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthResult
+import com.zeroq.daudi_3_native.vo.MResource
 import com.zeroq.daudi_3_native.vo.Resource
 import com.zeroq.daudi_3_native.vo.Status
 
@@ -22,13 +23,14 @@ import com.zeroq.daudi_3_native.vo.Status
 const val RC_SIGN_IN: Int = 200
 
 class AuthenticationViewModel @Inject constructor(
-        var firebaseAuth: FirebaseAuth) : ViewModel() {
+    var firebaseAuth: FirebaseAuth
+) : ViewModel() {
 
-    var loginData = MutableLiveData<Resource<AuthResult>>()
+    var loginData = MutableLiveData<MResource<AuthResult>>()
 
     //Called from Activity receving result
     fun onResultFromActivity(requestCode: Int, resultCode: Int, data: Intent?) {
-        loginData.value = Resource(Status.LOADING, null, "")
+        loginData.value = MResource(Status.LOADING, null, "")
 
         when (RC_SIGN_IN) {
             RC_SIGN_IN -> {
@@ -39,7 +41,7 @@ class AuthenticationViewModel @Inject constructor(
                     firebaseAuthWithGoogle(account!!)
                 } catch (e: ApiException) {
                     Timber.e(e)
-                    loginData.value = Resource(Status.ERROR, null, e.message)
+                    loginData.value = MResource(Status.ERROR, null, e.message)
                 }
             }
         }
@@ -49,12 +51,12 @@ class AuthenticationViewModel @Inject constructor(
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
 
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener() { task ->
-                    if (!task.isSuccessful) {
-                        loginData.value = Resource(Status.ERROR, null, task.exception?.message)
-                        Timber.e(task.exception)
-                    }
-                    loginData.value = Resource(Status.SUCCESS, task.result, "")
+            .addOnCompleteListener() { task ->
+                if (!task.isSuccessful) {
+                    loginData.value = MResource(Status.ERROR, null, task.exception?.message)
+                    Timber.e(task.exception)
                 }
+                loginData.value = MResource(Status.SUCCESS, task.result, "")
+            }
     }
 }
