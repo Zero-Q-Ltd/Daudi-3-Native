@@ -18,26 +18,6 @@ class UserViewModel @Inject constructor(var adminRepo: AdminRepository) : ViewMo
     init {
         user = Transformations.switchMap(id, adminRepo::getAdmin)
     }
-//
-//    fun getUser(userId: String): LiveData<UserModel> {
-//
-//        val authUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-//
-//        fireStoreRepo.getUser(userId).addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
-//            if (e != null) {
-//                Timber.e(e)
-//                user.value = null
-//            }
-//
-//            if (snapshot != null && snapshot.exists()) {
-//                user.value = snapshot.toObject(UserModel::class.java)
-//            } else {
-//                user.value = null
-//                Timber.d("Current data: null")
-//            }
-//        })
-//        return user
-//    }
 
     fun setAdminId(id: String): UserViewModel {
         this.id.value = id

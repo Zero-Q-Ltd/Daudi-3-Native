@@ -3,8 +3,8 @@ package com.zeroq.daudi_3_native.di.modules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.di.qualifires.ViewModelKey
+import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
-import com.zeroq.daudi_3_native.viewmodel.AuthenticationViewModel
 import com.zeroq.daudi_3_native.viewmodel.DaudiViewModelFactory
 import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import dagger.Binds
@@ -23,8 +23,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(AuthenticationViewModel::class)
-    abstract fun bindAuthenticationViewModel(authenticationViewModel: AuthenticationViewModel): ViewModel
+    @ViewModelKey(LoginViewModel::class)
+    abstract fun bindLoginViewModel(loginViewModel: LoginViewModel): ViewModel
 
 
     @Binds

@@ -1,36 +1,40 @@
-package com.zeroq.daudi_3_native.viewmodel
+package com.zeroq.daudi_3_native.ui.login
 
 import android.content.Intent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.zeroq.daudi_3_native.data.repository.FirestoreRepository
-import kotlinx.android.synthetic.main.activity_login.*
-import timber.log.Timber
-import javax.inject.Inject
-import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.AuthResult
+import com.zeroq.daudi_3_native.data.models.UserModel
+import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.vo.MResource
 import com.zeroq.daudi_3_native.vo.Resource
 import com.zeroq.daudi_3_native.vo.Status
+import timber.log.Timber
+import javax.inject.Inject
 
+class LoginViewModel @Inject constructor(var firebaseAuth: FirebaseAuth, adminRepo: AdminRepository) :
+    ViewModel() {
 
-const val RC_SIGN_IN: Int = 200
+    val RC_SIGN_IN = 200
 
-class AuthenticationViewModel @Inject constructor(
-    var firebaseAuth: FirebaseAuth
-) : ViewModel() {
+    private var _loginData = MutableLiveData<MResource<AuthResult>>()
+    private var _userId = MutableLiveData<String>()
+    private var _user: LiveData<Resource<UserModel>> = MutableLiveData()
 
-    var loginData = MutableLiveData<MResource<AuthResult>>()
+    init {
+        _user = Transformations.switchMap(_userId, adminRepo::getAdmin)
+    }
 
     //Called from Activity receving result
     fun onResultFromActivity(requestCode: Int, resultCode: Int, data: Intent?) {
-        loginData.value = MResource(Status.LOADING, null, "")
+        _loginData.value = MResource(Status.LOADING, null, "")
 
         when (RC_SIGN_IN) {
             RC_SIGN_IN -> {
@@ -41,10 +45,18 @@ class AuthenticationViewModel @Inject constructor(
                     firebaseAuthWithGoogle(account!!)
                 } catch (e: ApiException) {
                     Timber.e(e)
-                    loginData.value = MResource(Status.ERROR, null, e.message)
+                    _loginData.value = MResource(Status.ERROR, null, e.message)
                 }
             }
         }
+    }
+
+    fun getLogin(): MutableLiveData<MResource<AuthResult>> {
+        return _loginData
+    }
+
+    fun getUser(): LiveData<Resource<UserModel>> {
+        return _user
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
@@ -53,10 +65,12 @@ class AuthenticationViewModel @Inject constructor(
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener() { task ->
                 if (!task.isSuccessful) {
-                    loginData.value = MResource(Status.ERROR, null, task.exception?.message)
+                    _loginData.value = MResource(Status.ERROR, null, task.exception?.message)
                     Timber.e(task.exception)
                 }
-                loginData.value = MResource(Status.SUCCESS, task.result, "")
+                _loginData.value = MResource(Status.SUCCESS, task.result, "")
+                _userId.value = firebaseAuth.uid
+
             }
     }
 }

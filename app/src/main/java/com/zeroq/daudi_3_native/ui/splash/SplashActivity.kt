@@ -22,22 +22,28 @@ class SplashActivity : BaseActivity() {
         operations()
     }
 
-    fun operations() {
+    private fun operations() {
+        var signTrigger = false
         viewModel.isSignedIn().observe(this, Observer {
-            if (!it) {
-                LoginActivity.startActivity(this)
-                finish()
-            }
+            signTrigger = !signTrigger
+            if (signTrigger)
+                if (!it) {
+                    LoginActivity.startActivity(this)
+                    this.finish()
+                }
         })
 
         // check if admin is allowed to go to the next step
+        var adminTriggered: Boolean = false
         viewModel.getAdmin().observe(this, Observer {
-            if (it.isSuccessful) {
-                MainActivity.startActivity(this)
-            } else {
-                ActivateActivity.startActivity(this)
-            }
-            finish()
+            adminTriggered = !adminTriggered
+            if (adminTriggered)
+                if (it.isSuccessful) {
+                    MainActivity.startActivity(this)
+                } else {
+                    ActivateActivity.startActivity(this)
+                }
+            this.finish()
         })
     }
 }

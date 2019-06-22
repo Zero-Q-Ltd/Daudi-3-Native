@@ -11,7 +11,7 @@ import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.vo.Resource
 import javax.inject.Inject
 
-class SplashViewModel @Inject constructor(var firebaseAuth: FirebaseAuth, var adminRepo: AdminRepository) :
+class SplashViewModel @Inject constructor(var firebaseAuth: FirebaseAuth, adminRepo: AdminRepository) :
     ViewModel() {
 
     private val _userId = MutableLiveData<String>()
