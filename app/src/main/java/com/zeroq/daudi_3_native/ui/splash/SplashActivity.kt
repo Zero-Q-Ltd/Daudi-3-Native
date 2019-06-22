@@ -7,8 +7,6 @@ import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.ui.MainActivity
 import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
-import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_login.*
 
 class SplashActivity : BaseActivity() {
 

@@ -43,6 +43,7 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
     implementation "com.google.android.gms:play-services-auth:$play_services_auth_version"
     implementation "com.google.firebase:firebase-firestore:$firestore_version"
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
 
     // Timber
     implementation "com.jakewharton.timber:timber:$timber_version"
