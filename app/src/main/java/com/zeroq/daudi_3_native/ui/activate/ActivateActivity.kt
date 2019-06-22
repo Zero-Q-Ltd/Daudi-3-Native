@@ -38,7 +38,7 @@ class ActivateActivity : DaggerAppCompatActivity() {
         Glide.with(this)
             .load(firebaseUser?.photoUrl)
             .centerCrop()
-            .placeholder(R.drawable.mk_logo_vector)
+            .placeholder(R.drawable.place_holder)
             .apply(RequestOptions.circleCropTransform())
             .into(adminImageView)
 
