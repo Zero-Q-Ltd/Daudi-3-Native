@@ -21,7 +21,14 @@ class FirestoreModule {
     @Singleton
     @Provides
     @Named("admins")
-    fun providesAdmins(): CollectionReference {
-        return FirebaseFirestore.getInstance().collection("admins")
+    fun providesAdmins(fireStore: FirebaseFirestore): CollectionReference {
+        return fireStore.collection("admins")
+    }
+
+    @Singleton
+    @Provides
+    @Named("depots")
+    fun providesDepots(fireStore: FirebaseFirestore): CollectionReference {
+        return fireStore.collection("depots")
     }
 }
