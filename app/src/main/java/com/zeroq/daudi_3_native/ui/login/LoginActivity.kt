@@ -9,7 +9,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.snackbar.Snackbar
 import com.zeroq.daudi_3_native.R
 import kotlinx.android.synthetic.main.activity_login.*
-import com.zeroq.daudi_3_native.viewmodel.UserViewModel
 import javax.inject.Inject
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.ui.MainActivity
@@ -24,7 +23,6 @@ class LoginActivity : BaseActivity() {
     lateinit var googleSignInClient: GoogleSignInClient
 
     lateinit var loginViewModel: LoginViewModel
-    lateinit var userViewModel: UserViewModel
 
 
     companion object {
@@ -39,7 +37,6 @@ class LoginActivity : BaseActivity() {
         setContentView(R.layout.activity_login)
 
         loginViewModel = getViewModel(LoginViewModel::class.java)
-        userViewModel = getViewModel(UserViewModel::class.java)
 
         sign_in_button.setOnClickListener {
             startActivityForResult(googleSignInClient.signInIntent, loginViewModel.RC_SIGN_IN)
