@@ -1,5 +1,6 @@
 package com.zeroq.daudi_3_native.di.modules
 
+import com.zeroq.daudi_3_native.di.fragment_modules.FragmentMainModules
 import com.zeroq.daudi_3_native.ui.MainActivity
 import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
 import com.zeroq.daudi_3_native.ui.home.HomeActivity
@@ -13,7 +14,7 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBuilder {
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [FragmentMainModules::class])
     internal abstract fun bindMainActivity(): MainActivity
 
     @ContributesAndroidInjector
