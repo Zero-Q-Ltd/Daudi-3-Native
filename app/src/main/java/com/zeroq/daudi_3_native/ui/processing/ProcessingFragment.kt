@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.zeroq.daudi_3_native.R
+import com.zeroq.daudi_3_native.commons.BaseFragment
 
-class ProcessingFragment : Fragment() {
+class ProcessingFragment : BaseFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
