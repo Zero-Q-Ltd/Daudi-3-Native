@@ -1,24 +1,34 @@
 package com.zeroq.daudi_3_native.vo
 
-import com.zeroq.daudi_3_native.vo.Status.*
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 
+class Resource<T> private constructor(
+    @param:Nullable @field:Nullable
+    private val data: T?, @param:Nullable @field:Nullable
+    private val error: Exception?
+) {
 
-/**
- * A generic class that holds a value with its loading status.
- * @param <T>
-</T> */
-data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
-    companion object {
-        fun <T> success(data: T?): Resource<T> {
-            return Resource(SUCCESS, data, null)
+    val isSuccessful: Boolean
+        get() = data != null && error == null
+
+    constructor(@NonNull data: T) : this(data, null)
+
+    constructor(@NonNull exception: Exception) : this(null, exception)
+
+    @NonNull
+    fun data(): T? {
+        if (error != null) {
+            throw IllegalStateException("error is not null. Call isSuccessful() first.")
         }
+        return data
+    }
 
-        fun <T> error(msg: String, data: T?): Resource<T> {
-            return Resource(ERROR, data, msg)
+    @NonNull
+    fun error(): Exception? {
+        if (data != null) {
+            throw IllegalStateException("data is not null. Call isSuccessful() first.")
         }
-
-        fun <T> loading(data: T?): Resource<T> {
-            return Resource(LOADING, data, null)
-        }
+        return error
     }
 }

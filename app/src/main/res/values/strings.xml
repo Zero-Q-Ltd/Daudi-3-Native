@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Emkay</string>
+
+    <string name="title_processing">Processing</string>
+    <string name="title_queued">Queued</string>
+    <string name="title_loading">Loading</string>
 </resources>
