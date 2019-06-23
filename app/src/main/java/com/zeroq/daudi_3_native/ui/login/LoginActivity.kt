@@ -27,7 +27,12 @@ class LoginActivity : BaseActivity() {
 
     companion object {
         fun startActivity(context: Context) {
-            context.startActivity(Intent(context, LoginActivity::class.java))
+            /**
+             * start login activity and clear backstack completely
+             * */
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
         }
     }
 

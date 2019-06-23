@@ -20,6 +20,9 @@ class ActivateActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
 
+    @Inject
+    lateinit var authUI: AuthUI
+
     companion object {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, ActivateActivity::class.java))
@@ -45,14 +48,7 @@ class ActivateActivity : DaggerAppCompatActivity() {
         displayNameTextView.text = firebaseUser?.displayName
 
         // logout
-        logout_btn.setOnClickListener {
-            AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener {
-                    LoginActivity.startActivity(this)
-                    finish()
-                }
-        }
+        logout_btn.setOnClickListener { authUI.signOut(this) }
     }
 
 }

@@ -3,6 +3,7 @@ package com.zeroq.daudi_3_native
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.di.component.DaggerAppComponent
+import com.zeroq.daudi_3_native.ui.login.LoginActivity
 import com.zeroq.daudi_3_native.utils.ReleaseTree
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
@@ -42,6 +43,9 @@ class DaudiApplication : DaggerApplication() {
                 Timber.d("login occured")
             }
 
+            if (it.currentUser == null) {
+                LoginActivity.startActivity(this)
+            }
 
         }
         firebaseAuth.addAuthStateListener(fireAuthListener)

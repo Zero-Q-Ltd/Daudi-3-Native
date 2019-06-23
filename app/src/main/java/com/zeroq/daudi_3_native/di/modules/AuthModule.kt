@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.di.modules
 
 import android.app.Application
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -28,5 +29,11 @@ class AuthModule {
     @Singleton
     fun getFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun getAuthUi(): AuthUI {
+        return AuthUI.getInstance()
     }
 }
