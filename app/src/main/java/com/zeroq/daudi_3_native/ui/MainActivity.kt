@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -21,9 +22,11 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
+import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -42,6 +45,8 @@ class MainActivity : BaseActivity() {
 
     lateinit var actionBar: ActionBar
 
+    lateinit var mainViewModel: MainViewModel
+
     companion object {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, MainActivity::class.java))
@@ -51,10 +56,15 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mainViewModel = getViewModel(MainViewModel::class.java)
+
         setToolbar()
 
         if (savedInstanceState == null)
             setupBottomNavigationBar()
+
+        operations()
 
     }
 
@@ -119,6 +129,26 @@ class MainActivity : BaseActivity() {
         actionBar.setLogo(d)
         actionBar.setDisplayUseLogoEnabled(true)
         actionBar.setDisplayShowHomeEnabled(true)
+    }
+
+    private fun operations() {
+        mainViewModel.getUser().observe(this, Observer {
+            if (it.isSuccessful) {
+                var userData = it.data()
+                mainViewModel.setDeportId(userData?.config?.depotdata?.depotid)
+            } else {
+                Timber.e("Sorry an error occurred")
+            }
+        })
+
+        // get update
+        mainViewModel.getTrucks().observe(this, Observer {
+            if (it.isSuccessful) {
+                Timber.d("all is well")
+            } else {
+                Timber.e(it.error())
+            }
+        })
     }
 
     private fun loggedOut() {

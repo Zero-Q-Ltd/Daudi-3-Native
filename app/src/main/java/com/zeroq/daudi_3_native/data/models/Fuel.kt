@@ -9,7 +9,7 @@ data class Fuel(
 }
 
 data class Batches(
-    var qty: Number?,
+    var qty: Int?,
     var batches: Batchz?
 ) {
     constructor() : this(null, null)

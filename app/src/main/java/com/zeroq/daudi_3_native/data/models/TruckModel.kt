@@ -5,7 +5,7 @@ data class TruckModel(
     var Id: String?,
     var truckId: String?,
     var numberplate: String?,
-    var stage: Number?,
+    var stage: Int?,
     var isPrinted: String?,
     var orderref: String?,
     var drivername: String?,

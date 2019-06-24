@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.data.models
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class StageData(
     var `0`: SData?,
@@ -36,7 +37,7 @@ data class SData4(
 }
 
 data class _Data(
-    var expiry: List<Expiry>?
+    var expiry: ArrayList<Expiry>?
 ) {
     constructor() : this(null)
 }
@@ -51,8 +52,8 @@ data class Expiry(
 
 data class _User(
     var name: String?,
-    var time: Number?,
-    var uuid: Number?
+    var time: com.google.firebase.Timestamp?,
+    var uuid: Int?
 ) {
     constructor() : this(null, null, null)
 }
@@ -60,7 +61,7 @@ data class _User(
 
 data class Seals(
     var range: String?,
-    var broken: String?
+    var broken: ArrayList<String>?
 ) {
     constructor() : this(null, null)
 }
