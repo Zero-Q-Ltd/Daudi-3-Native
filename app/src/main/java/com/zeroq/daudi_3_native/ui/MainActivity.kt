@@ -21,11 +21,16 @@ import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.commons.BaseActivity
-import com.zeroq.daudi_3_native.ui.login.LoginActivity
+import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.events.LoadingEvent
+import com.zeroq.daudi_3_native.events.ProcessingEvent
+import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import com.zeroq.daudi_3_native.viewmodel.EventsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,10 +47,14 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var imageUtil: ImageUtil
 
+    @Inject
+    lateinit var eventBus: EventBus
+
 
     lateinit var actionBar: ActionBar
 
     lateinit var mainViewModel: MainViewModel
+    lateinit var eventViewModel: EventsViewModel
 
     companion object {
         fun startActivity(context: Context) {
@@ -58,6 +67,7 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
 
         mainViewModel = getViewModel(MainViewModel::class.java)
+        eventViewModel = getViewModel(EventsViewModel::class.java)
 
         setToolbar()
 
@@ -132,6 +142,9 @@ class MainActivity : BaseActivity() {
     }
 
     private fun operations() {
+
+        eventViewModel.setProcessingEvent(TruckModel())
+
         mainViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 var userData = it.data()
@@ -144,9 +157,34 @@ class MainActivity : BaseActivity() {
         // get update
         mainViewModel.getTrucks().observe(this, Observer {
             if (it.isSuccessful) {
-                Timber.d("all is well")
+                var processingL = ArrayList<TruckModel>()
+                var loadingL = ArrayList<TruckModel>()
+                val queueingL = ArrayList<TruckModel>()
+
+                it.data()?.forEach { truckModel ->
+                    when (truckModel.stage) {
+                        1 -> {
+                            processingL.add(truckModel)
+                        }
+
+                        2 -> {
+                            queueingL.add(truckModel)
+                        }
+
+                        3 -> {
+                            loadingL.add(truckModel)
+                        }
+                    }
+                }
+
+                eventBus.postSticky(ProcessingEvent(processingL, null))
+                eventBus.postSticky(QueueingEvent(queueingL, null))
+                eventBus.postSticky(LoadingEvent(loadingL, null))
+
             } else {
-                Timber.e(it.error())
+                eventBus.postSticky(ProcessingEvent(null, it.error()))
+                eventBus.postSticky(QueueingEvent(null, it.error()))
+                eventBus.postSticky(LoadingEvent(null, it.error()))
             }
         })
     }

@@ -66,6 +66,13 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 
+    // rx dependencies
+    implementation "io.reactivex.rxjava2:rxjava:2.2.10"
+
+    // event bus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
