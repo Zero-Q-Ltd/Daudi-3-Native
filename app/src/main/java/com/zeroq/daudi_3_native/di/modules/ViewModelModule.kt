@@ -7,7 +7,6 @@ import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
 import com.zeroq.daudi_3_native.viewmodel.DaudiViewModelFactory
-import com.zeroq.daudi_3_native.viewmodel.EventsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -33,12 +32,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
-
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(EventsViewModel::class)
-    abstract fun bindEventsViewModel(eventsViewModel: EventsViewModel): ViewModel
 
 
     @Binds

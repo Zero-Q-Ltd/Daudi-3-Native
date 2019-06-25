@@ -27,7 +27,6 @@ import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
-import com.zeroq.daudi_3_native.viewmodel.EventsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
@@ -54,7 +53,6 @@ class MainActivity : BaseActivity() {
     lateinit var actionBar: ActionBar
 
     lateinit var mainViewModel: MainViewModel
-    lateinit var eventViewModel: EventsViewModel
 
     companion object {
         fun startActivity(context: Context) {
@@ -67,7 +65,6 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
 
         mainViewModel = getViewModel(MainViewModel::class.java)
-        eventViewModel = getViewModel(EventsViewModel::class.java)
 
         setToolbar()
 
@@ -143,8 +140,6 @@ class MainActivity : BaseActivity() {
 
     private fun operations() {
 
-        eventViewModel.setProcessingEvent(TruckModel())
-
         mainViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 var userData = it.data()
@@ -180,6 +175,13 @@ class MainActivity : BaseActivity() {
                 eventBus.postSticky(ProcessingEvent(processingL, null))
                 eventBus.postSticky(QueueingEvent(queueingL, null))
                 eventBus.postSticky(LoadingEvent(loadingL, null))
+
+                /*
+                * set the badges on navbar
+                * **/
+                if (processingL.size > 0) bottom_nav.showBadge(R.id.processing).number = processingL.size
+                if (queueingL.size > 0) bottom_nav.showBadge(R.id.queued).number = queueingL.size
+                if (loadingL.size > 0) bottom_nav.showBadge(R.id.loading).number = loadingL.size
 
             } else {
                 eventBus.postSticky(ProcessingEvent(null, it.error()))
