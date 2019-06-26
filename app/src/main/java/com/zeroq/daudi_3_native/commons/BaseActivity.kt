@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import dagger.android.support.DaggerAppCompatActivity
 import android.annotation.SuppressLint
+import org.greenrobot.eventbus.EventBus
 
 
 @SuppressLint("Registered")
@@ -17,4 +18,5 @@ open class BaseActivity : DaggerAppCompatActivity() {
     protected fun <T : ViewModel> getViewModel(cls: Class<T>): T {
         return ViewModelProviders.of(this, viewModelFactory).get(cls)
     }
+
 }

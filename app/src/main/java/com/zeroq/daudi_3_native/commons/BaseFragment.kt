@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.AndroidSupportInjection
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @SuppressLint("Registered")

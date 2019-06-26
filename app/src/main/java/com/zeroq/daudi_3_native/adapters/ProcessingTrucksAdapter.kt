@@ -9,22 +9,10 @@ import com.zeroq.daudi_3_native.commons.OnItemClickedListener
 import com.zeroq.daudi_3_native.commons.OnItemLongClickedListener
 import com.zeroq.daudi_3_native.data.models.TruckModel
 
-class TrucksAdapter : RecyclerView.Adapter<TrucksAdapter.TruckViewHolder>() {
-
-    lateinit var onClickListener: OnItemClickedListener<TruckModel>
-    lateinit var onLongClickListener: OnItemLongClickedListener<TruckModel>
+class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.TruckViewHolder>() {
 
 
     private val trucksList = ArrayList<TruckModel>()
-
-    fun setClickListener(listener: OnItemClickedListener<TruckModel>) {
-        onClickListener = listener
-    }
-
-    fun setLongClickListener(listener: OnItemLongClickedListener<TruckModel>) {
-        onLongClickListener = listener
-    }
-
 
     fun replaceTrucks(trucks: List<TruckModel>) {
         if (trucksList.size > 0) trucksList.clear()

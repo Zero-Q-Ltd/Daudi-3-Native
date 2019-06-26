@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zeroq.daudi_3_native.R
-import com.zeroq.daudi_3_native.adapters.TrucksAdapter
+import com.zeroq.daudi_3_native.adapters.ProcessingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
 import com.zeroq.daudi_3_native.commons.OnItemClickedListener
 import com.zeroq.daudi_3_native.commons.OnItemLongClickedListener
@@ -19,10 +19,10 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 
-class ProcessingFragment : BaseFragment(), OnItemClickedListener<TruckModel>, OnItemLongClickedListener<TruckModel> {
+class ProcessingFragment : BaseFragment() {
 
 
-    private lateinit var adapter: TrucksAdapter
+    private lateinit var adapter: ProcessingTrucksAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +41,13 @@ class ProcessingFragment : BaseFragment(), OnItemClickedListener<TruckModel>, On
         if (event.error == null) adapter.replaceTrucks(event.trucks!!)
     }
 
+    private fun initRecyclerView() {
+        adapter = ProcessingTrucksAdapter()
+
+        processing_view.layoutManager = LinearLayoutManager(activity)
+        processing_view.adapter = adapter
+    }
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -49,24 +56,5 @@ class ProcessingFragment : BaseFragment(), OnItemClickedListener<TruckModel>, On
     override fun onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop()
-    }
-
-    private fun initRecyclerView() {
-        adapter = TrucksAdapter()
-
-        adapter.setClickListener(this)
-        adapter.setLongClickListener(this)
-
-        processing_view.layoutManager = LinearLayoutManager(activity)
-        processing_view.adapter = adapter
-    }
-
-    override fun onClicked(item: TruckModel) {
-        Timber.d("Magic is happening right now")
-    }
-
-
-    override fun longClicked(item: TruckModel) {
-        Timber.d("long clicked")
     }
 }

@@ -7,6 +7,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--<item name="fontFamily">@font/roboto_mono</item>-->
+        <!--<item name="android:fontFamily">@font/roboto_mono</item>-->
     </style>
 
     <!--<style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">-->
