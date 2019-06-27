@@ -16,7 +16,7 @@ data class TruckModel(
     var orderdata: OrderData?,
     var config: TruckConfig?,
     var fuel: Fuel?,
-    var stagedata: StageData?
+    var stagedata: Map<String, Stage>?
 ) {
     constructor()
             : this(

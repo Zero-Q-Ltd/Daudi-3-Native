@@ -121,7 +121,7 @@ class MainActivity : BaseActivity() {
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     super.onLoadFailed(errorDrawable)
-                    setLogo(getDrawable(R.drawable.ic_profile))
+                    setLogo(getDrawable(R.drawable.ic_profile)!!)
                 }
             })
 

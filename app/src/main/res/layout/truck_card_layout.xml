@@ -22,17 +22,19 @@
                 android:padding="8dp">
 
             <TextView
+                    android:id="@+id/tv_order_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MK0390"
+                    tools:text="MK0390"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryText"/>
 
             <TextView
+                    android:id="@+id/tv_number_plate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="KWK 123Q"
+                    tools:text="KWK 123Q"
                     android:textSize="12sp"
                     android:textColor="@color/colorSecondaryText"/>
 
@@ -70,9 +72,10 @@
                                 android:tint="@color/colorSecondaryText"/>
 
                         <TextView
+                                android:id="@+id/tv_company"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="MAFUKO MERU"
+                                tools:text="MAFUKO MERU"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="8dp"/>
 
@@ -93,9 +96,10 @@
                                 android:tint="@color/colorSecondaryText"/>
 
                         <TextView
+                                android:id="@+id/tv_driver"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="KAMANA KISINGA"
+                                tools:text="KAMANA KISINGA"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="8dp"/>
 
@@ -116,9 +120,10 @@
                                 android:tint="@color/colorSecondaryText"/>
 
                         <TextView
+                                android:id="@+id/tv_phone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="718101442"
+                                tools:text="718101442"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="8dp"/>
 
@@ -153,9 +158,10 @@
                                   android:background="@drawable/pms_fuel_bg"/>
 
                             <TextView
+                                    android:id="@+id/tv_pms"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="1000"
+                                    android:text="0"
                                     android:layout_marginLeft="8dp"/>
 
                         </LinearLayout>
@@ -173,9 +179,10 @@
                                   android:background="@drawable/ago_fuel_bg"/>
 
                             <TextView
+                                    android:id="@+id/tv_ago"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="2000"
+                                    android:text="0"
                                     android:layout_marginLeft="8dp"/>
 
                         </LinearLayout>
@@ -193,9 +200,10 @@
                                   android:background="@drawable/ik_fuel_bg"/>
 
                             <TextView
+                                    android:id="@+id/tv_ik"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="2400"
+                                    android:text="0"
                                     android:layout_marginLeft="8dp"/>
 
                         </LinearLayout>
@@ -224,16 +232,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView android:id="@+id/iv_c0"
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:layout_gravity="center"
+                               android:layout_margin="5dp"
+                               app:srcCompat="@drawable/ic_circle"
+                               android:scaleType="fitXY"/>
 
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c0"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="10000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -247,17 +258,21 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/pms_fuel_bg"/>
+                    <ImageView
+                            android:id="@+id/iv_c1"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            app:srcCompat="@drawable/ic_circle"
+                            android:scaleType="fitXY"/>
 
-
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="1000"
-                              android:layout_gravity="center"/>
+                    <TextView
+                            android:id="@+id/tv_c1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_gravity="center"/>
 
                 </LinearLayout>
 
@@ -269,16 +284,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView
+                            android:id="@+id/iv_c2"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            app:srcCompat="@drawable/ic_circle"
+                            android:scaleType="fitXY"/>
 
-
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c2"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="1000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -291,16 +309,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView android:id="@+id/iv_c3"
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:layout_gravity="center"
+                               android:layout_margin="5dp"
+                               app:srcCompat="@drawable/ic_circle"
+                               android:scaleType="fitXY"/>
 
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c3"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="1000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -313,16 +334,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView android:id="@+id/iv_c4"
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:layout_gravity="center"
+                               android:layout_margin="5dp"
+                               app:srcCompat="@drawable/ic_circle"
+                               android:scaleType="fitXY"/>
 
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c4"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="1000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -335,16 +359,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView android:id="@+id/iv_c5"
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:layout_gravity="center"
+                               android:layout_margin="5dp"
+                               app:srcCompat="@drawable/ic_circle"
+                               android:scaleType="fitXY"/>
 
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c5"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="1000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -357,16 +384,19 @@
                               android:layout_marginBottom="8dp"
                               android:layout_weight="1">
 
-                    <View android:layout_width="20dp"
-                          android:layout_height="20dp"
-                          android:layout_gravity="center"
-                          android:layout_margin="5dp"
-                          android:background="@drawable/ik_fuel_bg"/>
+                    <ImageView android:id="@+id/iv_c6"
+                               android:layout_width="24dp"
+                               android:layout_height="24dp"
+                               android:layout_gravity="center"
+                               android:layout_margin="5dp"
+                               app:srcCompat="@drawable/ic_circle"
+                               android:scaleType="fitXY"/>
 
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tv_c6"
+                              android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="1000"
+                              android:text="0"
                               android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -391,7 +421,8 @@
                       android:textSize="14sp"
                       android:layout_weight="1"/>
 
-            <TextView android:layout_width="wrap_content"
+            <TextView android:id="@+id/tv_expire"
+                      android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="Expired"
                       android:textColor="@color/white"
