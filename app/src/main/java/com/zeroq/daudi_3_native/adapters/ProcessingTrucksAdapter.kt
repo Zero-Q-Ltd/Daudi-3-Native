@@ -1,10 +1,12 @@
 package com.zeroq.daudi_3_native.adapters
 
 import android.content.Context
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -13,12 +15,9 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -53,7 +52,47 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
     override fun getItemCount() = trucksList.size
 
     override fun onBindViewHolder(holder: TruckViewHolder, position: Int) {
-        holder.bindPhoto(trucksList[position], context)
+        var truck = trucksList[position]
+        holder.bindPhoto(truck, context)
+
+        if (holder.subscription != null) {
+            holder.subscription?.dispose()
+            holder.subscription = null
+        }
+
+        // set timer
+        var stageTime = truck.stagedata!!["1"]?.data?.expiry!![0].timestamp!!.time
+        val currentTime = Calendar.getInstance().time.time
+
+        val diffTime = floor(stageTime.minus(currentTime).toDouble() / 1000).toLong()
+
+        if (diffTime > 0) {
+            holder.bottomLinearBar?.setBackgroundResource(R.color.colorPrimary)
+            holder.expireTruckIndicator?.text = null
+
+            val observable = Observable.interval(1, TimeUnit.SECONDS)
+            holder.subscription =
+                observable
+                    .take(diffTime)
+                    .map { (diffTime - 1) - it }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it > 0) {
+                            holder.expireTruckIndicator?.text =
+                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
+                        } else {
+                            holder.expireTruckIndicator?.text = "Expired"
+                        }
+                    },
+                        {
+                            Timber.e(it)
+                        })
+
+        } else {
+            holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
+            holder.expireTruckIndicator?.text = "Expired"
+        }
     }
 
 
@@ -92,10 +131,16 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         private var comp6FuelQuantity: TextView? = null
 
 
-        private var expireTruckIndicator: TextView? = null
+        var expireTruckIndicator: TextView? = null
+        var bottomLinearBar: LinearLayout? = null
 
 
         private var varibles = ArrayList<CompVariable>()
+
+        /**
+         * subscription for timer
+         * */
+        var subscription: Disposable? = null
 
 
         init {
@@ -141,6 +186,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
             expireTruckIndicator = v.findViewById(R.id.tv_expire)
 
+            bottomLinearBar = v.findViewById(R.id.l_bottom)
+
         }
 
         fun bindPhoto(truck: TruckModel, context: Context) {
@@ -156,43 +203,6 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
             truck.compartments?.forEachIndexed { index, compartment ->
                 setCompValues(index, compartment.fueltype, compartment.qty, context)
-            }
-
-            // set timer
-            var stageTime = truck.stagedata!!["1"]?.data?.expiry!![0].timestamp!!.time
-            val currentTime = Calendar.getInstance().time.time
-
-            val diffTime = floor(stageTime.minus(currentTime).toDouble() / 1000).toLong()
-
-            Timber.d("timer greater $diffTime")
-
-            if (diffTime > 0) {
-
-                val observable = Observable.interval(1, TimeUnit.SECONDS)
-                val subscription: Disposable =
-                    observable
-                        .take(diffTime)
-                        .map { (diffTime - 1) - it }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            if (it > 0) {
-                                var date = Date(it * 1000)
-
-                                var dateStr = SimpleDateFormat("HH:mm:ss").format(date)
-                                expireTruckIndicator?.text = dateStr
-
-                                Timber.d("timer $it")
-                            } else {
-                                expireTruckIndicator?.text = "Expired"
-                            }
-                        },
-                            {
-                                Timber.e(it)
-                            })
-
-            } else {
-                expireTruckIndicator?.text = "Expired"
             }
 
         }
