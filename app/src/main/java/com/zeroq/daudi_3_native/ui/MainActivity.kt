@@ -124,7 +124,6 @@ class MainActivity : BaseActivity() {
                     setLogo(getDrawable(R.drawable.ic_profile)!!)
                 }
             })
-
     }
 
     private fun setupBottomNavigationBar() {
@@ -172,9 +171,26 @@ class MainActivity : BaseActivity() {
                     }
                 }
 
-                eventBus.postSticky(ProcessingEvent(processingL, null))
-                eventBus.postSticky(QueueingEvent(queueingL, null))
-                eventBus.postSticky(LoadingEvent(loadingL, null))
+                var sortedProcessing =
+                    processingL.sortedBy { truck ->
+                        sortStage(truck, "1")
+                    }
+
+
+                var sortedQueueing =
+                    queueingL.sortedBy { truck ->
+                        sortStage(truck, "2")
+                    }
+
+                var sortedLoading =
+                    loadingL.sortedBy { truck ->
+                        sortStage(truck, "3")
+                    }
+
+
+                eventBus.postSticky(ProcessingEvent(sortedProcessing, null))
+                eventBus.postSticky(QueueingEvent(sortedQueueing, null))
+                eventBus.postSticky(LoadingEvent(sortedLoading, null))
 
                 /*
                 * set the badges on navbar
@@ -193,5 +209,9 @@ class MainActivity : BaseActivity() {
 
     private fun loggedOut() {
         authUI.signOut(this)
+    }
+
+    private fun sortStage(truck1: TruckModel, stage: String): Long {
+        return truck1.stagedata!![stage]?.data?.expiry!![0].timestamp!!.time
     }
 }

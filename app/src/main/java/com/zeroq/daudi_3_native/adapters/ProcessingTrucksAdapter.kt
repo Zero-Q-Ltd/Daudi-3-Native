@@ -68,7 +68,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
         if (diffTime > 0) {
             holder.bottomLinearBar?.setBackgroundResource(R.color.colorPrimary)
-            holder.expireTruckIndicator?.text = null
+            holder.expireTruckIndicator?.text = ""
 
             val observable = Observable.interval(1, TimeUnit.SECONDS)
             holder.subscription =
