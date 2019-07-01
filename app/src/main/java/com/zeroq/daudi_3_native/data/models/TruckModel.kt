@@ -5,7 +5,7 @@ data class TruckModel(
     var Id: String?,
     var truckId: String?,
     var numberplate: String?,
-    var stage: Number?,
+    var stage: Int?,
     var isPrinted: String?,
     var orderref: String?,
     var drivername: String?,
@@ -16,7 +16,7 @@ data class TruckModel(
     var orderdata: OrderData?,
     var config: TruckConfig?,
     var fuel: Fuel?,
-    var stagedata: StageData?
+    var stagedata: Map<String, Stage>?
 ) {
     constructor()
             : this(

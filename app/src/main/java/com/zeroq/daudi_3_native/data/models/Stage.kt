@@ -1,0 +1,54 @@
+package com.zeroq.daudi_3_native.data.models
+
+import java.util.*
+
+data class Stage(
+    var user: _User?,
+    var data: _Data?
+) {
+    constructor() : this(null, null)
+}
+
+data class _User(
+    var name: String?,
+    var time: com.google.firebase.Timestamp?,
+    var uuid: Int?
+) {
+    constructor() : this(null, null, null)
+}
+
+data class Expiry(
+    var time: String?,
+    var timestamp: Date?
+) {
+    constructor() : this(null, null)
+}
+
+
+data class Seals(
+    var range: String?,
+    var broken: ArrayList<String>?
+) {
+    constructor() : this(null, null)
+}
+
+
+data class SData(
+    var user: _User?,
+    var data: _Data?
+) {
+    constructor() : this(null, null)
+}
+
+
+data class _Data(
+    // for stage 1,2,3
+    var expiry: ArrayList<Expiry>?,
+
+    // stage 4 alone
+    var deliveryNote: String?,
+    var seals: Seals?
+) {
+    constructor() : this(null, null, null)
+}
+

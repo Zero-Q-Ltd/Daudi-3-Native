@@ -5,10 +5,9 @@
              android:layout_height="match_parent"
              tools:context=".ui.processing.ProcessingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/processing_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="funny processing"/>
+            android:layout_height="wrap_content"/>
 
 </FrameLayout>

@@ -4,7 +4,7 @@ data class Company(
     var Id: String?,
     var contactname: String?,
     var name: String?,
-    var phone: Number?
+    var phone: String?
 
 ) {
     constructor() : this(

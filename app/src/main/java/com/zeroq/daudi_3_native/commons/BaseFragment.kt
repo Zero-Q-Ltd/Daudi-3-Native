@@ -3,12 +3,24 @@ package com.zeroq.daudi_3_native.commons
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.AndroidSupportInjection
+import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
 
 @SuppressLint("Registered")
-open class BaseFragment: Fragment() {
+open class BaseFragment : Fragment() {
 
-    override fun onAttach(context: Context?) {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    protected fun <T : ViewModel> getViewModel(cls: Class<T>): T {
+        return ViewModelProviders.of(this, viewModelFactory).get(cls)
+    }
+
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
