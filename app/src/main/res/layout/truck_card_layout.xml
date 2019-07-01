@@ -411,9 +411,11 @@
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:padding="18dp"
-                      android:orientation="horizontal">
+                      android:orientation="horizontal"
+                      android:weightSum="3">
 
-            <TextView android:layout_width="wrap_content"
+            <TextView android:id="@+id/tv_times_added"
+                      android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="Times Added"
                       android:textColor="@color/white"
@@ -428,9 +430,10 @@
                       android:textSize="14sp"
                       android:layout_weight="1"/>
 
-            <TextView android:layout_width="wrap_content"
+            <TextView android:id="@+id/tv_trucks_ahead"
+                      android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="Trucks Added"
+                      android:text="Trucks Ahead"
                       android:textColor="@color/white"
                       android:textSize="14sp"
                       android:layout_weight="1"/>

@@ -17,7 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -55,9 +54,9 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         var truck = trucksList[position]
         holder.bindPhoto(truck, context)
 
-        if (holder.subscription != null) {
-            holder.subscription?.dispose()
-            holder.subscription = null
+        if (holder.timerSubscription != null) {
+            holder.timerSubscription?.dispose()
+            holder.timerSubscription = null
         }
 
         // set timer
@@ -71,7 +70,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             holder.expireTruckIndicator?.text = ""
 
             val observable = Observable.interval(1, TimeUnit.SECONDS)
-            holder.subscription =
+            holder.timerSubscription =
                 observable
                     .take(diffTime)
                     .map { (diffTime - 1) - it }
@@ -92,6 +91,43 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         } else {
             holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
             holder.expireTruckIndicator?.text = "Expired"
+        }
+
+        /**
+         * Times added
+         * */
+        holder.timesTruckAddedView?.setOnClickListener {
+            holder.truckAddedSubscription?.dispose()
+            holder.truckAddedSubscription = null
+
+
+            holder.timesTruckAddedView?.text = truck.stagedata!!["1"]?.data?.expiry?.size.toString()
+
+            holder.truckAddedSubscription = Observable.timer(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    holder.timesTruckAddedView?.text = "Times Added"
+                }
+        }
+
+        /**
+         * trucks ahead
+         * */
+
+        holder.trucksAheadView?.setOnClickListener {
+            val trucksAhead: Int = trucksList.slice(0 until position).size
+            holder.trucksAheadView?.text = trucksAhead.toString()
+
+            holder.truckaheadSubscription?.dispose()
+            holder.truckaheadSubscription = null
+
+            holder.truckaheadSubscription =
+                Observable.timer(2, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        holder.trucksAheadView?.text = "Trucks Ahead"
+                    }
         }
     }
 
@@ -134,13 +170,18 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         var expireTruckIndicator: TextView? = null
         var bottomLinearBar: LinearLayout? = null
 
+        // trucks ahead
+        var trucksAheadView: TextView? = null
+        var timesTruckAddedView: TextView? = null
 
         private var varibles = ArrayList<CompVariable>()
 
         /**
-         * subscription for timer
+         * timerSubscription for timer
          * */
-        var subscription: Disposable? = null
+        var timerSubscription: Disposable? = null
+        var truckaheadSubscription: Disposable? = null
+        var truckAddedSubscription: Disposable? = null
 
 
         init {
@@ -187,6 +228,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             expireTruckIndicator = v.findViewById(R.id.tv_expire)
 
             bottomLinearBar = v.findViewById(R.id.l_bottom)
+            trucksAheadView = v.findViewById(R.id.tv_trucks_ahead)
+            timesTruckAddedView = v.findViewById(R.id.tv_times_added)
 
         }
 
