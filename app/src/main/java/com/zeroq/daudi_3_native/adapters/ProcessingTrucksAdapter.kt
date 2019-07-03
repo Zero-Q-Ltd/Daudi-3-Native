@@ -12,10 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +30,12 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
     private val trucksList = ArrayList<TruckModel>()
     private lateinit var context: Context
+
+
+    /*
+    * clicks for adapter
+    * **/
+    var expireTvClick = PublishSubject.create<RecyclerTruckEvent>()
 
 
     fun replaceTrucks(trucks: List<TruckModel>) {
@@ -128,6 +136,14 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                     .subscribe {
                         holder.trucksAheadView?.text = "Trucks Ahead"
                     }
+        }
+
+
+        /**
+         * expire click event
+         * */
+        holder.expireTruckIndicator?.setOnClickListener {
+            expireTvClick.onNext(RecyclerTruckEvent(position, truck))
         }
     }
 
@@ -247,7 +263,6 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             truck.compartments?.forEachIndexed { index, compartment ->
                 setCompValues(index, compartment.fueltype, compartment.qty, context)
             }
-
         }
 
         private fun setCompValues(index: Int, fuelType: String?, quantity: Int?, context: Context) {
