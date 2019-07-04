@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
+import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -87,7 +88,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                     .subscribe({
                         if (it > 0) {
                             holder.expireTruckIndicator?.text =
-                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
+//                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
+                                MyTimeUtils.formatElapsedTime(it * 1000)
                         } else {
                             holder.expireTruckIndicator?.text = "Expired"
                         }

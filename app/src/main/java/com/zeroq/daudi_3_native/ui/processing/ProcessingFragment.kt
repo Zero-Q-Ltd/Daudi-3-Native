@@ -1,18 +1,16 @@
 package com.zeroq.daudi_3_native.ui.processing
 
 
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.ProcessingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
-import com.zeroq.daudi_3_native.commons.OnItemClickedListener
-import com.zeroq.daudi_3_native.commons.OnItemLongClickedListener
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
@@ -33,6 +31,8 @@ class ProcessingFragment : BaseFragment() {
     private lateinit var adapter: ProcessingTrucksAdapter
     private var _TAG: String = "ProcessingFragment"
 
+    private lateinit var processingViewModel: ProcessingViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,10 +43,20 @@ class ProcessingFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        processingViewModel = getViewModel(ProcessingViewModel::class.java)
+
+        processingViewModel.getUser().observe(this, Observer {
+            if (it.isSuccessful) {
+                val user = it.data()
+                processingViewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+            } else {
+                Timber.e(it.error())
+            }
+        })
+
         /*
         * start dialog
         * */
-
 
         initRecyclerView()
     }
@@ -80,9 +90,14 @@ class ProcessingFragment : BaseFragment() {
         expireSub?.dispose()
         expireSub = null
 
-        var expireDialog = TimeDialogFragment("Enter Additional Time", truck)
+        val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
         expireSub = expireDialog.timeEvent.subscribe {
-            Toast.makeText(activity, truck.truckId, Toast.LENGTH_SHORT).show()
+            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
+                if (!state.isSuccessful) {
+                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+                    Timber.e(state.error())
+                }
+            })
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
