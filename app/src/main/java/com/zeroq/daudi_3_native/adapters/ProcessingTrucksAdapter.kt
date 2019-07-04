@@ -37,6 +37,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
     * clicks for adapter
     * **/
     var expireTvClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyLongClick = PublishSubject.create<RecyclerTruckEvent>()
 
 
     fun replaceTrucks(trucks: List<TruckModel>) {
@@ -147,6 +149,22 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         holder.expireTruckIndicator?.setOnClickListener {
             expireTvClick.onNext(RecyclerTruckEvent(position, truck))
         }
+
+        /**
+         * body click
+         * */
+        holder.cardBody?.setOnClickListener {
+            cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
+        }
+
+        /**
+         * body longclick
+         * */
+        holder.cardBody?.setOnLongClickListener {
+            cardBodyLongClick.onNext(RecyclerTruckEvent(position, truck))
+            return@setOnLongClickListener true
+        }
+
     }
 
 
@@ -154,6 +172,9 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
+
+
+        var cardBody: LinearLayout? = null
 
         private var _companyName: TextView? = null
         private var _driverName: TextView? = null
@@ -206,6 +227,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)
+
+            cardBody = v.findViewById(R.id.card_body)
 
             _companyName = v.findViewById(R.id.tv_company)
             _driverName = v.findViewById(R.id.tv_driver)

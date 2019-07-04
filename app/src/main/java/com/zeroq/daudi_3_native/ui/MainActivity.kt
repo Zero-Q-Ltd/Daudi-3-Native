@@ -212,6 +212,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun sortStage(truck1: TruckModel, stage: String): Long {
-        return truck1.stagedata!![stage]?.data?.expiry!![0].timestamp!!.time
+        var exLength = truck1.stagedata!![stage]?.data?.expiry?.size!!.minus(1)
+        return truck1.stagedata!![stage]?.data?.expiry!![exLength].timestamp!!.time
     }
 }
