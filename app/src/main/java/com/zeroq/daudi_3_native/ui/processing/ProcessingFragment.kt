@@ -17,6 +17,7 @@ import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_processing.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -74,19 +75,36 @@ class ProcessingFragment : BaseFragment() {
     }
 
     private fun consumeEvents() {
-        var clickSub: Disposable = adapter.expireTvClick
+        val clickSub: Disposable = adapter.expireTvClick
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 expireTimePicker(it.truck)
             }
 
+
+        val cardBodyClick: Disposable = adapter.cardBodyClick
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val printed = it?.truck?.isPrinted
+
+                Timber.d("hero :: ${it.truck}")
+
+//                if (printed) {
+//                    queueTruckDialog(it.truck)
+//                } else {
+//                    Toast.makeText(activity, "start next activity", Toast.LENGTH_SHORT).show()
+//                }
+            }
+
         compositeDisposable.add(clickSub)
+        compositeDisposable.add(cardBodyClick)
     }
 
 
     var expireSub: Disposable? = null
 
-    fun expireTimePicker(truck: TruckModel) {
+    private fun expireTimePicker(truck: TruckModel) {
         expireSub?.dispose()
         expireSub = null
 
@@ -101,6 +119,20 @@ class ProcessingFragment : BaseFragment() {
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
+    }
+
+
+    var queueSub: Disposable? = null
+    private fun queueTruckDialog(truck: TruckModel) {
+        queueSub?.dispose()
+        queueSub = null
+
+        val queueDialog = TimeDialogFragment("Enter Queueing Time", truck)
+        queueSub = queueDialog.timeEvent.subscribe {
+            Toast.makeText(activity, "queue dialog clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        queueDialog.show(fragmentManager!!, _TAG)
     }
 
     override fun onStart() {
