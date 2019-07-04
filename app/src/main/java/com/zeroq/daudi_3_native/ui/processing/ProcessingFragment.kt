@@ -49,7 +49,6 @@ class ProcessingFragment : BaseFragment() {
 
 
         initRecyclerView()
-        consumeEvents()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -92,6 +91,7 @@ class ProcessingFragment : BaseFragment() {
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+        consumeEvents()
     }
 
     override fun onStop() {
