@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.ui.processing
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.zeroq.daudi_3_native.commons.BaseFragment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
+import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -51,7 +53,7 @@ class ProcessingFragment : BaseFragment() {
                 val user = it.data()
                 processingViewModel.setDepoId(user?.config?.depotdata?.depotid!!)
             } else {
-                Timber.e(it.error())
+                Timber.e(it.error()!!)
             }
         })
 
@@ -86,15 +88,13 @@ class ProcessingFragment : BaseFragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                val printed = it?.truck?.isPrinted
+                val printed = it?.truck?.isprinted
 
-                Timber.d("hero :: ${it.truck}")
-
-//                if (printed) {
-//                    queueTruckDialog(it.truck)
-//                } else {
-//                    Toast.makeText(activity, "start next activity", Toast.LENGTH_SHORT).show()
-//                }
+                if (printed!!) {
+                    queueTruckDialog(it.truck)
+                } else {
+                    startTruckDetailActivity()
+                }
             }
 
         compositeDisposable.add(clickSub)
@@ -145,5 +145,11 @@ class ProcessingFragment : BaseFragment() {
         EventBus.getDefault().unregister(this)
         compositeDisposable.clear()
         super.onStop()
+    }
+
+    private fun startTruckDetailActivity(){
+        startActivity(Intent(activity, TruckDetailActivity::class.java))
+        // animate
+        activity!!.overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
     }
 }
