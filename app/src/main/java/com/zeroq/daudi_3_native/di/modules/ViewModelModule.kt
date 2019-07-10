@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.di.qualifires.ViewModelKey
 import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
+import com.zeroq.daudi_3_native.ui.processing.ProcessingViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
 import com.zeroq.daudi_3_native.viewmodel.DaudiViewModelFactory
 import dagger.Binds
@@ -32,6 +33,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProcessingViewModel::class)
+    abstract fun bindProcessingViewModel(processingViewModel: ProcessingViewModel): ViewModel
 
 
     @Binds

@@ -18,5 +18,9 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">14sp</item>
+    </style>
+
 
 </resources>

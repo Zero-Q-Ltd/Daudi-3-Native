@@ -6,8 +6,8 @@ data class TruckModel(
     var truckId: String?,
     var numberplate: String?,
     var stage: Int?,
-    var isPrinted: String?,
-    var orderref: String?,
+    var isPrinted: Boolean?,
+    var isprinted: Boolean?,
     var drivername: String?,
     var driverid: String?,
     var frozen: Boolean?,
@@ -20,10 +20,10 @@ data class TruckModel(
 ) {
     constructor()
             : this(
+        null, null,
         null, null, null,
+        false, null, null,
         null, null, null,
-        null, null, null,
-        null, null, null,
-        null, null, null
+        null, null, null, null
     )
 }

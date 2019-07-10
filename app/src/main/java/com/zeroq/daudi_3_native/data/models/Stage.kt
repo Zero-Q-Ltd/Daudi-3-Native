@@ -4,7 +4,7 @@ import java.util.*
 
 data class Stage(
     var user: _User?,
-    var data: _Data?
+    var data: Data?
 ) {
     constructor() : this(null, null)
 }
@@ -17,13 +17,6 @@ data class _User(
     constructor() : this(null, null, null)
 }
 
-data class Expiry(
-    var time: String?,
-    var timestamp: Date?
-) {
-    constructor() : this(null, null)
-}
-
 
 data class Seals(
     var range: String?,
@@ -32,16 +25,7 @@ data class Seals(
     constructor() : this(null, null)
 }
 
-
-data class SData(
-    var user: _User?,
-    var data: _Data?
-) {
-    constructor() : this(null, null)
-}
-
-
-data class _Data(
+data class Data(
     // for stage 1,2,3
     var expiry: ArrayList<Expiry>?,
 

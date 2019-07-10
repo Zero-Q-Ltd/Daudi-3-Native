@@ -141,7 +141,7 @@ class MainActivity : BaseActivity() {
 
         mainViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
-                var userData = it.data()
+                val userData = it.data()
                 mainViewModel.setDeportId(userData?.config?.depotdata?.depotid)
             } else {
                 Timber.e("Sorry an error occurred")
@@ -151,8 +151,8 @@ class MainActivity : BaseActivity() {
         // get update
         mainViewModel.getTrucks().observe(this, Observer {
             if (it.isSuccessful) {
-                var processingL = ArrayList<TruckModel>()
-                var loadingL = ArrayList<TruckModel>()
+                val processingL = ArrayList<TruckModel>()
+                val loadingL = ArrayList<TruckModel>()
                 val queueingL = ArrayList<TruckModel>()
 
                 it.data()?.forEach { truckModel ->
@@ -171,18 +171,18 @@ class MainActivity : BaseActivity() {
                     }
                 }
 
-                var sortedProcessing =
+                val sortedProcessing =
                     processingL.sortedBy { truck ->
                         sortStage(truck, "1")
                     }
 
 
-                var sortedQueueing =
+                val sortedQueueing =
                     queueingL.sortedBy { truck ->
                         sortStage(truck, "2")
                     }
 
-                var sortedLoading =
+                val sortedLoading =
                     loadingL.sortedBy { truck ->
                         sortStage(truck, "3")
                     }
@@ -212,6 +212,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun sortStage(truck1: TruckModel, stage: String): Long {
-        return truck1.stagedata!![stage]?.data?.expiry!![0].timestamp!!.time
+        val exLength = truck1.stagedata!![stage]?.data?.expiry?.size!!.minus(1)
+        return truck1.stagedata!![stage]?.data?.expiry!![exLength].timestamp!!.time
     }
 }

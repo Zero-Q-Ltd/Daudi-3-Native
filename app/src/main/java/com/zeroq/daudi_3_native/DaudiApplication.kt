@@ -1,6 +1,5 @@
 package com.zeroq.daudi_3_native
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.di.component.DaggerAppComponent
 import com.zeroq.daudi_3_native.ui.login.LoginActivity

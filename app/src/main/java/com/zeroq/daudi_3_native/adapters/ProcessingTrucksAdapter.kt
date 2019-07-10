@@ -12,10 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
+import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +31,14 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
     private val trucksList = ArrayList<TruckModel>()
     private lateinit var context: Context
+
+
+    /*
+    * clicks for adapter
+    * **/
+    var expireTvClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyLongClick = PublishSubject.create<RecyclerTruckEvent>()
 
 
     fun replaceTrucks(trucks: List<TruckModel>) {
@@ -79,7 +90,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                     .subscribe({
                         if (it > 0) {
                             holder.expireTruckIndicator?.text =
-                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
+//                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
+                                MyTimeUtils.formatElapsedTime(it * 1000)
                         } else {
                             holder.expireTruckIndicator?.text = "Expired"
                         }
@@ -129,6 +141,30 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                         holder.trucksAheadView?.text = "Trucks Ahead"
                     }
         }
+
+
+        /**
+         * expire click event
+         * */
+        holder.expireTruckIndicator?.setOnClickListener {
+            expireTvClick.onNext(RecyclerTruckEvent(position, truck))
+        }
+
+        /**
+         * body click
+         * */
+        holder.cardBody?.setOnClickListener {
+            cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
+        }
+
+        /**
+         * body longclick
+         * */
+        holder.cardBody?.setOnLongClickListener {
+            cardBodyLongClick.onNext(RecyclerTruckEvent(position, truck))
+            return@setOnLongClickListener true
+        }
+
     }
 
 
@@ -136,6 +172,9 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
+
+
+        var cardBody: LinearLayout? = null
 
         private var _companyName: TextView? = null
         private var _driverName: TextView? = null
@@ -188,6 +227,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)
+
+            cardBody = v.findViewById(R.id.card_body)
 
             _companyName = v.findViewById(R.id.tv_company)
             _driverName = v.findViewById(R.id.tv_driver)
@@ -247,7 +288,6 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             truck.compartments?.forEachIndexed { index, compartment ->
                 setCompValues(index, compartment.fueltype, compartment.qty, context)
             }
-
         }
 
         private fun setCompValues(index: Int, fuelType: String?, quantity: Int?, context: Context) {
