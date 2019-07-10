@@ -12,10 +12,19 @@ class TruckDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_truck_detail)
 
         initToolbar()
+        compartimentsOps()
     }
 
     private fun initToolbar() {
         setSupportActionBar(toolbar)
+    }
+
+
+    private fun compartimentsOps() {
+        /**
+         * make sure the compartment values tally with the given fuel
+         * */
+//        val c1Supscription =
     }
 
     override fun finish() {
