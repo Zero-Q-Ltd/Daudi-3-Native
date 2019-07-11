@@ -1,6 +1,5 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
@@ -15,9 +14,12 @@ class TruckDetailActivity : BaseActivity() {
         setContentView(R.layout.activity_truck_detail)
 
         /*
-        * set  the viewmodel
+        * set  the viewModel
         * */
         truckDetailViewModel = getViewModel(TruckDetailViewModel::class.java)
+        truckDetailViewModel.setTruckId(intent.getStringExtra("TRUCK_ID"))
+
+
 
         initToolbar()
         initialValues()

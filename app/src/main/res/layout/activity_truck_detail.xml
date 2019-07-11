@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="Enter Driver Id"
+                    android:hint="Enter Amount"
                     android:inputType="textCapCharacters"
                     android:textAllCaps="true"
                     android:textColor="@color/grey_500"
@@ -376,7 +376,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
+                    android:text="EMPTY"
                     android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
@@ -392,7 +392,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="Enter Driver Id"
+                    android:hint="Enter Amount"
                     android:inputType="textCapCharacters"
                     android:textAllCaps="true"
                     android:textColor="@color/grey_500"
@@ -415,21 +415,21 @@
                       app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c3_type"
                     android:layout_width="wrap_content"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
-                    android:inputType="textCapCharacters"
-                    android:textAllCaps="true"
+                    android:text="EMPTY"
+                    android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/tv_c3"
                     app:layout_constraintEnd_toStartOf="@+id/et_c3_qty"
-                    app:layout_constraintTop_toBottomOf="@id/tv_c2"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_c2"
+                    style="?android:attr/borderlessButtonStyle"/>
 
             <EditText
                     android:id="@+id/et_c3_qty"
@@ -461,21 +461,21 @@
                       app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c4_type"
                     android:layout_width="wrap_content"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
-                    android:inputType="textCapCharacters"
-                    android:textAllCaps="true"
+                    android:text="EMPTY"
+                    android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/tv_c4"
                     app:layout_constraintEnd_toStartOf="@+id/et_c4_qty"
-                    app:layout_constraintTop_toBottomOf="@id/tv_c3"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_c3"
+                    style="?android:attr/borderlessButtonStyle"/>
 
             <EditText
                     android:id="@+id/et_c4_qty"
@@ -507,21 +507,21 @@
                       app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c5_type"
                     android:layout_width="wrap_content"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
-                    android:inputType="textCapCharacters"
-                    android:textAllCaps="true"
+                    android:text="EMPTY"
+                    android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/tv_c5"
                     app:layout_constraintEnd_toStartOf="@+id/et_c5_qty"
-                    app:layout_constraintTop_toBottomOf="@id/tv_c4"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_c4"
+                    style="?android:attr/borderlessButtonStyle"/>
 
             <EditText
                     android:id="@+id/et_c5_qty"
@@ -553,21 +553,21 @@
                       app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c6_type"
                     android:layout_width="wrap_content"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
-                    android:inputType="textCapCharacters"
-                    android:textAllCaps="true"
+                    android:text="EMPTY"
+                    android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/tv_c6"
                     app:layout_constraintEnd_toStartOf="@+id/et_c6_qty"
-                    app:layout_constraintTop_toBottomOf="@id/tv_c5"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_c5"
+                    style="?android:attr/borderlessButtonStyle"/>
 
             <EditText
                     android:id="@+id/et_c6_qty"
@@ -599,21 +599,21 @@
                       app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c7_type"
                     android:layout_width="wrap_content"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
-                    android:hint="EMPTY"
-                    android:inputType="textCapCharacters"
-                    android:textAllCaps="true"
+                    android:text="EMPTY"
+                    android:textSize="16sp"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/tv_c7"
                     app:layout_constraintEnd_toStartOf="@+id/et_c7_qty"
-                    app:layout_constraintTop_toBottomOf="@id/tv_c6"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_c6"
+                    style="?android:attr/borderlessButtonStyle"/>
 
             <EditText
                     android:id="@+id/et_c7_qty"

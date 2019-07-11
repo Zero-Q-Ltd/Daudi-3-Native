@@ -93,7 +93,7 @@ class ProcessingFragment : BaseFragment() {
                 if (printed!!) {
                     queueTruckDialog(it.truck)
                 } else {
-                    startTruckDetailActivity()
+                    startTruckDetailActivity(it.truck.Id)
                 }
             }
 
@@ -147,8 +147,10 @@ class ProcessingFragment : BaseFragment() {
         super.onStop()
     }
 
-    private fun startTruckDetailActivity(){
-        startActivity(Intent(activity, TruckDetailActivity::class.java))
+    private fun startTruckDetailActivity(truckId: String?) {
+        val intent = Intent(activity, TruckDetailActivity::class.java)
+        intent.putExtra("TRUCK_ID", truckId)
+        startActivity(intent)
         // animate
         activity!!.overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
     }
