@@ -319,6 +319,14 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                         android.graphics.PorterDuff.Mode.SRC_IN
                     )
                 }
+                else -> {
+                    varibles[index].fuelQuantity?.text = "0"
+
+                    varibles[index].fuelType?.setColorFilter(
+                        ContextCompat.getColor(context, R.color.empty_comp),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
+                }
             }
         }
 
