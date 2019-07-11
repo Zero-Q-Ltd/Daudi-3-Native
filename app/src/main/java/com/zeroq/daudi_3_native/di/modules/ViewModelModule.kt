@@ -7,6 +7,7 @@ import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.ui.processing.ProcessingViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
+import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailViewModel
 import com.zeroq.daudi_3_native.viewmodel.DaudiViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -39,6 +40,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProcessingViewModel::class)
     abstract fun bindProcessingViewModel(processingViewModel: ProcessingViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TruckDetailViewModel::class)
+    abstract fun bindTruckDetailViewModel(truckDetailViewModel: TruckDetailViewModel): ViewModel
 
 
     @Binds
