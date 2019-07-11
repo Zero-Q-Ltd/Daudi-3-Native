@@ -33,9 +33,11 @@ class DepotRepository
         return QueryLiveData(trucksQuery(depotId), TruckModel::class.java)
     }
 
-    fun getTruck(depotId: String, truckId: String): DocumentLiveData<TruckModel> {
+    fun getTruck(combineDepoTruckId: Pair<String, String>): DocumentLiveData<TruckModel> {
         val truckRef =
-            depots.document(depotId).collection("trucks").document(truckId)
+            depots.document(combineDepoTruckId.first)
+                .collection("trucks")
+                .document(combineDepoTruckId.second)
 
         val data: DocumentLiveData<TruckModel> = DocumentLiveData(truckRef, TruckModel::class.java)
         truckRef.addSnapshotListener(data)

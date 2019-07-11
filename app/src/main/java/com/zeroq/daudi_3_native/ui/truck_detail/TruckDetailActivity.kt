@@ -1,9 +1,12 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
+import com.zeroq.daudi_3_native.data.models.UserModel
 import kotlinx.android.synthetic.main.toolbar.*
+import timber.log.Timber
 
 class TruckDetailActivity : BaseActivity() {
 
@@ -18,6 +21,25 @@ class TruckDetailActivity : BaseActivity() {
         * */
         truckDetailViewModel = getViewModel(TruckDetailViewModel::class.java)
         truckDetailViewModel.setTruckId(intent.getStringExtra("TRUCK_ID"))
+
+        truckDetailViewModel.getUser().observe(this, Observer {
+            if (it.isSuccessful) {
+                val user = it.data()
+                truckDetailViewModel.setDepotId(user?.config?.depotdata?.depotid!!)
+            } else {
+                Timber.e(it.error()!!)
+            }
+        })
+
+
+        truckDetailViewModel.getTruck().observe(this, Observer {
+            if (it.isSuccessful) {
+                Timber.d("my truck ${it.data()}")
+            } else {
+                Timber.e(it.error()!!)
+            }
+        })
+
 
 
 
