@@ -10,12 +10,7 @@ data class Fuel(
 
 data class Batches(
     var qty: Int?,
-    var batches: Batchz?
+    var batches: Map<String, Batch>?
 ) {
-    constructor() : this(null, null)
-}
-
-data class Batchz(var `0`: Batch?, var `1`: Batch?) {
-    constructor() : this(null, null)
-
+    constructor() : this(0, null)
 }

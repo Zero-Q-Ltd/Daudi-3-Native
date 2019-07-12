@@ -8,6 +8,7 @@ import com.zeroq.daudi_3_native.data.models.Expiry
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
+import com.zeroq.daudi_3_native.vo.DocumentLiveData
 import com.zeroq.daudi_3_native.vo.QueryLiveData
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,6 +31,18 @@ class DepotRepository
 
     fun getAllTrucks(depotId: String): QueryLiveData<TruckModel> {
         return QueryLiveData(trucksQuery(depotId), TruckModel::class.java)
+    }
+
+    fun getTruck(combineDepoTruckId: Pair<String, String>): DocumentLiveData<TruckModel> {
+        val truckRef =
+            depots.document(combineDepoTruckId.first)
+                .collection("trucks")
+                .document(combineDepoTruckId.second)
+
+        val data: DocumentLiveData<TruckModel> = DocumentLiveData(truckRef, TruckModel::class.java)
+        truckRef.addSnapshotListener(data)
+
+        return data
     }
 
     /**
