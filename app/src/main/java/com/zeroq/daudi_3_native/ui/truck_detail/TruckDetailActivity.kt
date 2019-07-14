@@ -9,14 +9,13 @@ import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Batches
 import com.zeroq.daudi_3_native.data.models.TruckModel
-import com.zeroq.daudi_3_native.data.models.UserModel
 import kotlinx.android.synthetic.main.activity_truck_detail.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class TruckDetailActivity : BaseActivity() {
 
@@ -25,9 +24,15 @@ class TruckDetailActivity : BaseActivity() {
 
     lateinit var truckDetailViewModel: TruckDetailViewModel
 
+    private val _fuelTypeList = ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_truck_detail)
+
+        /*
+        * add the empty field
+        * **/
 
         /*
         * set  the viewModel
@@ -58,9 +63,18 @@ class TruckDetailActivity : BaseActivity() {
 
         initToolbar()
         compartimentsOps()
+
     }
 
     private fun initialTruckValues(truck: TruckModel) {
+
+        _fuelTypeList.clear()
+        _fuelTypeList.add("EMPTY")
+
+        if (truck.fuel?.pms?.qty != 0) _fuelTypeList.add("PMS")
+        if (truck.fuel?.ago?.qty != 0) _fuelTypeList.add("AGO")
+        if (truck.fuel?.ik?.qty != 0) _fuelTypeList.add("IK")
+
         tv_truck_id.text = truck.truckId
         tv_customer_value.text = truck.company?.name
         et_driver_name.setText(truck.drivername)
@@ -122,7 +136,176 @@ class TruckDetailActivity : BaseActivity() {
         /**
          * make sure the compartment values tally with the given fuel
          * */
-//        val c1Supscription =
+
+        // c1
+        et_c1_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c1_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c1_qty.text = null
+                et_c1_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c1_qty.isEnabled = false
+            } else {
+                et_c1_qty.hint = "Enter Amount"
+                et_c1_qty.isEnabled = true
+            }
+
+            et_c1_type.text = _fuelTypeList[index]
+        }
+
+
+        // c2
+        et_c2_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c2_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c2_qty.text = null
+                et_c2_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c2_qty.isEnabled = false
+            } else {
+                et_c2_qty.hint = "Enter Amount"
+                et_c2_qty.isEnabled = true
+            }
+
+            et_c2_type.text = _fuelTypeList[index]
+        }
+
+        // c3
+        et_c3_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c3_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c3_qty.text = null
+                et_c3_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c3_qty.isEnabled = false
+            } else {
+                et_c3_qty.hint = "Enter Amount"
+                et_c3_qty.isEnabled = true
+            }
+
+            et_c3_type.text = _fuelTypeList[index]
+        }
+
+        // c4
+        et_c4_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c4_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c4_qty.text = null
+                et_c4_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c4_qty.isEnabled = false
+            } else {
+                et_c4_qty.hint = "Enter Amount"
+                et_c4_qty.isEnabled = true
+            }
+
+            et_c4_type.text = _fuelTypeList[index]
+        }
+
+        // c5
+        et_c5_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c5_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c5_qty.text = null
+                et_c5_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c5_qty.isEnabled = false
+            } else {
+                et_c5_qty.hint = "Enter Amount"
+                et_c5_qty.isEnabled = true
+            }
+
+            et_c5_type.text = _fuelTypeList[index]
+        }
+
+        // c6
+        et_c6_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c6_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c6_qty.text = null
+                et_c6_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c6_qty.isEnabled = false
+            } else {
+                et_c6_qty.hint = "Enter Amount"
+                et_c6_qty.isEnabled = true
+            }
+
+            et_c6_type.text = _fuelTypeList[index]
+        }
+
+        // c7
+        et_c7_type.setOnClickListener {
+            var index = _fuelTypeList.indexOf(et_c7_type.text)
+
+            index++
+
+            if (index > (_fuelTypeList.size - 1)) {
+                index = 0
+
+                et_c7_qty.text = null
+                et_c7_qty.hint = "EMPTY"
+
+                /**
+                 * disable
+                 * */
+                et_c7_qty.isEnabled = false
+            } else {
+                et_c7_qty.hint = "Enter Amount"
+                et_c7_qty.isEnabled = true
+            }
+
+            et_c7_type.text = _fuelTypeList[index]
+        }
+
     }
 
 

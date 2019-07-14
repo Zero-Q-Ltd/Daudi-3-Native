@@ -109,7 +109,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
          * Times added
          * */
         val timesAdded = truck.stagedata!!["1"]?.data?.expiry?.size.toString()
-        holder.timesTruckAddedView?.text = "Times Added ($timesAdded)"
+        holder.timesTruckAddedView?.text = "Times Added [$timesAdded]"
 
 
         /**
@@ -117,7 +117,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
          * */
 
         val trucksAhead: Int = trucksList.slice(0 until position).size
-        holder.trucksAheadView?.text = "Trucks Ahead ($trucksAhead)"
+        holder.trucksAheadView?.text = "Trucks Ahead [$trucksAhead]"
 
 
         /**
