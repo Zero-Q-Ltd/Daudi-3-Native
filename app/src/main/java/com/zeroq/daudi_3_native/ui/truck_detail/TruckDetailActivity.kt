@@ -1,6 +1,8 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
@@ -26,13 +28,26 @@ class TruckDetailActivity : BaseActivity() {
 
     private val _fuelTypeList = ArrayList<String>()
 
+
+    // set data to compartments
+    private lateinit var viewComp: List<EditText>
+
+    private lateinit var btnComp: List<AppCompatButton>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_truck_detail)
 
-        /*
-        * add the empty field
-        * **/
+
+        viewComp = listOf(
+            et_c1_qty, et_c2_qty,
+            et_c3_qty, et_c4_qty, et_c5_qty, et_c6_qty, et_c7_qty
+        )
+
+        btnComp = listOf(
+            et_c1_type, et_c2_type,
+            et_c3_type, et_c4_type, et_c5_type, et_c6_type, et_c7_type
+        )
 
         /*
         * set  the viewModel
@@ -62,7 +77,8 @@ class TruckDetailActivity : BaseActivity() {
 
 
         initToolbar()
-        compartimentsOps()
+        compartimentsButtonOps()
+        compartmentsInputs()
 
     }
 
@@ -94,16 +110,7 @@ class TruckDetailActivity : BaseActivity() {
         tv_ik_entry.text = getBatchName(truck.fuel?.ik!!)
 
 
-        // set data to compartments
-        val viewComp: List<EditText> = listOf(
-            et_c1_qty, et_c2_qty,
-            et_c3_qty, et_c4_qty, et_c5_qty, et_c6_qty, et_c7_qty
-        )
 
-        val btnComp: List<AppCompatButton> = listOf(
-            et_c1_type, et_c2_type,
-            et_c3_type, et_c4_type, et_c5_type, et_c6_type, et_c7_type
-        )
 
         truck.compartments?.forEachIndexed { index, compartment ->
             if (compartment.qty != null && compartment.qty != 0) {
@@ -111,6 +118,9 @@ class TruckDetailActivity : BaseActivity() {
                 viewComp[index].setText(compartment.qty!!.toString())
             } else {
                 btnComp[index].text = "EMPTY"
+                viewComp[index].text = null
+                viewComp[index].hint = "Empty Comp"
+                viewComp[index].isEnabled = false
             }
         }
 
@@ -132,180 +142,62 @@ class TruckDetailActivity : BaseActivity() {
     }
 
 
-    private fun compartimentsOps() {
+    private fun compartimentsButtonOps() {
         /**
          * make sure the compartment values tally with the given fuel
          * */
 
-        // c1
-        et_c1_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c1_type.text)
+        btnComp.forEachIndexed { i, btn ->
+            btn.setOnClickListener {
+                var index = _fuelTypeList.indexOf(btn.text)
+                index++
 
-            index++
 
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
+                if (index > (_fuelTypeList.size - 1)) {
+                    index = 0
 
-                et_c1_qty.text = null
-                et_c1_qty.hint = "EMPTY"
+                    viewComp[i].text = null
+                    viewComp[i].hint = "Empty Comp"
+                    viewComp[i].error = null
 
-                /**
-                 * disable
-                 * */
-                et_c1_qty.isEnabled = false
-            } else {
-                et_c1_qty.hint = "Enter Amount"
-                et_c1_qty.isEnabled = true
+                    /**
+                     * disable
+                     * */
+                    viewComp[i].isEnabled = false
+                } else {
+                    viewComp[i].hint = "Enter Amount"
+                    viewComp[i].isEnabled = true
+                }
+
+                btn.text = _fuelTypeList[index]
             }
-
-            et_c1_type.text = _fuelTypeList[index]
         }
+    }
 
+    private fun compartmentsInputs() {
 
-        // c2
-        et_c2_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c2_type.text)
+        viewComp.forEach {
+            it.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
 
-            index++
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
 
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                et_c2_qty.text = null
-                et_c2_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c2_qty.isEnabled = false
-            } else {
-                et_c2_qty.hint = "Enter Amount"
-                et_c2_qty.isEnabled = true
-            }
-
-            et_c2_type.text = _fuelTypeList[index]
+                    if (it.isEnabled && (s.isNullOrEmpty() || s.toString().toInt() < 500)) {
+                        it.error = "Should contain more than 500L"
+                    } else {
+                        if (it.isEnabled && (s.isNullOrEmpty() || s.toString().toInt() > 30000)) {
+                            it.error = "Can't carry more than 30000L"
+                        } else {
+                            it.error = null
+                        }
+                    }
+                }
+            })
         }
-
-        // c3
-        et_c3_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c3_type.text)
-
-            index++
-
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
-
-                et_c3_qty.text = null
-                et_c3_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c3_qty.isEnabled = false
-            } else {
-                et_c3_qty.hint = "Enter Amount"
-                et_c3_qty.isEnabled = true
-            }
-
-            et_c3_type.text = _fuelTypeList[index]
-        }
-
-        // c4
-        et_c4_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c4_type.text)
-
-            index++
-
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
-
-                et_c4_qty.text = null
-                et_c4_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c4_qty.isEnabled = false
-            } else {
-                et_c4_qty.hint = "Enter Amount"
-                et_c4_qty.isEnabled = true
-            }
-
-            et_c4_type.text = _fuelTypeList[index]
-        }
-
-        // c5
-        et_c5_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c5_type.text)
-
-            index++
-
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
-
-                et_c5_qty.text = null
-                et_c5_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c5_qty.isEnabled = false
-            } else {
-                et_c5_qty.hint = "Enter Amount"
-                et_c5_qty.isEnabled = true
-            }
-
-            et_c5_type.text = _fuelTypeList[index]
-        }
-
-        // c6
-        et_c6_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c6_type.text)
-
-            index++
-
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
-
-                et_c6_qty.text = null
-                et_c6_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c6_qty.isEnabled = false
-            } else {
-                et_c6_qty.hint = "Enter Amount"
-                et_c6_qty.isEnabled = true
-            }
-
-            et_c6_type.text = _fuelTypeList[index]
-        }
-
-        // c7
-        et_c7_type.setOnClickListener {
-            var index = _fuelTypeList.indexOf(et_c7_type.text)
-
-            index++
-
-            if (index > (_fuelTypeList.size - 1)) {
-                index = 0
-
-                et_c7_qty.text = null
-                et_c7_qty.hint = "EMPTY"
-
-                /**
-                 * disable
-                 * */
-                et_c7_qty.isEnabled = false
-            } else {
-                et_c7_qty.hint = "Enter Amount"
-                et_c7_qty.isEnabled = true
-            }
-
-            et_c7_type.text = _fuelTypeList[index]
-        }
-
     }
 
 
