@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -407,7 +408,7 @@ class TruckDetailActivity : BaseActivity() {
 
             if (it.isSuccessful) {
                 // create an image to print
-                takeandSaveScreenShot()
+                cleanPageForPrinting()
             } else {
                 Snackbar.make(layout_constraint, "An error occurred", Snackbar.LENGTH_SHORT).show()
                 Timber.e(it.error()!!)
@@ -420,6 +421,42 @@ class TruckDetailActivity : BaseActivity() {
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
     }
 
+
+    private fun cleanPageForPrinting() {
+        hideButton(false)
+        disableViews(layout_constraint)
+
+        /**
+         * Take screenshot now
+         * */
+        takeandSaveScreenShot()
+
+    }
+
+    private fun disableViews(layout: ViewGroup) {
+        layout.isEnabled = false
+
+        for (i in 0 until layout.childCount) {
+            var child: View = layout.getChildAt(i)
+
+            if (child is ViewGroup) {
+                disableViews(child)
+            } else {
+                if (child is EditText || child is AppCompatButton) {
+                    child.isEnabled = false
+                }
+            }
+        }
+    }
+
+
+    private fun hideButton(visible: Boolean) {
+        if (visible) {
+            btnPrint.visibility = View.VISIBLE
+        } else {
+            btnPrint.visibility = View.GONE
+        }
+    }
 
     private fun takeandSaveScreenShot(): Boolean {
         val u = content_scroll as View
