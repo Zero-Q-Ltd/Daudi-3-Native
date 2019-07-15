@@ -2,17 +2,19 @@ package com.zeroq.daudi_3_native.ui.truck_detail
 
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
+import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.data.repository.DepotRepository
+import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.Resource
 import com.zeroq.daudi_3_native.vo.combineLatest
 import javax.inject.Inject
 
 class TruckDetailViewModel @Inject constructor(
     adminRepo: AdminRepository,
-    depotRepository: DepotRepository,
+    var depotRepository: DepotRepository,
     firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
@@ -52,6 +54,18 @@ class TruckDetailViewModel @Inject constructor(
 
     fun getTruck(): LiveData<Resource<TruckModel>> {
         return _truck
+    }
+
+    fun updateTruckComAndDriver(
+        depotId: String,
+        idTruck: String,
+        compartmentList: List<Compartment>,
+        driverId: String, driverName: String, numberPlate: String
+    ): CompletionLiveData {
+        return depotRepository.updateCompartmentAndDriver(
+            depotId, idTruck, compartmentList,
+            driverId, driverName, numberPlate
+        )
     }
 
 }

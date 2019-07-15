@@ -15,7 +15,8 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/content_scroll">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -135,7 +136,6 @@
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
                     android:hint="Enter Driver Name"
-                    android:inputType="textCapCharacters"
                     app:layout_constraintLeft_toLeftOf="@id/barrier"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_driver_name"
@@ -144,7 +144,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:textAllCaps="true"
-                    android:textColor="@color/grey_500"/>
+                    android:textColor="@color/grey_500"
+                    android:inputType="textFilter|textNoSuggestions"/>
 
 
             <TextView android:id="@+id/tv_driver_id"
@@ -163,7 +164,7 @@
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
                     android:hint="Enter Driver Id"
-                    android:inputType="textCapCharacters"
+                    android:inputType="textFilter|textNoSuggestions"
                     app:layout_constraintLeft_toLeftOf="@id/barrier"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_driver_id"
@@ -190,7 +191,7 @@
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
                     android:hint="Enter Number Plate"
-                    android:inputType="textCapCharacters"
+                    android:inputType="textFilter|textNoSuggestions"
                     app:layout_constraintLeft_toLeftOf="@id/barrier"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_driver_plate"
