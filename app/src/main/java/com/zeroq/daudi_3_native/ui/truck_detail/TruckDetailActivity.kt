@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
@@ -40,8 +41,10 @@ class TruckDetailActivity : BaseActivity() {
     private lateinit var viewComp: List<EditText>
 
     private lateinit var btnComp: List<AppCompatButton>
+    private lateinit var _topInputs: List<EditText>
 
     private lateinit var _user: UserModel
+    private var DepotTruck: TruckModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,8 @@ class TruckDetailActivity : BaseActivity() {
             et_c1_type, et_c2_type,
             et_c3_type, et_c4_type, et_c5_type, et_c6_type, et_c7_type
         )
+
+        _topInputs = listOf(et_driver_name, et_driver_id, et_driver_plate)
 
         /*
         * set  the viewModel
@@ -76,6 +81,7 @@ class TruckDetailActivity : BaseActivity() {
 
         truckDetailViewModel.getTruck().observe(this, Observer {
             if (it.isSuccessful) {
+                DepotTruck = it.data()
                 initialTruckValues(it.data()!!)
             } else {
                 Timber.e(it.error()!!)
@@ -168,6 +174,10 @@ class TruckDetailActivity : BaseActivity() {
 
         thread.start()
 
+        btnPrint.setOnClickListener {
+            validateAndPost()
+        }
+
     }
 
     private fun initToolbar() {
@@ -176,7 +186,7 @@ class TruckDetailActivity : BaseActivity() {
 
 
     private fun topInputs() {
-        val _topInputs: List<EditText> = listOf(et_driver_name, et_driver_id, et_driver_plate)
+
 
         _topInputs.forEach {
             it.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
@@ -277,6 +287,73 @@ class TruckDetailActivity : BaseActivity() {
         }
 
         return temp ?: "****************"
+    }
+
+    private fun validateAndPost() {
+        /**
+         * check top inputs
+         * */
+        var inputErrors = false
+
+        _topInputs.forEach {
+            if (it.text.toString().isNullOrEmpty()) {
+                inputErrors = true
+
+                it.error = "This field cant be blank"
+            }
+        }
+
+
+        /**
+         * check if compartments are fine
+         *
+         * local fuel inputs
+         * */
+
+        var pmsLocal = DepotTruck?.fuel?.pms?.qty!!
+        var agoLocal = DepotTruck?.fuel?.ago?.qty!!
+        var ikLocal = DepotTruck?.fuel?.ik?.qty!!
+
+
+        // from buttons
+        btnComp.forEachIndexed { index, appCompatButton ->
+            when (appCompatButton.text) {
+                "PMS" ->
+                    if (!viewComp[index].text.isNullOrEmpty()) {
+                        pmsLocal -= viewComp[index].text.toString().toInt()
+                    } else {
+                        inputErrors = true
+                        viewComp[index].error = "Field can't be empty"
+                    }
+
+
+                "AGO" ->
+                    if (!viewComp[index].text.isNullOrEmpty()) {
+                        agoLocal -= viewComp[index].text.toString().toInt()
+                    } else {
+                        inputErrors = true
+                        viewComp[index].error = "Field can't be empty"
+                    }
+
+                "IK" ->
+
+                    if (!viewComp[index].text.isNullOrEmpty()) {
+                        ikLocal -= viewComp[index].text.toString().toInt()
+                    } else {
+                        inputErrors = true
+                        viewComp[index].error = "Field can't be empty"
+                    }
+            }
+        }
+
+
+        // check if the local fuel is zero and no error
+        if (pmsLocal == 0 && agoLocal == 0 && ikLocal == 0 && !inputErrors) {
+            Timber.d("No errors")
+        } else {
+            Timber.d("Hell errors")
+        }
+
     }
 
     override fun finish() {
