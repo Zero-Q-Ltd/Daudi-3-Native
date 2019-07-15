@@ -1,11 +1,17 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
 import android.os.Bundle
+import android.os.Environment
 import android.os.Vibrator
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -23,6 +29,9 @@ import kotlinx.android.synthetic.main.activity_truck_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import net.glxn.qrgen.android.QRCode
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -398,6 +407,7 @@ class TruckDetailActivity : BaseActivity() {
 
             if (it.isSuccessful) {
                 // create an image to print
+                takeandSaveScreenShot()
             } else {
                 Snackbar.make(layout_constraint, "An error occurred", Snackbar.LENGTH_SHORT).show()
                 Timber.e(it.error()!!)
@@ -409,4 +419,79 @@ class TruckDetailActivity : BaseActivity() {
         super.finish()
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
     }
+
+
+    private fun takeandSaveScreenShot(): Boolean {
+        val u = content_scroll as View
+        val z = content_scroll
+
+        val totalHeight = z.getChildAt(0).height
+        val totalWidth = z.getChildAt(0).width
+
+        val newHeight = totalHeight * 537 / totalWidth
+
+        val b = getBitmapFromView(u, totalHeight, totalWidth)
+        return savescreenshot(b, 537, newHeight)
+    }
+
+    private fun getBitmapFromView(view: View, totalHeight: Int, totalWidth: Int): Bitmap {
+        val returnedBitmap = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(returnedBitmap)
+        val bgDrawable = view.background
+
+        if (bgDrawable != null)
+            bgDrawable.draw(canvas)
+        else
+            canvas.drawColor(Color.WHITE)
+
+        view.draw(canvas)
+        return returnedBitmap
+    }
+
+    private fun savescreenshot(bm: Bitmap, newWidth: Int, newHeight: Int): Boolean {
+        val width = bm.width
+        val height = bm.height
+        val scaleWidth = newWidth.toFloat() / width
+        val scaleHeight = newHeight.toFloat() / height
+        // CREATE A MATRIX FOR THE MANIPULATION
+        val matrix = Matrix()
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight)
+
+        // "RECREATE" THE NEW BITMAP
+        val resizedBitmap = Bitmap.createBitmap(
+            bm, 0, 0, width, height, matrix, false
+        )
+        bm.recycle()
+
+        val file_path = Environment.getExternalStorageDirectory().absolutePath + "/Emkaynow"
+        val dir = File(file_path)
+
+
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        val image = File(dir, "0.png")
+        var out: FileOutputStream? = null
+
+        try {
+            out = FileOutputStream(image)
+            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out) // bmp is your Bitmap instance
+            return true
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        } finally {
+            try {
+                if (out != null) {
+                    out.close()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
 }

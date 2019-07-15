@@ -2,6 +2,11 @@ package com.zeroq.daudi_3_native.ui.splash
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.ui.MainActivity
@@ -15,6 +20,8 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        requestPermissions()
 
         // get viewmodel
         viewModel = getViewModel(SplashViewModel::class.java)
@@ -45,5 +52,31 @@ class SplashActivity : BaseActivity() {
                 }
             this.finish()
         })
+    }
+
+    private fun requestPermissions() {
+        Dexter.withActivity(this)
+            .withPermissions(
+                android.Manifest.permission.GET_ACCOUNTS,
+                android.Manifest.permission.READ_CONTACTS,
+                android.Manifest.permission.VIBRATE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.BLUETOOTH,
+                android.Manifest.permission.BLUETOOTH_ADMIN,
+                android.Manifest.permission.WAKE_LOCK,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+
+                }
+            }).check()
     }
 }
