@@ -1,6 +1,8 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -351,7 +353,12 @@ class TruckDetailActivity : BaseActivity() {
         if (pmsLocal == 0 && agoLocal == 0 && ikLocal == 0 && !inputErrors) {
             Timber.d("No errors")
         } else {
-            Timber.d("Hell errors")
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (vibrator.hasVibrator()) {
+                vibrator.run { vibrate(500) } // for 500 ms
+
+                Toast.makeText(this, "Make sure you have no errors", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
