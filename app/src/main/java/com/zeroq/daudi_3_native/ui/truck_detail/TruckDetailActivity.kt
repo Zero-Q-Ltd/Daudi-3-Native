@@ -10,10 +10,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Batches
+import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
@@ -351,7 +353,7 @@ class TruckDetailActivity : BaseActivity() {
 
         // check if the local fuel is zero and no error
         if (pmsLocal == 0 && agoLocal == 0 && ikLocal == 0 && !inputErrors) {
-            Timber.d("No errors")
+            pushToServer()
         } else {
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (vibrator.hasVibrator()) {
@@ -361,6 +363,46 @@ class TruckDetailActivity : BaseActivity() {
             }
         }
 
+    }
+
+
+    private fun pushToServer() {
+        val compList = ArrayList<Compartment>()
+
+        btnComp.forEachIndexed { index, appCompatButton ->
+
+            val btnValue: String = appCompatButton.text.toString()
+
+            when (btnValue) {
+                "EMPTY" ->
+                    compList.add(Compartment(null, null))
+
+                else ->
+                    compList.add(
+                        Compartment(
+                            btnValue.toLowerCase(),
+                            viewComp[index].text.toString().toInt()
+                        )
+                    )
+            }
+        }
+
+        val driverName = et_driver_name.text.toString().toUpperCase()
+        val driverId = et_driver_id.text.toString().toUpperCase()
+        val numberPlate = et_driver_plate.text.toString().toUpperCase()
+
+        truckDetailViewModel.updateTruckComAndDriver(
+            _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
+            compList, driverId, driverName, numberPlate
+        ).observe(this, Observer {
+
+            if (it.isSuccessful) {
+                // create an image to print
+            } else {
+                Snackbar.make(layout_constraint, "An error occurred", Snackbar.LENGTH_SHORT).show()
+                Timber.e(it.error()!!)
+            }
+        })
     }
 
     override fun finish() {

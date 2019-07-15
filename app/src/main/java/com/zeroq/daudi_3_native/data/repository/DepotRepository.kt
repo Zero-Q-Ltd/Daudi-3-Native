@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.Expiry
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
@@ -91,5 +92,50 @@ class DepotRepository
         }
     }
 
+
+    /**
+     * logic to update compartments
+     * */
+    fun updateCompartmentAndDriver(
+        depotId: String,
+        idTruck: String,
+        compartmentList: List<Compartment>,
+        driverId: String, driverName: String, numberPlate: String
+    ): CompletionLiveData {
+        val completion = CompletionLiveData()
+        updateCompartmentAndDriverTask(depotId, idTruck, compartmentList, driverId, driverName, numberPlate)
+            .addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    private fun updateCompartmentAndDriverTask(
+        depotId: String,
+        idTruck: String,
+        compartmentList: List<Compartment>,
+        driverId: String, driverName: String, numberPlate: String
+    ): Task<Void> {
+        val truckRef = depots
+            .document(depotId)
+            .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transition ->
+            val truck: TruckModel? = transition.get(truckRef).toObject(TruckModel::class.java)
+
+            /*
+            * driver details
+            * */
+            transition.update(truckRef, "driverid", driverId)
+            transition.update(truckRef, "drivername", driverName)
+            transition.update(truckRef, "numberplate", numberPlate)
+
+            /*
+            * update compartment array
+            * */
+            transition.update(truckRef, "compartments", compartmentList)
+
+            return@runTransaction null
+        }
+    }
 
 }
