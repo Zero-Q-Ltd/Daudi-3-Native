@@ -313,7 +313,7 @@
 
 
             <TextView android:id="@+id/tv_c1"
-                      android:layout_width="wrap_content"
+                      android:layout_width="0dp"
                       android:layout_height="wrap_content"
                       android:text="COMP 1"
                       android:layout_marginTop="16dp"
@@ -326,12 +326,13 @@
 
             <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/et_c1_type"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
                     android:text="EMPTY"
+                    android:gravity="center"
                     android:textSize="16sp"
                     android:textAllCaps="true"
                     android:textColor="@color/grey_500"
@@ -343,14 +344,15 @@
 
             <EditText
                     android:id="@+id/et_c1_qty"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:textColorHint="@color/grey_500"
                     android:hint="Enter Amount"
-                    android:inputType="textCapCharacters"
+                    android:inputType="number"
                     android:textAllCaps="true"
+                    android:gravity="center"
                     android:textColor="@color/grey_500"
                     tools:layout_editor_absoluteY="627dp"
                     app:layout_constraintStart_toEndOf="@+id/et_c1_type"
@@ -706,9 +708,8 @@
 
 
             <ImageView android:id="@+id/qr"
-                       android:layout_width="100dp"
-                       android:layout_height="100dp"
-                       android:src="@drawable/place_holder"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
                        app:layout_constraintRight_toRightOf="parent"
                        app:layout_constraintLeft_toLeftOf="parent"
                        app:layout_constraintTop_toBottomOf="@id/v_signature"
