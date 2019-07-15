@@ -2,6 +2,7 @@ package com.zeroq.daudi_3_native.ui.truck_detail
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
@@ -85,6 +86,7 @@ class TruckDetailActivity : BaseActivity() {
 
 
         initToolbar()
+        topInputs()
         compartimentsButtonOps()
         compartmentsInputs()
 
@@ -170,6 +172,41 @@ class TruckDetailActivity : BaseActivity() {
 
     private fun initToolbar() {
         setSupportActionBar(toolbar)
+    }
+
+
+    private fun topInputs() {
+        val _topInputs: List<EditText> = listOf(et_driver_name, et_driver_id, et_driver_plate)
+
+        _topInputs.forEach {
+            it.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+
+            it.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    if (s.isNullOrEmpty()) {
+                        it.error = "This field cant be blank"
+                    } else {
+                        it.error = null
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.isNullOrEmpty()) {
+                        it.error = "This field cant be blank"
+                    } else {
+                        it.error = null
+                    }
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s.isNullOrEmpty()) {
+                        it.error = "This field cant be blank"
+                    } else {
+                        it.error = null
+                    }
+                }
+            })
+        }
     }
 
 
