@@ -11,8 +11,11 @@ import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Batches
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.data.models.UserModel
+import com.zeroq.daudi_3_native.utils.ImageUtil
 import kotlinx.android.synthetic.main.activity_truck_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
+import net.glxn.qrgen.android.QRCode
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,6 +27,9 @@ class TruckDetailActivity : BaseActivity() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
 
+    @Inject
+    lateinit var imageUtil: ImageUtil
+
     lateinit var truckDetailViewModel: TruckDetailViewModel
 
     private val _fuelTypeList = ArrayList<String>()
@@ -33,6 +39,8 @@ class TruckDetailActivity : BaseActivity() {
     private lateinit var viewComp: List<EditText>
 
     private lateinit var btnComp: List<AppCompatButton>
+
+    private lateinit var _user: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +65,8 @@ class TruckDetailActivity : BaseActivity() {
 
         truckDetailViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
-                val user = it.data()
-                truckDetailViewModel.setDepotId(user?.config?.depotdata?.depotid!!)
+                _user = it.data()!!
+                truckDetailViewModel.setDepotId(_user.config?.depotdata?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }
@@ -91,7 +99,7 @@ class TruckDetailActivity : BaseActivity() {
         if (truck.fuel?.ago?.qty != 0) _fuelTypeList.add("AGO")
         if (truck.fuel?.ik?.qty != 0) _fuelTypeList.add("IK")
 
-        tv_truck_id.text = truck.truckId
+        tv_truck_id.text = truck.truckId!!
         tv_customer_value.text = truck.company?.name
         et_driver_name.setText(truck.drivername)
         et_driver_id.setText(truck.driverid)
@@ -135,6 +143,29 @@ class TruckDetailActivity : BaseActivity() {
          * */
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm aaa")
         tv_today_date.text = sdf.format(Date()).toUpperCase()
+
+        /**
+         * create qr
+         * */
+
+
+        val depotUrl =
+            "https://us-central1-emkaybeta.cloudfunctions.net/truckDetail?D=${_user.config?.depotdata?.depotid}&T=${truck.truckId}"
+
+        val dimensions = imageUtil.dpToPx(this, 150)
+
+        val thread = Thread(Runnable {
+            val myBitmap = QRCode.from(depotUrl)
+                .withSize(dimensions, dimensions)
+                .bitmap()
+
+            runOnUiThread {
+                qr.setImageBitmap(myBitmap)
+            }
+        })
+
+        thread.start()
+
     }
 
     private fun initToolbar() {
