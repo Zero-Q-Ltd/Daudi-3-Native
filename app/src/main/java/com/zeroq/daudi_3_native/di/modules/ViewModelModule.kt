@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.di.qualifires.ViewModelKey
 import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
+import com.zeroq.daudi_3_native.ui.printing.PrintingViewModel
 import com.zeroq.daudi_3_native.ui.processing.ProcessingViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
 import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailViewModel
@@ -46,6 +47,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TruckDetailViewModel::class)
     abstract fun bindTruckDetailViewModel(truckDetailViewModel: TruckDetailViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PrintingViewModel::class)
+    abstract fun bindPrintingViewModel(printingViewModel: PrintingViewModel): ViewModel
 
 
     @Binds

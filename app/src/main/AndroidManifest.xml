@@ -21,6 +21,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".ui.device_list.DeviceListActivity">
+        </activity>
         <activity android:name=".ui.printing.PrintingActivity">
         </activity>
         <activity android:name=".ui.truck_detail.TruckDetailActivity">
