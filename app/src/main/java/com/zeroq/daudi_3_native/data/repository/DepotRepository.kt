@@ -138,4 +138,34 @@ class DepotRepository
         }
     }
 
+    /*
+    * logic to change the truck to printed
+    * */
+
+    fun updatePrintedState(depotId: String, idTruck: String): CompletionLiveData {
+        val completion = CompletionLiveData()
+        updatePrintingStateTask(depotId, idTruck, true).addOnCompleteListener(completion)
+        return completion
+    }
+
+    private fun updatePrintingStateTask(
+        depotId: String,
+        idTruck: String, printingState: Boolean
+    ): Task<Void> {
+
+        val truckRef = depots
+            .document(depotId)
+            .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
+
+            transaction.update(truckRef, "isprinted", printingState)
+            transaction.update(truckRef, "isPrinted", printingState)
+
+            return@runTransaction null
+        }
+
+    }
+
 }
