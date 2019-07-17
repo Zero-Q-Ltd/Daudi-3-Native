@@ -25,6 +25,7 @@ import com.zeroq.daudi_3_native.data.models.Batches
 import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
+import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import kotlinx.android.synthetic.main.activity_truck_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
@@ -429,7 +430,8 @@ class TruckDetailActivity : BaseActivity() {
         /**
          * Take screenshot now
          * */
-        takeandSaveScreenShot()
+        // takeandSaveScreenShot()
+        PrintingActivity.startPrintingActivity(this)
 
     }
 
