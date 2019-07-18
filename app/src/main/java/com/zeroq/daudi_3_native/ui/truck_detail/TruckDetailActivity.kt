@@ -1,5 +1,6 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -13,6 +14,8 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -65,6 +68,11 @@ class TruckDetailActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_truck_detail)
 
+
+        /**
+         * hide keyboad
+         * */
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
         viewComp = listOf(
             et_c1_qty, et_c2_qty,
@@ -430,8 +438,20 @@ class TruckDetailActivity : BaseActivity() {
         /**
          * Take screenshot now
          * */
-        // takeandSaveScreenShot()
-        PrintingActivity.startPrintingActivity(this)
+
+        if (takeandSaveScreenShot()) {
+            hideButton(true)
+            PrintingActivity.startPrintingActivity(
+                this,
+                _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!
+            )
+        } else {
+            /**
+             * An error occured
+             * */
+            Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
+            hideButton(true)
+        }
 
     }
 
@@ -515,7 +535,7 @@ class TruckDetailActivity : BaseActivity() {
 
         try {
             out = FileOutputStream(image)
-            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out) // bmp is your Bitmap instance
+            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out!!) // bmp is your Bitmap instance
             return true
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (e: Exception) {
@@ -523,9 +543,7 @@ class TruckDetailActivity : BaseActivity() {
             return false
         } finally {
             try {
-                if (out != null) {
-                    out.close()
-                }
+                out?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
