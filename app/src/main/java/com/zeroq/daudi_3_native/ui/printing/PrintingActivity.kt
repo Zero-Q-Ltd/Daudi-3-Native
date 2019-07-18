@@ -13,6 +13,7 @@ import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.services.BluetoothService
@@ -32,12 +33,20 @@ class PrintingActivity : BaseActivity() {
     private var con_dev: BluetoothDevice? = null
 
 
+    private lateinit var depotId: String
+    private lateinit var idTruck: String
+
+
     companion object {
         private const val REQUEST_ENABLE_BT = 2
         private const val REQUEST_CONNECT_DEVICE = 1
 
-        fun startPrintingActivity(context: Context) {
-            context.startActivity(Intent(context, PrintingActivity::class.java))
+
+        fun startPrintingActivity(context: Context, depotId: String, idTruck: String) {
+            val intent = Intent(context, PrintingActivity::class.java)
+            intent.putExtra("DEPOTID", depotId)
+            intent.putExtra("IDTRUCK", idTruck)
+            context.startActivity(intent)
         }
     }
 
@@ -46,6 +55,12 @@ class PrintingActivity : BaseActivity() {
         setContentView(R.layout.activity_printing)
 
         printingViewModel = getViewModel(PrintingViewModel::class.java)
+
+        if (intent.extras != null) {
+            depotId = intent.getStringExtra("DEPOTID")
+            idTruck = intent.getStringExtra("IDTRUCK")
+        }
+
 
         /*
         * bluetooth service
@@ -214,6 +229,15 @@ class PrintingActivity : BaseActivity() {
         pg.drawImage(0f, 0f, Environment.getExternalStorageDirectory().absolutePath + "/Emkaynow/0.png")
         sendData = pg.printDraw()
         mService!!.write(sendData)
+
+        /**
+         *
+         * */
+        printingViewModel.setPrintedState(depotId, idTruck).observe(this, Observer {
+            if (!it.isSuccessful) {
+                Timber.e(it.error())
+            }
+        })
     }
 
 }
