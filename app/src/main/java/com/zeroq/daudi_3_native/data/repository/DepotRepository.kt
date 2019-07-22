@@ -237,4 +237,51 @@ class DepotRepository
         }
     }
 
+
+    /**
+     * logic to add expire to queue stage
+     * */
+    fun queueAddExpire(depotId: String, idTruck: String, minutes: Long): CompletionLiveData {
+        val completion = CompletionLiveData()
+        queueAddExpireTask(depotId, idTruck, minutes).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    private fun queueAddExpireTask(depotId: String, idTruck: String, minutes: Long): Task<Void> {
+        val truckRef = depots
+            .document(depotId)
+            .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
+
+            // add new time
+            val startDate = Calendar.getInstance().time
+
+            val exTime: String = MyTimeUtils.formatElapsedTime(TimeUnit.MINUTES.toMillis(minutes))
+
+            val calendar = Calendar.getInstance()
+            calendar.time = startDate
+            calendar.add(Calendar.MINUTE, minutes.toInt())
+
+            val expireDate = calendar.time
+
+            /**
+             * modify the truck object
+             * */
+            val expireObj = Expiry(startDate, exTime, expireDate)
+
+            val exp: ArrayList<Expiry>? = truck?.stagedata!!["2"]?.data?.expiry
+            exp?.add(0, expireObj)
+
+            // commit to fireStore
+            transaction.update(truckRef, "stagedata.2.data.expiry", exp)
+
+            return@runTransaction null
+        }
+
+    }
+
+
 }
