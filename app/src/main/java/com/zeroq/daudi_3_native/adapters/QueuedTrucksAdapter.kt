@@ -95,39 +95,18 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
         /**
          * Times added
          * */
-        holder.timesTruckAddedView?.setOnClickListener {
-            holder.truckAddedSubscription?.dispose()
-            holder.truckAddedSubscription = null
+        val timesAdded = truck.stagedata!!["1"]?.data?.expiry?.size.toString()
+        holder.timesTruckAddedView?.text = "Times Added [$timesAdded]"
 
-
-            holder.timesTruckAddedView?.text = truck.stagedata!!["2"]?.data?.expiry?.size.toString()
-
-            holder.truckAddedSubscription = Observable.timer(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    holder.timesTruckAddedView?.text = "Times Added"
-                }
-        }
 
         /**
          * trucks ahead
          * */
 
-        holder.trucksAheadView?.setOnClickListener {
-            val trucksAhead: Int = trucksList.slice(0 until position).size
-            holder.trucksAheadView?.text = trucksAhead.toString()
+        val trucksAhead: Int = trucksList.slice(0 until position).size
+        holder.trucksAheadView?.text = "Trucks Ahead [$trucksAhead]"
 
-            holder.truckaheadSubscription?.dispose()
-            holder.truckaheadSubscription = null
 
-            holder.truckaheadSubscription =
-                Observable.timer(2, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        holder.trucksAheadView?.text = "Trucks Ahead"
-                    }
-        }
     }
 
 
