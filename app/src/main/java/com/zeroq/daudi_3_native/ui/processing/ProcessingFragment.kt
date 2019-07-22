@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.ProcessingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
@@ -25,9 +26,12 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import javax.inject.Inject
 
 class ProcessingFragment : BaseFragment() {
 
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -129,7 +133,14 @@ class ProcessingFragment : BaseFragment() {
 
         val queueDialog = TimeDialogFragment("Enter Queueing Time", truck)
         queueSub = queueDialog.timeEvent.subscribe {
-            Toast.makeText(activity, "queue dialog clicked", Toast.LENGTH_SHORT).show()
+            processingViewModel.moveToQueuing(it.truck.Id!!, it.minutes.toLong())
+                .observe(this, Observer { result ->
+                    if (result.isSuccessful) {
+                        Toast.makeText(activity, "Truck moved to processing", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Timber.e(result.error())
+                    }
+                })
         }
 
         queueDialog.show(fragmentManager!!, _TAG)

@@ -11,6 +11,7 @@ import com.zeroq.daudi_3_native.data.repository.DepotRepository
 import com.zeroq.daudi_3_native.vo.Resource
 import javax.inject.Inject
 import androidx.lifecycle.MediatorLiveData
+import com.google.firebase.auth.FirebaseUser
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
 
@@ -18,7 +19,7 @@ import com.zeroq.daudi_3_native.vo.CompletionLiveData
 class ProcessingViewModel @Inject constructor(
     adminRepo: AdminRepository,
     var depotRepository: DepotRepository,
-    firebaseAuth: FirebaseAuth
+    var firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private var _user: LiveData<Resource<UserModel>> = MutableLiveData()
@@ -45,7 +46,11 @@ class ProcessingViewModel @Inject constructor(
         return depotRepository.updateProcessingExpire(_depotId.value!!, truck, minutes)
     }
 
-
+    fun moveToQueuing(
+        idTruck: String, minutes: Long
+    ): CompletionLiveData {
+        return depotRepository.pushToueueing(_depotId.value!!, idTruck, minutes, firebaseAuth.currentUser!!)
+    }
 
 
 }

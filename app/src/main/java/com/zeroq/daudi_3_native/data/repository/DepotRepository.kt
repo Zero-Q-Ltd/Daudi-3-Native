@@ -1,12 +1,15 @@
 package com.zeroq.daudi_3_native.data.repository
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.Expiry
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.data.models._User
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.DocumentLiveData
@@ -166,6 +169,72 @@ class DepotRepository
             return@runTransaction null
         }
 
+    }
+
+
+    /**
+     * move truck to queueing stage
+     * */
+
+    fun pushToueueing(
+        depotId: String,
+        idTruck: String, minutes: Long, firebaseUser: FirebaseUser
+    ): CompletionLiveData {
+        val completion = CompletionLiveData()
+        pushToQueueingTask(depotId, idTruck, minutes, firebaseUser).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    private fun pushToQueueingTask(
+        depotId: String,
+        idTruck: String, minutes: Long, firebaseUser: FirebaseUser
+    ): Task<Void> {
+        val truckRef = depots
+            .document(depotId)
+            .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
+
+            // the current calender time
+            val calendar = Calendar.getInstance()
+
+
+            // time ellapse formart
+            val exTime: String = MyTimeUtils.formatElapsedTime(TimeUnit.MINUTES.toMillis(minutes))
+
+            // time now
+            val startDate = calendar.time
+
+
+            calendar.time = startDate
+            calendar.add(Calendar.MINUTE, minutes.toInt())
+
+            val expireDate = calendar.time
+
+            /**
+             * modify the truck object
+             * */
+            val expireObj = Expiry(startDate, exTime, expireDate)
+
+            val exp: ArrayList<Expiry>? = truck?.stagedata!!["2"]?.data?.expiry
+            exp?.add(0, expireObj)
+
+            // commit to fireStore
+            // add new date to stage 2
+            transaction.update(truckRef, "stagedata.2.data.expiry", exp)
+
+            // add user
+            val user = _User(firebaseUser.displayName, Timestamp.now(), firebaseUser.uid)
+            transaction.update(truckRef, "stagedata.2.data.user", user)
+
+            // change stage number
+            transaction.update(truckRef, "stage", 2)
+
+            return@runTransaction null
+
+        }
     }
 
 }
