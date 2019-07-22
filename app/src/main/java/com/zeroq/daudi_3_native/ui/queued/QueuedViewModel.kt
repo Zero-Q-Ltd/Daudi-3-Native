@@ -41,4 +41,8 @@ class QueuedViewModel @Inject constructor(
         return depotRepository.queueAddExpire(_depotId.value!!, idTruck, minutes)
     }
 
+    fun pushToLoading(idTruck: String, minutes: Long): CompletionLiveData {
+        return depotRepository.pushToLoading(_depotId.value!!, idTruck, minutes, firebaseAuth.currentUser!!)
+    }
+
 }

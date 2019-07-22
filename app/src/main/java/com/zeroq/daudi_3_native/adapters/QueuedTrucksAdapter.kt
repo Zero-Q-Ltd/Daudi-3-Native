@@ -120,11 +120,18 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
             expireTvClick.onNext(RecyclerTruckEvent(position, truck))
         }
 
-
+        /**
+         * body click
+         * */
+        holder.cardBody?.setOnClickListener {
+            cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
+        }
     }
 
 
     class TruckViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        var cardBody: LinearLayout? = null
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
@@ -177,6 +184,8 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
 
 
         init {
+
+            cardBody = v.findViewById(R.id.card_body)
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)

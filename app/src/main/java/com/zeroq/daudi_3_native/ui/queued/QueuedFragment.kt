@@ -93,7 +93,14 @@ class QueuedFragment : BaseFragment() {
                 }
 
 
+        val bodyClick = adapter.cardBodyClick.observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                pushToLoadingDialog(it.truck)
+            }
+
+
         compositeDisposable.add(expireClick)
+        compositeDisposable.add(bodyClick)
     }
 
 
@@ -116,6 +123,29 @@ class QueuedFragment : BaseFragment() {
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
+    }
+
+
+    var LoadingSub: Disposable? = null
+    private fun pushToLoadingDialog(truck: TruckModel) {
+        LoadingSub?.dispose()
+        LoadingSub = null
+
+
+        val toLoadingDialog = TimeDialogFragment("Enter Loading Time", truck)
+        expireSub = toLoadingDialog.timeEvent.subscribe { results ->
+
+            queuedViewModel.pushToLoading(results.truck.Id!!, results.minutes.toLong())
+                .observe(this, Observer { state ->
+                    if (!state.isSuccessful) {
+                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+                        Timber.e(state.error())
+                    }
+                })
+        }
+
+        toLoadingDialog.show(fragmentManager!!, _TAG)
+
     }
 
 }
