@@ -12,7 +12,7 @@ data class Stage(
 data class _User(
     var name: String?,
     var time: com.google.firebase.Timestamp?,
-    var uuid: Int?
+    var uid: String?
 ) {
     constructor() : this(null, null, null)
 }
