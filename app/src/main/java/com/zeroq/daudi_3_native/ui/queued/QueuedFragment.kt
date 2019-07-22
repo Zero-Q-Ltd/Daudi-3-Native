@@ -6,21 +6,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.QueuedTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
+import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
+import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_queued.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
 
 class QueuedFragment : BaseFragment() {
 
     private lateinit var adapter: QueuedTrucksAdapter
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private var _TAG: String = "QueuedFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,11 +61,46 @@ class QueuedFragment : BaseFragment() {
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+        consumeEvents()
     }
 
     override fun onStop() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
+        compositeDisposable.clear()
         super.onStop()
     }
+
+
+    private fun consumeEvents() {
+        val expireClick =
+            adapter.expireTvClick.observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    expireTimePicker(it.truck)
+                }
+
+
+        compositeDisposable.add(expireClick)
+    }
+
+
+    var expireSub: Disposable? = null
+
+    private fun expireTimePicker(truck: TruckModel) {
+        expireSub?.dispose()
+        expireSub = null
+
+        val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
+        expireSub = expireDialog.timeEvent.subscribe {
+//            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
+//                if (!state.isSuccessful) {
+//                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+//                    Timber.e(state.error())
+//                }
+//            })
+        }
+
+        expireDialog.show(fragmentManager!!, _TAG)
+    }
+
 
 }
