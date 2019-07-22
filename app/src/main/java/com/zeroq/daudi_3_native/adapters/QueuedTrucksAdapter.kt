@@ -101,7 +101,7 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
         /**
          * Times added
          * */
-        val timesAdded = truck.stagedata!!["1"]?.data?.expiry?.size.toString()
+        val timesAdded = truck.stagedata!!["2"]?.data?.expiry?.size.toString()
         holder.timesTruckAddedView?.text = "Times Added [$timesAdded]"
 
 
