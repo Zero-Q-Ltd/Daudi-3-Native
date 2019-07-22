@@ -7,6 +7,7 @@ import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.ui.printing.PrintingViewModel
 import com.zeroq.daudi_3_native.ui.processing.ProcessingViewModel
+import com.zeroq.daudi_3_native.ui.queued.QueuedViewModel
 import com.zeroq.daudi_3_native.ui.splash.SplashViewModel
 import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailViewModel
 import com.zeroq.daudi_3_native.viewmodel.DaudiViewModelFactory
@@ -53,6 +54,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PrintingViewModel::class)
     abstract fun bindPrintingViewModel(printingViewModel: PrintingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QueuedViewModel::class)
+    abstract fun bindQueuedViewModel(queuedViewModel: QueuedViewModel): ViewModel
 
 
     @Binds

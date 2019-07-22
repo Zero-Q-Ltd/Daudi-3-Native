@@ -12,10 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -27,6 +29,10 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
 
     private val trucksList = ArrayList<TruckModel>()
     private lateinit var context: Context
+
+
+    var expireTvClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyClick = PublishSubject.create<RecyclerTruckEvent>()
 
 
     fun replaceTrucks(trucks: List<TruckModel>) {
@@ -95,43 +101,37 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
         /**
          * Times added
          * */
-        holder.timesTruckAddedView?.setOnClickListener {
-            holder.truckAddedSubscription?.dispose()
-            holder.truckAddedSubscription = null
+        val timesAdded = truck.stagedata!!["2"]?.data?.expiry?.size.toString()
+        holder.timesTruckAddedView?.text = "Times Added [$timesAdded]"
 
-
-            holder.timesTruckAddedView?.text = truck.stagedata!!["2"]?.data?.expiry?.size.toString()
-
-            holder.truckAddedSubscription = Observable.timer(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    holder.timesTruckAddedView?.text = "Times Added"
-                }
-        }
 
         /**
          * trucks ahead
          * */
 
-        holder.trucksAheadView?.setOnClickListener {
-            val trucksAhead: Int = trucksList.slice(0 until position).size
-            holder.trucksAheadView?.text = trucksAhead.toString()
+        val trucksAhead: Int = trucksList.slice(0 until position).size
+        holder.trucksAheadView?.text = "Trucks Ahead [$trucksAhead]"
 
-            holder.truckaheadSubscription?.dispose()
-            holder.truckaheadSubscription = null
 
-            holder.truckaheadSubscription =
-                Observable.timer(2, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        holder.trucksAheadView?.text = "Trucks Ahead"
-                    }
+        /**
+         * expire click event
+         * */
+        holder.expireTruckIndicator?.setOnClickListener {
+            expireTvClick.onNext(RecyclerTruckEvent(position, truck))
+        }
+
+        /**
+         * body click
+         * */
+        holder.cardBody?.setOnClickListener {
+            cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
         }
     }
 
 
     class TruckViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        var cardBody: LinearLayout? = null
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
@@ -184,6 +184,8 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
 
 
         init {
+
+            cardBody = v.findViewById(R.id.card_body)
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)
