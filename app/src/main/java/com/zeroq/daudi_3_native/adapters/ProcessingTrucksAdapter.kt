@@ -62,7 +62,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
     override fun getItemCount() = trucksList.size
 
     override fun onBindViewHolder(holder: TruckViewHolder, position: Int) {
-        var truck = trucksList[position]
+        val truck = trucksList[position]
         holder.bindPhoto(truck, context)
 
         if (holder.timerSubscription != null) {
@@ -71,7 +71,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         }
 
         // set timer
-        var stageTime = truck.stagedata!!["1"]?.data?.expiry!![0].timestamp!!.time
+        val stageTime = truck.stagedata!!["1"]?.data?.expiry!![0].timestamp!!.time
         val currentTime = Calendar.getInstance().time.time
 
         val diffTime = floor(stageTime.minus(currentTime).toDouble() / 1000).toLong()
@@ -90,7 +90,6 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                     .subscribe({
                         if (it > 0) {
                             holder.expireTruckIndicator?.text =
-//                                DateUtils.formatElapsedTime(it).format("HH:mm:ss")
                                 MyTimeUtils.formatElapsedTime(it * 1000)
                         } else {
                             holder.expireTruckIndicator?.text = "Expired"
@@ -196,8 +195,6 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
          * timerSubscription for timer
          * */
         var timerSubscription: Disposable? = null
-        var truckaheadSubscription: Disposable? = null
-        var truckAddedSubscription: Disposable? = null
 
 
         init {

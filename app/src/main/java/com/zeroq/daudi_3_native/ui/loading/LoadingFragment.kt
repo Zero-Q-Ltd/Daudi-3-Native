@@ -7,22 +7,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.LoadingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
+import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
+import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_loading.*
 import kotlinx.android.synthetic.main.fragment_processing.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
 
 class LoadingFragment : BaseFragment() {
 
 
     private lateinit var adapter: LoadingTrucksAdapter
+    private var _TAG: String = "LoadingFragment"
+
+    lateinit var viewModel: LoadingViewModel
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +46,8 @@ class LoadingFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = getViewModel(LoadingViewModel::class.java)
+
         initRecyclerView()
     }
 
@@ -53,10 +67,48 @@ class LoadingFragment : BaseFragment() {
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
+        consumeEvents()
     }
 
     override fun onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop()
+    }
+
+
+    private fun consumeEvents() {
+        val clickSub: Disposable = adapter.expireTvClick
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                expireTimePicker(it.truck)
+            }
+
+        val cardBodyClick: Disposable = adapter.cardBodyClick
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                // TODO: when clicked
+            }
+
+        compositeDisposable.add(clickSub)
+        compositeDisposable.add(cardBodyClick)
+    }
+
+    var expireSub: Disposable? = null
+    private fun expireTimePicker(truck: TruckModel) {
+        expireSub?.dispose()
+        expireSub = null
+
+        val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
+        expireSub = expireDialog.timeEvent.subscribe {
+            //            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
+//                if (!state.isSuccessful) {
+//                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+//                    Timber.e(state.error())
+//                }
+//            })
+        }
+
+        expireDialog.show(fragmentManager!!, _TAG)
     }
 }
