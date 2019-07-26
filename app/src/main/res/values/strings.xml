@@ -9,4 +9,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="strLang">en</string>
+    <string name="actual_pms_amount_loaded">Actual (PMS) Amount Loaded</string>
+    <string name="actual_ago_amount_loaded">Actual (AGO) Amount Loaded</string>
+    <string name="actual_ik_amount_loaded">Actual (IK) Amount Loaded</string>
+    <string name="provide_seal_number_range">Provide Seal Number Range</string>
+    <string name="provide_broken_seals">Provide Broken Seals</string>
+    <string name="delivery_note_number">Delivery Note Number</string>
 </resources>
