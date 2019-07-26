@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.ui.dialogs.data.TimeDialogEvent
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_time_dialog.*
 
@@ -85,7 +86,12 @@ class TimeDialogFragment(var title: String, var truck: TruckModel) : DialogFragm
                 Toast.makeText(activity, "you need to add time", Toast.LENGTH_SHORT).show()
             } else {
                 val hourIntoMin = _hours * 60
-                timeEvent.onNext(TimeDialogEvent((hourIntoMin + _minutes), truck))
+                timeEvent.onNext(
+                    TimeDialogEvent(
+                        (hourIntoMin + _minutes),
+                        truck
+                    )
+                )
                 dismiss()
             }
         }

@@ -1,4 +1,4 @@
-package com.zeroq.daudi_3_native.ui.dialogs
+package com.zeroq.daudi_3_native.ui.dialogs.data
 
 import com.zeroq.daudi_3_native.data.models.TruckModel
 

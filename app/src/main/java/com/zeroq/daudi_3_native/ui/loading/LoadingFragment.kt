@@ -15,6 +15,7 @@ import com.zeroq.daudi_3_native.adapters.LoadingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
+import com.zeroq.daudi_3_native.ui.dialogs.LoadingDialogFragment
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -96,7 +97,7 @@ class LoadingFragment : BaseFragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                // TODO: when clicked
+                sealForm(it.truck)
             }
 
         compositeDisposable.add(clickSub)
@@ -124,5 +125,18 @@ class LoadingFragment : BaseFragment() {
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
+    }
+
+    var sealSub: Disposable? = null
+    private fun sealForm(truck: TruckModel) {
+        sealSub?.dispose()
+        sealSub = null
+
+        val sealDialog = LoadingDialogFragment(truck)
+        sealSub = sealDialog.loadingEvent.subscribe {
+
+        }
+
+        sealDialog.show(fragmentManager!!, _TAG)
     }
 }
