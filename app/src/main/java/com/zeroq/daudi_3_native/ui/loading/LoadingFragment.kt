@@ -48,6 +48,15 @@ class LoadingFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = getViewModel(LoadingViewModel::class.java)
 
+        viewModel.getUser().observe(this, Observer {
+            if (it.isSuccessful) {
+                val user = it.data()
+                viewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+            } else {
+                Timber.e(it.error()!!)
+            }
+        })
+
         initRecyclerView()
     }
 
@@ -101,12 +110,17 @@ class LoadingFragment : BaseFragment() {
 
         val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
         expireSub = expireDialog.timeEvent.subscribe {
-            //            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
-//                if (!state.isSuccessful) {
-//                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
-//                    Timber.e(state.error())
-//                }
-//            })
+            viewModel.updateExpire(it.truck.Id!!, it.minutes.toLong())
+                .observe(this, Observer { result ->
+                    if (!result.isSuccessful) {
+                        Toast.makeText(
+                            activity,
+                            "Error occurred when adding expire", Toast.LENGTH_SHORT
+                        ).show()
+
+                        Timber.e(result.error())
+                    }
+                })
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
