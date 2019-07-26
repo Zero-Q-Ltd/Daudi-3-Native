@@ -101,12 +101,7 @@ class LoadingFragment : BaseFragment() {
 
         val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
         expireSub = expireDialog.timeEvent.subscribe {
-            //            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
-//                if (!state.isSuccessful) {
-//                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
-//                    Timber.e(state.error())
-//                }
-//            })
+            // TODO: when minutes returns
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
