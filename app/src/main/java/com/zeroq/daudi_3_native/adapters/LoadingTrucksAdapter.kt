@@ -12,10 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
+import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +30,9 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
 
     private val trucksList = ArrayList<TruckModel>()
     private lateinit var context: Context
+
+    var expireTvClick = PublishSubject.create<RecyclerTruckEvent>()
+    var cardBodyClick = PublishSubject.create<RecyclerTruckEvent>()
 
 
     fun replaceTrucks(trucks: List<TruckModel>) {
@@ -51,7 +56,7 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
     override fun getItemCount() = trucksList.size
 
     override fun onBindViewHolder(holder: TruckViewHolder, position: Int) {
-        var truck = trucksList[position]
+        val truck = trucksList[position]
         holder.bindPhoto(truck, context)
 
         if (holder.timerSubscription != null) {
@@ -60,7 +65,7 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
         }
 
         // set timer
-        var stageTime = truck.stagedata!!["3"]?.data?.expiry!![0].timestamp!!.time
+        val stageTime = truck.stagedata!!["3"]?.data?.expiry!![0].timestamp!!.time
         val currentTime = Calendar.getInstance().time.time
 
         val diffTime = floor(stageTime.minus(currentTime).toDouble() / 1000).toLong()
@@ -96,38 +101,28 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
         /**
          * Times added
          * */
-        holder.timesTruckAddedView?.setOnClickListener {
-            holder.truckAddedSubscription?.dispose()
-            holder.truckAddedSubscription = null
+        val timesAdded = truck.stagedata!!["3"]?.data?.expiry?.size.toString()
+        holder.timesTruckAddedView?.text = "Times Added [$timesAdded]"
 
-
-            holder.timesTruckAddedView?.text = truck.stagedata!!["3"]?.data?.expiry?.size.toString()
-
-            holder.truckAddedSubscription = Observable.timer(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    holder.timesTruckAddedView?.text = "Times Added"
-                }
-        }
 
         /**
          * trucks ahead
          * */
+        val trucksAhead: Int = trucksList.slice(0 until position).size
+        holder.trucksAheadView?.text = "Trucks Ahead [$trucksAhead]"
 
-        holder.trucksAheadView?.setOnClickListener {
-            val trucksAhead: Int = trucksList.slice(0 until position).size
-            holder.trucksAheadView?.text = trucksAhead.toString()
+        /**
+         * expire click event
+         * */
+        holder.expireTruckIndicator?.setOnClickListener {
+            expireTvClick.onNext(RecyclerTruckEvent(position, truck))
+        }
 
-            holder.truckaheadSubscription?.dispose()
-            holder.truckaheadSubscription = null
-
-            holder.truckaheadSubscription =
-                Observable.timer(2, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        holder.trucksAheadView?.text = "Trucks Ahead"
-                    }
+        /**
+         * body click
+         * */
+        holder.cardBody?.setOnClickListener {
+            cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
         }
     }
 
@@ -136,6 +131,8 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
+
+        var cardBody: LinearLayout? = null
 
         private var _companyName: TextView? = null
         private var _driverName: TextView? = null
@@ -180,14 +177,14 @@ class LoadingTrucksAdapter : RecyclerView.Adapter<LoadingTrucksAdapter.TruckView
          * timerSubscription for timer
          * */
         var timerSubscription: Disposable? = null
-        var truckaheadSubscription: Disposable? = null
-        var truckAddedSubscription: Disposable? = null
 
 
         init {
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)
+
+            cardBody = v.findViewById(R.id.card_body)
 
             _companyName = v.findViewById(R.id.tv_company)
             _driverName = v.findViewById(R.id.tv_driver)
