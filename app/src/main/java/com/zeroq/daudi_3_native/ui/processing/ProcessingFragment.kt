@@ -89,7 +89,6 @@ class ProcessingFragment : BaseFragment() {
 
 
         val cardBodyClick: Disposable = adapter.cardBodyClick
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 val printed = it?.truck?.isprinted

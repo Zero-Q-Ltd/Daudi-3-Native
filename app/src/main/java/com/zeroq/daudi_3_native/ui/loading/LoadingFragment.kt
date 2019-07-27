@@ -94,7 +94,6 @@ class LoadingFragment : BaseFragment() {
             }
 
         val cardBodyClick: Disposable = adapter.cardBodyClick
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 sealForm(it.truck)

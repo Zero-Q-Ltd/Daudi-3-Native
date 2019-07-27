@@ -13,7 +13,7 @@
               android:layout_gravity="center"
               android:textAppearance="?attr/textAppearanceHeadline6"/>
 
-    <TextView android:id="@+id/tv_truck_id"
+    <TextView android:id="@+id/tv_loading_truck_id"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               tools:text="Truck MK039"
@@ -39,10 +39,10 @@
                           android:orientation="vertical">
 
                 <EditText
-                        android:layout_marginTop="16dp"
                         android:id="@+id/et_pms_actual"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:fontFamily="sans-serif-condensed"
                         android:hint="@string/actual_pms_amount_loaded"
                         android:inputType="number"
@@ -123,18 +123,18 @@
                       android:layout_alignParentEnd="true">
 
             <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/tv_loading_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="cancel"
+                    android:text="@string/cancel"
                     style="?android:attr/borderlessButtonStyle"
-                    android:textColor="@color/pms"
-                    android:id="@+id/tv_cancel"/>
+                    android:textColor="@color/pms"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/tv_set"
+                    android:id="@+id/tv_loading_submit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SUBMIT"
+                    android:text="@string/submit"
                     android:textColor="@color/colorPrimary"
                     style="?android:attr/borderlessButtonStyle"/>
 
