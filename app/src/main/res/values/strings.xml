@@ -15,4 +15,6 @@
     <string name="provide_seal_number_range">Provide Seal Number Range</string>
     <string name="provide_broken_seals">Provide Broken Seals</string>
     <string name="delivery_note_number">Delivery Note Number</string>
+    <string name="cancel">cancel</string>
+    <string name="submit">SUBMIT</string>
 </resources>

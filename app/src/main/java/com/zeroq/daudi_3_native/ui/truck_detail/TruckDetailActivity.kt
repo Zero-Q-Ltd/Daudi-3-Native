@@ -535,7 +535,7 @@ class TruckDetailActivity : BaseActivity() {
 
         try {
             out = FileOutputStream(image)
-            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out!!) // bmp is your Bitmap instance
+            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out) // bmp is your Bitmap instance
             return true
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (e: Exception) {
