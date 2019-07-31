@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.ui.loading
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.LoadingDialogFragment
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
+import com.zeroq.daudi_3_native.ui.loading_order.LoadingOrderActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -134,7 +136,7 @@ class LoadingFragment : BaseFragment() {
 
                 viewModel.updateSeals(truck.Id!!, it).observe(this, Observer { result ->
                     if (result.isSuccessful) {
-                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                        startLoadingOrderActivity(truck.Id!!)
                     } else {
                         Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
                         Timber.e(result.error())
@@ -144,7 +146,16 @@ class LoadingFragment : BaseFragment() {
 
             sealDialog.show(fragmentManager!!, _TAG)
         } else {
-            Toast.makeText(activity, "Teleport to next activity", Toast.LENGTH_SHORT).show()
+            startLoadingOrderActivity(truck.Id!!)
         }
+    }
+
+
+    private fun startLoadingOrderActivity(idTruck: String) {
+        val intent = Intent(activity, LoadingOrderActivity::class.java)
+        intent.putExtra("IDTRUCK", idTruck)
+
+        startActivity(intent)
+
     }
 }
