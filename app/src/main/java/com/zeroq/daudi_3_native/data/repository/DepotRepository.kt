@@ -6,10 +6,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.zeroq.daudi_3_native.data.models.Compartment
-import com.zeroq.daudi_3_native.data.models.Expiry
-import com.zeroq.daudi_3_native.data.models.TruckModel
-import com.zeroq.daudi_3_native.data.models._User
+import com.zeroq.daudi_3_native.data.models.*
+import com.zeroq.daudi_3_native.ui.dialogs.data.LoadingDialogEvent
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.DocumentLiveData
@@ -19,7 +17,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.collections.ArrayList
-import kotlin.math.min
 
 class DepotRepository
 @Inject constructor(@Named("depots") val depots: CollectionReference, val firestore: FirebaseFirestore) {
@@ -395,6 +392,114 @@ class DepotRepository
             return@runTransaction null
 
         }
-
     }
+
+    /**
+     * update seals and actual fuels
+     * */
+    fun updateSeal(
+        depotId: String, idTruck: String, loadingEvent: LoadingDialogEvent, firebaseUser: FirebaseUser
+    ): CompletionLiveData {
+        val completion = CompletionLiveData()
+        updateSealTask(depotId, idTruck, loadingEvent, firebaseUser).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    private fun updateSealTask(
+        depotId: String, idTruck: String, loadingEvent: LoadingDialogEvent, firebaseUser: FirebaseUser
+    ): Task<Void> {
+        val truckRef =
+            depots.document(depotId)
+                .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+
+            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
+
+            /**
+             * let get other elements
+             *
+             * 1. update truck.fuel.FUELtTYPE.batches["0|1"].
+             * */
+            val fuels = listOf(
+                Triple("pms", truck?.fuel?.ago, loadingEvent.pmsLoaded),
+                Triple("ago", truck?.fuel?.ago, loadingEvent.agoLoaded),
+                Triple("ik", truck?.fuel?.ik, loadingEvent.ikLoaded)
+            )
+
+            truck?.fuel?.ago?.batches?.get("0")
+
+            val updateFuelBatch: ArrayList<Pair<String, Int>> = ArrayList()
+
+            fuels.forEach { triple ->
+                val bQuantity = triple.second?.qty
+                if (bQuantity != null && bQuantity > 0) {
+                    val fuelId = mutateFuelObservered(triple.second!!, triple.third!!)
+
+                    val obLost = bQuantity.minus(triple.third!!)
+
+                    updateFuelBatch.add(Pair(fuelId, obLost))
+                }
+            }
+
+            // update fuel
+            transaction.update(truckRef, "fuel", truck?.fuel)
+
+            // update fuel batch
+            updateFuelBatch.forEach { pair ->
+                val fuelBatchRef = depots.document(depotId)
+                    .collection("batches")
+                    .document(pair.first)
+
+                val batchModel = transaction.get(fuelBatchRef).toObject(BatchModel::class.java)
+
+                val commulateTotalNumber = batchModel?.accumulated?.total!!.plus(pair.second)
+                val commulateUsableNumber = batchModel.accumulated?.usable!!.plus(pair.second)
+
+                batchModel.status = 1
+                batchModel.accumulated?.total = commulateTotalNumber
+                batchModel.accumulated?.usable = commulateUsableNumber
+
+                transaction.update(fuelBatchRef, "status", batchModel.status)
+                transaction.update(fuelBatchRef, "accumulated", batchModel.accumulated)
+            }
+
+
+            /*
+            * update seals
+            * */
+            val sealsTemp: Seals = Seals(
+                loadingEvent.sealRange,
+                ArrayList(loadingEvent.brokenSeal?.split("-"))
+            )
+
+            transaction.update(truckRef, "stagedata.4.data.seals", sealsTemp)
+
+            /**
+             * update delivery note number
+             * */
+            transaction.update(truckRef, "stagedata.4.data.deliveryNote", loadingEvent.DeliveryNumber)
+
+            // update user
+            val user = _User(firebaseUser.displayName, Timestamp.now(), firebaseUser.uid)
+            transaction.update(truckRef, "stagedata.4.user", user)
+
+            return@runTransaction null
+        }
+    }
+
+    private fun mutateFuelObservered(fuel: Batches, observed: Int): String {
+        return if (fuel.batches?.get("1")?.qty != null) {
+            fuel.batches?.get("1")?.observed = observed
+
+            fuel.batches?.get("1")?.Id!!
+        } else {
+            fuel.batches?.get("0")?.observed = observed
+
+            fuel.batches?.get("0")?.Id!!
+        }
+    }
+
+
 }

@@ -2,14 +2,12 @@ package com.zeroq.daudi_3_native.ui.loading
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.LoadingTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
@@ -20,9 +18,7 @@ import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_loading.*
-import kotlinx.android.synthetic.main.fragment_processing.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -133,7 +129,9 @@ class LoadingFragment : BaseFragment() {
 
         val sealDialog = LoadingDialogFragment(truck)
         sealSub = sealDialog.loadingEvent.subscribe {
+            sealDialog.dismiss() // hide dialog
 
+            Timber.d(it.toString())
         }
 
         sealDialog.show(fragmentManager!!, _TAG)
