@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zeroq.daudi_3_native.di.qualifires.ViewModelKey
 import com.zeroq.daudi_3_native.ui.loading.LoadingViewModel
+import com.zeroq.daudi_3_native.ui.loading_order.LoadingOrderViewModel
 import com.zeroq.daudi_3_native.ui.login.LoginViewModel
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.ui.printing.PrintingViewModel
@@ -65,6 +66,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoadingViewModel::class)
     abstract fun bindLoadingViewModel(loadingViewModel: LoadingViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoadingOrderViewModel::class)
+    abstract fun bindLoadingOrderViewModel(loadingOrderViewModel: LoadingOrderViewModel): ViewModel
 
 
     @Binds
