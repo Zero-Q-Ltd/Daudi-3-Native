@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.data.repository.DepotRepository
+import com.zeroq.daudi_3_native.ui.dialogs.data.LoadingDialogEvent
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.Resource
 import javax.inject.Inject
@@ -40,5 +40,13 @@ class LoadingViewModel @Inject constructor(
 
     fun updateExpire(idTruck: String, minutes: Long): CompletionLiveData {
         return depotRepository.updateLoadingExpire(_depotId.value!!, idTruck, minutes)
+    }
+
+    fun updateSeals(idTruck: String, loadingEvent: LoadingDialogEvent)
+            : CompletionLiveData {
+        return depotRepository.updateSeal(
+            _depotId.value!!,
+            idTruck, loadingEvent, firebaseAuth.currentUser!!
+        )
     }
 }
