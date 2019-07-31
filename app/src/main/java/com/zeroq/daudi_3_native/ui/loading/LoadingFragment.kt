@@ -127,13 +127,24 @@ class LoadingFragment : BaseFragment() {
         sealSub?.dispose()
         sealSub = null
 
-        val sealDialog = LoadingDialogFragment(truck)
-        sealSub = sealDialog.loadingEvent.subscribe {
-            sealDialog.dismiss() // hide dialog
+        if (truck?.stagedata?.get("4")?.data == null) {
+            val sealDialog = LoadingDialogFragment(truck)
+            sealSub = sealDialog.loadingEvent.subscribe {
+                sealDialog.dismiss() // hide dialog
 
-            Timber.d(it.toString())
+                viewModel.updateSeals(truck.Id!!, it).observe(this, Observer { result ->
+                    if (result.isSuccessful) {
+                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                        Timber.e(result.error())
+                    }
+                })
+            }
+
+            sealDialog.show(fragmentManager!!, _TAG)
+        } else {
+            Toast.makeText(activity, "Teleport to next activity", Toast.LENGTH_SHORT).show()
         }
-
-        sealDialog.show(fragmentManager!!, _TAG)
     }
 }
