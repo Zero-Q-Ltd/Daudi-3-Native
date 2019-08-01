@@ -16,7 +16,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="16dp">
+                android:layout_margin="10dp"
+                android:padding="6dp">
 
             <TextView android:id="@+id/tv_today_date"
                       android:layout_width="wrap_content"
@@ -62,7 +63,7 @@
                       app:layout_constraintLeft_toLeftOf="parent"
                       app:layout_constraintRight_toRightOf="parent"
                       android:layout_marginTop="5dp"
-                      android:text="MK0390"/>
+                      tools:text="MK0390"/>
 
             <TextView android:id="@+id/tv_depot_name"
                       android:layout_width="wrap_content"
@@ -97,7 +98,7 @@
                     android:id="@+id/tv_driver_value"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="OMONDI KIRUI"
+                    tools:text="OMONDI KIRUI"
                     app:layout_constraintTop_toBottomOf="@id/tv_driver"
                     app:layout_constraintStart_toStartOf="@id/barrier"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_driver"
@@ -119,7 +120,7 @@
                     android:id="@+id/tv_driver_passport_value"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="293043473"
+                    tools:text="293043473"
                     app:layout_constraintTop_toBottomOf="@id/tv_driver_value"
                     app:layout_constraintStart_toStartOf="@id/barrier"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_driver_passport"
@@ -141,7 +142,7 @@
                     android:id="@+id/tv_number_plate_value"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="KCC 200Y"
+                    tools:text="KCC 200Y"
                     app:layout_constraintTop_toBottomOf="@id/tv_driver_passport_value"
                     app:layout_constraintStart_toStartOf="@id/barrier"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_number_plate"
@@ -163,7 +164,7 @@
                     android:id="@+id/tv_organisation_value"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="MAFUKO MERU"
+                    tools:text="MAFUKO MERU"
                     app:layout_constraintTop_toBottomOf="@id/tv_number_plate_value"
                     app:layout_constraintStart_toStartOf="@id/barrier"
                     app:layout_constraintBaseline_toBaselineOf="@+id/tv_organisation"
@@ -389,8 +390,8 @@
                       app:layout_constraintTop_toBottomOf="@id/tv_ik"
                       app:layout_constraintLeft_toLeftOf="parent"
                       app:layout_constraintRight_toRightOf="parent"
-                      android:layout_marginTop="16dp"
-                      android:layout_marginBottom="16dp"
+                      android:layout_marginTop="32dp"
+                      android:layout_marginBottom="24dp"
                       android:gravity="center"/>
 
 
@@ -402,19 +403,34 @@
                       app:layout_constraintTop_toBottomOf="@id/tv_please"
                       app:layout_constraintLeft_toLeftOf="parent"
                       app:layout_constraintRight_toRightOf="parent"
-                      android:layout_marginTop="16dp"
-                      android:layout_marginBottom="16dp"/>
+                      android:layout_marginTop="24dp"
+                      android:layout_marginBottom="24dp"/>
 
 
             <ImageView android:id="@+id/iv_qr"
-                       android:layout_width="120dp"
-                       android:layout_height="120dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
                        app:layout_constraintTop_toBottomOf="@id/tv_signature"
                        app:layout_constraintLeft_toLeftOf="parent"
                        app:layout_constraintRight_toRightOf="parent"
                        android:layout_marginTop="16dp"
-                       android:layout_marginBottom="16dp"
-                       android:src="@drawable/place_holder"/>
+                       android:layout_marginBottom="16dp"/>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnPrint"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_qr"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/white"
+                    android:text="print"
+                    android:backgroundTint="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

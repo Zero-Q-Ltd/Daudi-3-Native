@@ -153,7 +153,7 @@ class LoadingFragment : BaseFragment() {
 
     private fun startLoadingOrderActivity(idTruck: String) {
         val intent = Intent(activity, LoadingOrderActivity::class.java)
-        intent.putExtra("IDTRUCK", idTruck)
+        intent.putExtra(LoadingOrderActivity.ID_TRUCK_EXTRA, idTruck)
 
         startActivity(intent)
 
