@@ -502,4 +502,39 @@ class DepotRepository
     }
 
 
+    // update seals only
+    private fun updateSealInfo(
+        depotId: String, idTruck: String, sealRange: String, brokenSeals: String, delivery: String
+    ): CompletionLiveData {
+        val completion = CompletionLiveData()
+        updateSealInfoTask(depotId, idTruck, sealRange, brokenSeals, delivery).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+
+    private fun updateSealInfoTask(
+        depotId: String, idTruck: String, sealRange: String, brokenSeals: String,
+        delivery: String
+    ): Task<Void> {
+        val truckRef =
+            depots.document(depotId)
+                .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
+
+            val sealsTemp: Seals = Seals(
+                sealRange,
+                ArrayList(brokenSeals?.split("-"))
+            )
+
+            transaction.update(truckRef, "stagedata.4.data.seals", sealsTemp)
+            transaction.update(truckRef, "stagedata.4.data.deliveryNote", delivery)
+
+
+            return@runTransaction null
+        }
+    }
+
 }
