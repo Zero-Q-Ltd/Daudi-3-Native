@@ -3,13 +3,19 @@ package com.zeroq.daudi_3_native.ui.loading_order
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Depot
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
+import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import kotlinx.android.synthetic.main.activity_loading_order.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -28,6 +34,7 @@ class LoadingOrderActivity : BaseActivity() {
     lateinit var imageUtil: ImageUtil
 
     lateinit var _user: UserModel
+    lateinit var liveTruck: TruckModel
 
     companion object {
         const val ID_TRUCK_EXTRA = "IDTRUCK"
@@ -57,6 +64,7 @@ class LoadingOrderActivity : BaseActivity() {
         supportActionBar?.title = "GatePass"
     }
 
+    lateinit var inputs: List<EditText>
     private fun logic() {
 
         viewModel.getUser().observe(this, Observer {
@@ -68,7 +76,7 @@ class LoadingOrderActivity : BaseActivity() {
             }
         })
 
-        val inputs = listOf(et_seal, et_broken_seals, et_delivery_note)
+        inputs = listOf(et_seal, et_broken_seals, et_delivery_note)
 
         inputs.forEach { et ->
             et.addTextChangedListener(object : TextWatcher {
@@ -90,7 +98,9 @@ class LoadingOrderActivity : BaseActivity() {
 
         viewModel.getTruck().observe(this, Observer {
             if (it.isSuccessful) {
+                liveTruck = it.data()!!
                 initialTruckValues(it.data()!!)
+
             } else {
                 Timber.e(it.error()!!)
             }
@@ -143,6 +153,82 @@ class LoadingOrderActivity : BaseActivity() {
         })
 
         thread.start()
+
+        btnPrint.setOnClickListener {
+            if (!validateErrors()) {
+                submit()
+            }
+        }
     }
 
+    private fun validateErrors(): Boolean {
+        var hasErrors = false
+
+        inputs.forEach {
+            if (it.text.isNullOrEmpty()) {
+                it.error = "This field can't be empty"
+                hasErrors = true
+            }
+        }
+
+        return hasErrors
+    }
+
+
+    private fun submit() {
+        viewModel.updateSeals(
+            et_seal.text.toString(), et_broken_seals.text.toString(),
+            et_delivery_note.text.toString()
+        ).observe(this, Observer {
+            if (it.isSuccessful) {
+                print()
+            } else {
+                Timber.e(it.error())
+            }
+        })
+    }
+
+
+    private fun print() {
+        disableInputs(layout_constraint, true)
+        hideButton(true)
+
+        if (imageUtil.takeandSaveScreenShot(content_scroll)) {
+            hideButton(false)
+            PrintingActivity.startPrintingActivity(
+                this,
+                _user.config?.depotdata?.depotid!!, liveTruck.Id!!
+            )
+
+        } else {
+            hideButton(false)
+            Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun disableInputs(layout: ViewGroup, disable: Boolean) {
+
+        layout.isEnabled = !disable
+
+        for (i in 0 until layout.childCount) {
+            val child: View = layout.getChildAt(i)
+
+            if (child is ViewGroup) {
+                disableInputs(child, disable)
+            } else {
+                if (child is EditText || child is AppCompatButton) {
+                    child.isEnabled = !disable
+                }
+            }
+        }
+    }
+
+    private fun hideButton(hide: Boolean) {
+        if (hide) {
+            btnPrint.visibility = View.GONE
+        } else {
+            btnPrint.visibility = View.VISIBLE
+        }
+    }
 }

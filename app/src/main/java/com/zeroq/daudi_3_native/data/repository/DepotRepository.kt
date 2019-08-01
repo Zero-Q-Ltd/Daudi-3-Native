@@ -503,7 +503,7 @@ class DepotRepository
 
 
     // update seals only
-    private fun updateSealInfo(
+    fun updateSealInfo(
         depotId: String, idTruck: String, sealRange: String, brokenSeals: String, delivery: String
     ): CompletionLiveData {
         val completion = CompletionLiveData()

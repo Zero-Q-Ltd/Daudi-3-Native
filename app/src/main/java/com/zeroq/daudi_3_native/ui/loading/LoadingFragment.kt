@@ -80,6 +80,7 @@ class LoadingFragment : BaseFragment() {
 
     override fun onStop() {
         EventBus.getDefault().unregister(this);
+        compositeDisposable.clear()
         super.onStop()
     }
 
@@ -91,8 +92,8 @@ class LoadingFragment : BaseFragment() {
                 expireTimePicker(it.truck)
             }
 
+
         val cardBodyClick: Disposable = adapter.cardBodyClick
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 sealForm(it.truck)
             }
@@ -129,10 +130,12 @@ class LoadingFragment : BaseFragment() {
         sealSub?.dispose()
         sealSub = null
 
+
         if (truck?.stagedata?.get("4")?.data == null) {
             val sealDialog = LoadingDialogFragment(truck)
             sealSub = sealDialog.loadingEvent.subscribe {
                 sealDialog.dismiss() // hide dialog
+
 
                 viewModel.updateSeals(truck.Id!!, it).observe(this, Observer { result ->
                     if (result.isSuccessful) {
@@ -142,6 +145,7 @@ class LoadingFragment : BaseFragment() {
                         Timber.e(result.error())
                     }
                 })
+
             }
 
             sealDialog.show(fragmentManager!!, _TAG)

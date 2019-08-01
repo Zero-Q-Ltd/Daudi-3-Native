@@ -9,6 +9,7 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.data.repository.DepotRepository
+import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.Resource
 import com.zeroq.daudi_3_native.vo.combineLatest
 import javax.inject.Inject
@@ -55,6 +56,16 @@ class LoadingOrderViewModel @Inject constructor(
 
     fun getTruck(): LiveData<Resource<TruckModel>> {
         return _truck
+    }
+
+    fun updateSeals(
+        sealRange: String, brokenSeals: String, delivery: String
+    ): CompletionLiveData {
+        return depotRepository.updateSealInfo(
+            _depotId.value!!,
+            _truckId.value!!,
+            sealRange, brokenSeals, delivery
+        )
     }
 
 }
