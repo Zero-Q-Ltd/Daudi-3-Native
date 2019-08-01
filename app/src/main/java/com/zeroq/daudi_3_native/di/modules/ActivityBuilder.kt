@@ -4,6 +4,7 @@ import com.zeroq.daudi_3_native.di.fragment_modules.FragmentMainModules
 import com.zeroq.daudi_3_native.ui.MainActivity
 import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
 import com.zeroq.daudi_3_native.ui.device_list.DeviceListActivity
+import com.zeroq.daudi_3_native.ui.loading_order.LoadingOrderActivity
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
 import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
 import com.zeroq.daudi_3_native.ui.splash.SplashActivity
@@ -34,6 +35,9 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector
     internal abstract fun bindTruckDetailActivity(): TruckDetailActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindLoadingOrderActivity(): LoadingOrderActivity
 
 
     @ContributesAndroidInjector
