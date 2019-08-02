@@ -9,8 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.os.Message
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -35,6 +33,7 @@ class PrintingActivity : BaseActivity() {
 
     private lateinit var depotId: String
     private lateinit var idTruck: String
+    private lateinit var stage: String
 
 
     companion object {
@@ -42,10 +41,12 @@ class PrintingActivity : BaseActivity() {
         private const val REQUEST_CONNECT_DEVICE = 1
 
 
-        fun startPrintingActivity(context: Context, depotId: String, idTruck: String) {
+        fun startPrintingActivity(context: Context, depotId: String, idTruck: String, stage: String) {
             val intent = Intent(context, PrintingActivity::class.java)
             intent.putExtra("DEPOTID", depotId)
             intent.putExtra("IDTRUCK", idTruck)
+            intent.putExtra("STAGE", stage)
+
             context.startActivity(intent)
         }
     }
@@ -59,6 +60,7 @@ class PrintingActivity : BaseActivity() {
         if (intent.extras != null) {
             depotId = intent.getStringExtra("DEPOTID")
             idTruck = intent.getStringExtra("IDTRUCK")
+            stage = intent.getStringExtra("STAGE")
         }
 
 
