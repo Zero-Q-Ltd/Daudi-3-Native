@@ -17,6 +17,7 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailActivity
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -32,12 +33,16 @@ class ProcessingFragment : BaseFragment() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
 
+    @Inject
+    lateinit var activityUtil: ActivityUtil
+
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private lateinit var adapter: ProcessingTrucksAdapter
     private var _TAG: String = "ProcessingFragment"
 
     private lateinit var processingViewModel: ProcessingViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,26 +70,32 @@ class ProcessingFragment : BaseFragment() {
         * */
 
         initRecyclerView()
-        showProgress(true)
+        activityUtil.showProgress(spin_kit, true)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     fun onMessageEvent(event: ProcessingEvent) {
 
-        showProgress(false)
+        activityUtil.showProgress(spin_kit, false)
 
         if (event.error == null) {
 
             if (event.trucks.isNullOrEmpty()) {
-                showEmptyState(true, "No trucks are in Processing")
+                activityUtil.showTextViewState(
+                    empty_view, true, "No trucks are in Processing",
+                    resources.getColor(R.color.colorPrimaryText)
+                )
             } else {
-                showEmptyState(false, null)
-                adapter.replaceTrucks(event.trucks!!)
+                activityUtil.showTextViewState(
+                    empty_view, false, null, null
+                )
+                adapter.replaceTrucks(event.trucks)
             }
         } else {
-            showErrorState(
-                true, "Something went wrong please," +
-                        " close the application to see if the issue wll be solved"
+            activityUtil.showTextViewState(
+                empty_view, true,
+                "Something went wrong please, close the application to see if the issue wll be solved",
+                resources.getColor(R.color.pms)
             )
         }
     }
@@ -179,35 +190,5 @@ class ProcessingFragment : BaseFragment() {
         startActivity(intent)
         // animate
         activity!!.overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
-    }
-
-
-    private fun showEmptyState(show: Boolean, msg: String?) {
-        if (show) {
-            empty_view.setTextColor(resources.getColor(R.color.colorPrimaryText))
-            empty_view.visibility = View.VISIBLE
-            empty_view.text = msg
-        } else {
-            empty_view.visibility = View.GONE
-        }
-    }
-
-    private fun showErrorState(show: Boolean, msg: String?) {
-        if (show) {
-            empty_view.setTextColor(resources.getColor(R.color.pms))
-            empty_view.visibility = View.VISIBLE
-            empty_view.text = msg
-        } else {
-            empty_view.visibility = View.GONE
-        }
-    }
-
-
-    private fun showProgress(show: Boolean) {
-        if (show) {
-            spin_kit.visibility = View.VISIBLE
-        } else {
-            spin_kit.visibility = View.GONE
-        }
     }
 }

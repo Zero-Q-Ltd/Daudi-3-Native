@@ -14,12 +14,15 @@
     <color name="white">#FFFFFF</color>
 
     <color name="pms">#ff6347</color>
+
     <color name="ago">#ffc107</color>
     <color name="ik">#654321</color>
     <color name="empty_comp">#B2B2B2</color>
 
     <color name="grey_500">#9e9e9e</color>
     <color name="grey_700">#616161</color>
+
+    <color name="warning">#ff6347</color>
 
 
 </resources>
