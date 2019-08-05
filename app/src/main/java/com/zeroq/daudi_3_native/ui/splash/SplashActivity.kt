@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.ui.splash
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -12,6 +13,7 @@ import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.ui.MainActivity
 import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
+import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : BaseActivity() {
 
@@ -33,6 +35,7 @@ class SplashActivity : BaseActivity() {
         var signTrigger = false
         viewModel.isSignedIn().observe(this, Observer {
             signTrigger = !signTrigger
+            showProgress(false)
             if (signTrigger)
                 if (!it) {
                     LoginActivity.startActivity(this)
@@ -44,6 +47,7 @@ class SplashActivity : BaseActivity() {
         var adminTriggered: Boolean = false
         viewModel.getAdmin().observe(this, Observer {
             adminTriggered = !adminTriggered
+            showProgress(false)
             if (adminTriggered)
                 if (it.isSuccessful) {
                     MainActivity.startActivity(this)
@@ -78,5 +82,13 @@ class SplashActivity : BaseActivity() {
 
                 }
             }).check()
+    }
+
+    private fun showProgress(show: Boolean) {
+        if (show) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.GONE
+        }
     }
 }
