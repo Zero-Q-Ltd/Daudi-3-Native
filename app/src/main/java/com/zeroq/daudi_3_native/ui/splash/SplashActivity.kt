@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.ui.splash
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.lifecycle.Observer
 import com.karumi.dexter.Dexter
@@ -27,17 +28,24 @@ class SplashActivity : BaseActivity() {
 
         // get viewmodel
         viewModel = getViewModel(SplashViewModel::class.java)
+        showProgress(true)
 
-        operations()
+        /**
+         * delay for better transition
+         * */
+        Handler().postDelayed({
+            operations()
+        }, 1000)
+
     }
 
     private fun operations() {
         var signTrigger = false
         viewModel.isSignedIn().observe(this, Observer {
             signTrigger = !signTrigger
-            showProgress(false)
             if (signTrigger)
                 if (!it) {
+                    showProgress(false)
                     LoginActivity.startActivity(this)
                     this.finish()
                 }
@@ -47,6 +55,7 @@ class SplashActivity : BaseActivity() {
         var adminTriggered: Boolean = false
         viewModel.getAdmin().observe(this, Observer {
             adminTriggered = !adminTriggered
+
             showProgress(false)
             if (adminTriggered)
                 if (it.isSuccessful) {
