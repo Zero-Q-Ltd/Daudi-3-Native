@@ -1,13 +1,13 @@
 package com.zeroq.daudi_3_native.ui
 
 import android.content.Context
-import android.os.Bundle
-import com.zeroq.daudi_3_native.R
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.lifecycle.Observer
@@ -19,7 +19,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.firebase.auth.FirebaseAuth
+import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
@@ -27,6 +29,9 @@ import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
@@ -54,6 +59,8 @@ class MainActivity : BaseActivity() {
 
     lateinit var mainViewModel: MainViewModel
 
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     companion object {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, MainActivity::class.java))
@@ -72,7 +79,6 @@ class MainActivity : BaseActivity() {
             setupBottomNavigationBar()
 
         operations()
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
@@ -195,9 +201,9 @@ class MainActivity : BaseActivity() {
                 /*
                 * set the badges on navbar
                 * **/
-                if (processingL.size > 0) bottom_nav.showBadge(R.id.processing).number = processingL.size
-                if (queueingL.size > 0) bottom_nav.showBadge(R.id.queued).number = queueingL.size
-                if (loadingL.size > 0) bottom_nav.showBadge(R.id.loading).number = loadingL.size
+                if (processingL.size > 0) bottom_nav.getBadge(R.id.processing)?.number = processingL.size
+                if (queueingL.size > 0) bottom_nav.getBadge(R.id.queued)?.number = queueingL.size
+                if (loadingL.size > 0) bottom_nav.getBadge(R.id.loading)?.number = loadingL.size
 
             } else {
                 eventBus.postSticky(ProcessingEvent(null, it.error()))
@@ -214,5 +220,42 @@ class MainActivity : BaseActivity() {
     private fun sortStage(truck1: TruckModel, stage: String): Long {
         val exLength = truck1.stagedata!![stage]?.data?.expiry?.size!!.minus(1)
         return truck1.stagedata!![stage]?.data?.expiry!![exLength].timestamp!!.time
+    }
+
+
+    private fun showNetworkState(show: Boolean, msg: String?) {
+        if (show) {
+            internet_error.visibility = View.VISIBLE
+            state_message.text = msg
+        } else {
+            internet_error.visibility = View.GONE
+        }
+    }
+
+
+    private fun internetEvent() {
+        val net = ReactiveNetwork
+            .observeInternetConnectivity()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    showNetworkState(false, null)
+                } else {
+                    showNetworkState(true, "Please check your internet connection")
+                }
+            }
+
+        compositeDisposable.add(net)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        internetEvent()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        compositeDisposable.clear()
     }
 }
