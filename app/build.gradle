@@ -97,6 +97,9 @@ dependencies {
     // internet
     implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
+    // loading
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

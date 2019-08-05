@@ -20,7 +20,6 @@ import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_processing.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -66,11 +65,28 @@ class ProcessingFragment : BaseFragment() {
         * */
 
         initRecyclerView()
+        showProgress(true)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     fun onMessageEvent(event: ProcessingEvent) {
-        if (event.error == null) adapter.replaceTrucks(event.trucks!!)
+
+        showProgress(false)
+
+        if (event.error == null) {
+
+            if (event.trucks.isNullOrEmpty()) {
+                showEmptyState(true, "No trucks are in Processing")
+            } else {
+                showEmptyState(false, null)
+                adapter.replaceTrucks(event.trucks!!)
+            }
+        } else {
+            showErrorState(
+                true, "Something went wrong please," +
+                        " close the application to see if the issue wll be solved"
+            )
+        }
     }
 
     private fun initRecyclerView() {
@@ -163,5 +179,35 @@ class ProcessingFragment : BaseFragment() {
         startActivity(intent)
         // animate
         activity!!.overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
+    }
+
+
+    private fun showEmptyState(show: Boolean, msg: String?) {
+        if (show) {
+            empty_view.setTextColor(resources.getColor(R.color.colorPrimaryText))
+            empty_view.visibility = View.VISIBLE
+            empty_view.text = msg
+        } else {
+            empty_view.visibility = View.GONE
+        }
+    }
+
+    private fun showErrorState(show: Boolean, msg: String?) {
+        if (show) {
+            empty_view.setTextColor(resources.getColor(R.color.pms))
+            empty_view.visibility = View.VISIBLE
+            empty_view.text = msg
+        } else {
+            empty_view.visibility = View.GONE
+        }
+    }
+
+
+    private fun showProgress(show: Boolean) {
+        if (show) {
+            spin_kit.visibility = View.VISIBLE
+        } else {
+            spin_kit.visibility = View.GONE
+        }
     }
 }
