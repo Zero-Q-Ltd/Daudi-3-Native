@@ -2,29 +2,29 @@ package com.zeroq.daudi_3_native.ui.queued
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.adapters.QueuedTrucksAdapter
 import com.zeroq.daudi_3_native.commons.BaseFragment
 import com.zeroq.daudi_3_native.data.models.TruckModel
-import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_processing.*
 import kotlinx.android.synthetic.main.fragment_queued.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import javax.inject.Inject
 
 class QueuedFragment : BaseFragment() {
 
@@ -32,6 +32,9 @@ class QueuedFragment : BaseFragment() {
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     lateinit var queuedViewModel: QueuedViewModel
+
+    @Inject
+    lateinit var activityUtil: ActivityUtil
 
     private var _TAG: String = "QueuedFragment"
 
@@ -57,12 +60,35 @@ class QueuedFragment : BaseFragment() {
         })
 
         initRecyclerView()
+        activityUtil.showProgress(spin_kit_q, true)
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     fun onMessageEvent(event: QueueingEvent) {
-        if (event.error == null) adapter.replaceTrucks(event.trucks!!)
+
+        activityUtil.showProgress(spin_kit_q, false)
+
+        if (event.error == null) {
+
+            if (event.trucks.isNullOrEmpty()) {
+                activityUtil.showTextViewState(
+                    empty_view_q, true, "No trucks are in Queueing",
+                    resources.getColor(R.color.colorPrimaryText)
+                )
+            } else {
+                activityUtil.showTextViewState(
+                    empty_view_q, false, null, null
+                )
+                adapter.replaceTrucks(event.trucks)
+            }
+        } else {
+            activityUtil.showTextViewState(
+                empty_view_q, true,
+                "Something went wrong please, close the application to see if the issue wll be solved",
+                resources.getColor(R.color.pms)
+            )
+        }
     }
 
     private fun initRecyclerView() {

@@ -17,17 +17,23 @@ import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.LoadingDialogFragment
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import com.zeroq.daudi_3_native.ui.loading_order.LoadingOrderActivity
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_loading.*
+import kotlinx.android.synthetic.main.fragment_processing.*
+import kotlinx.android.synthetic.main.fragment_queued.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import javax.inject.Inject
 
 class LoadingFragment : BaseFragment() {
 
+    @Inject
+    lateinit var activityUtil: ActivityUtil
 
     private lateinit var adapter: LoadingTrucksAdapter
     private var _TAG: String = "LoadingFragment"
@@ -57,11 +63,33 @@ class LoadingFragment : BaseFragment() {
         })
 
         initRecyclerView()
+        activityUtil.showProgress(spin_kit_l, true)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     fun onMessageEvent(event: LoadingEvent) {
-        if (event.error == null) adapter.replaceTrucks(event.trucks!!)
+        activityUtil.showProgress(spin_kit_l, false)
+
+        if (event.error == null) {
+
+            if (event.trucks.isNullOrEmpty()) {
+                activityUtil.showTextViewState(
+                    empty_view_l, true, "No trucks are in Queueing",
+                    resources.getColor(R.color.colorPrimaryText)
+                )
+            } else {
+                activityUtil.showTextViewState(
+                    empty_view_l, false, null, null
+                )
+                adapter.replaceTrucks(event.trucks)
+            }
+        } else {
+            activityUtil.showTextViewState(
+                empty_view_l, true,
+                "Something went wrong please, close the application to see if the issue wll be solved",
+                resources.getColor(R.color.pms)
+            )
+        }
     }
 
     private fun initRecyclerView() {
@@ -79,7 +107,7 @@ class LoadingFragment : BaseFragment() {
     }
 
     override fun onStop() {
-        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this)
         compositeDisposable.clear()
         super.onStop()
     }

@@ -17,10 +17,10 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.ui.dialogs.TimeDialogFragment
 import com.zeroq.daudi_3_native.ui.truck_detail.TruckDetailActivity
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_processing.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -33,12 +33,16 @@ class ProcessingFragment : BaseFragment() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
 
+    @Inject
+    lateinit var activityUtil: ActivityUtil
+
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private lateinit var adapter: ProcessingTrucksAdapter
     private var _TAG: String = "ProcessingFragment"
 
     private lateinit var processingViewModel: ProcessingViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,11 +70,34 @@ class ProcessingFragment : BaseFragment() {
         * */
 
         initRecyclerView()
+        activityUtil.showProgress(spin_kit, true)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     fun onMessageEvent(event: ProcessingEvent) {
-        if (event.error == null) adapter.replaceTrucks(event.trucks!!)
+
+        activityUtil.showProgress(spin_kit, false)
+
+        if (event.error == null) {
+
+            if (event.trucks.isNullOrEmpty()) {
+                activityUtil.showTextViewState(
+                    empty_view, true, "No trucks are in Processing",
+                    resources.getColor(R.color.colorPrimaryText)
+                )
+            } else {
+                activityUtil.showTextViewState(
+                    empty_view, false, null, null
+                )
+                adapter.replaceTrucks(event.trucks)
+            }
+        } else {
+            activityUtil.showTextViewState(
+                empty_view, true,
+                "Something went wrong please, close the application to see if the issue wll be solved",
+                resources.getColor(R.color.pms)
+            )
+        }
     }
 
     private fun initRecyclerView() {

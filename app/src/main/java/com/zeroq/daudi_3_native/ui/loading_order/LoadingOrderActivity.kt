@@ -197,7 +197,8 @@ class LoadingOrderActivity : BaseActivity() {
             hideButton(false)
             PrintingActivity.startPrintingActivity(
                 this,
-                _user.config?.depotdata?.depotid!!, liveTruck.Id!!
+                _user.config?.depotdata?.depotid!!, liveTruck.Id!!,
+                "3"
             )
 
         } else {

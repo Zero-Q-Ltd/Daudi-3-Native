@@ -441,7 +441,8 @@ class TruckDetailActivity : BaseActivity() {
             hideButton(true)
             PrintingActivity.startPrintingActivity(
                 this,
-                _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!
+                _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
+                "1"
             )
         } else {
             /**
@@ -450,7 +451,6 @@ class TruckDetailActivity : BaseActivity() {
             Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
             hideButton(true)
         }
-
     }
 
     private fun disableViews(layout: ViewGroup) {

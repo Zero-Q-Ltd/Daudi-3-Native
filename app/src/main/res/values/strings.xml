@@ -18,4 +18,5 @@
     <string name="cancel">cancel</string>
     <string name="submit">SUBMIT</string>
     <string name="exit_request">PLEASE ALLOW THE ABOVE TRUCK TO EXIT THE DEPOT</string>
+    <string name="please_check_your_internet_connection">Please check your internet connection</string>
 </resources>
