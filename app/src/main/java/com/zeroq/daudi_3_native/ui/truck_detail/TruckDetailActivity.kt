@@ -1,5 +1,6 @@
 package com.zeroq.daudi_3_native.ui.truck_detail
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -13,6 +14,7 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
@@ -113,10 +115,10 @@ class TruckDetailActivity : BaseActivity() {
 
 
         initToolbar()
+        createProgress()
         topInputs()
         compartimentsButtonOps()
         compartmentsInputs()
-
     }
 
     private fun initialTruckValues(truck: TruckModel) {
@@ -203,6 +205,16 @@ class TruckDetailActivity : BaseActivity() {
 
     private fun initToolbar() {
         setSupportActionBar(toolbar)
+    }
+
+    lateinit var progressDialog: Dialog
+    private fun createProgress() {
+        progressDialog = Dialog(this)
+        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        progressDialog.setContentView(R.layout.custom_progress_dialog)
+        progressDialog.setCancelable(true)
+
+        progressDialog.show()
     }
 
 
