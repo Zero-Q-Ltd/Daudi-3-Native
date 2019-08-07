@@ -10,4 +10,8 @@ class PrintingViewModel @Inject constructor(var depotRepository: DepotRepository
     fun setPrintedState(depotId: String, idTruck: String): CompletionLiveData {
         return depotRepository.updatePrintedState(depotId, idTruck)
     }
+
+    fun completeOrder(depotId: String, idTruck: String): CompletionLiveData {
+        return depotRepository.completeTruck(depotId, idTruck)
+    }
 }

@@ -537,4 +537,25 @@ class DepotRepository
         }
     }
 
+
+    fun completeTruck(depotId: String, idTruck: String):
+            CompletionLiveData {
+        val completion = CompletionLiveData()
+        completeTruckTask(depotId, idTruck).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    // complete to stage 4
+    private fun completeTruckTask(depotId: String, idTruck: String): Task<Void> {
+        val truckRef =
+            depots.document(depotId)
+                .collection("trucks").document(idTruck)
+
+        return firestore.runTransaction { transaction ->
+            transaction.update(truckRef, "stage", 4)
+            return@runTransaction null
+        }
+    }
+
 }
