@@ -553,12 +553,7 @@ class DepotRepository
                 .collection("trucks").document(idTruck)
 
         return firestore.runTransaction { transaction ->
-            val truck: TruckModel? = transaction.get(truckRef).toObject(TruckModel::class.java)
-
-            if (truck?.stage!! == 3) {
-                transaction.update(truckRef, "stage", 4)
-            }
-
+            transaction.update(truckRef, "stage", 4)
             return@runTransaction null
         }
     }

@@ -235,11 +235,22 @@ class PrintingActivity : BaseActivity() {
         /**
          *
          * */
-        printingViewModel.setPrintedState(depotId, idTruck).observe(this, Observer {
-            if (!it.isSuccessful) {
-                Timber.e(it.error())
-            }
-        })
+        if (stage == "1") {
+            printingViewModel.setPrintedState(depotId, idTruck).observe(this, Observer {
+                if (!it.isSuccessful) {
+                    Timber.e(it.error())
+                }
+            })
+        }
+
+
+        if (stage == "3") {
+            printingViewModel.completeOrder(depotId, idTruck).observe(this, Observer {
+                if (!it.isSuccessful) {
+                    Timber.e(it.error())
+                }
+            })
+        }
     }
 
 }
