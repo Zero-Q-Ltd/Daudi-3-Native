@@ -201,9 +201,9 @@ class MainActivity : BaseActivity() {
                 /*
                 * set the badges on navbar
                 * **/
-                if (processingL.size > 0) bottom_nav.getBadge(R.id.processing)?.number = processingL.size
-                if (queueingL.size > 0) bottom_nav.getBadge(R.id.queued)?.number = queueingL.size
-                if (loadingL.size > 0) bottom_nav.getBadge(R.id.loading)?.number = loadingL.size
+                if (processingL.size > 0) bottom_nav.getOrCreateBadge(R.id.processing)?.number = processingL.size
+                if (queueingL.size > 0) bottom_nav.getOrCreateBadge(R.id.queued)?.number = queueingL.size
+                if (loadingL.size > 0) bottom_nav.getOrCreateBadge(R.id.loading)?.number = loadingL.size
 
             } else {
                 eventBus.postSticky(ProcessingEvent(null, it.error()))
