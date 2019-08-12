@@ -187,6 +187,8 @@ class MainActivity : BaseActivity() {
                     }
                 }
 
+                addReminder(it.data()!!)
+
                 val sortedProcessing =
                     processingL.sortedBy { truck ->
                         sortStage(truck, "1")
