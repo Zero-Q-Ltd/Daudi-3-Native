@@ -38,7 +38,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class MainActivity : BaseActivity() {
@@ -80,9 +82,6 @@ class MainActivity : BaseActivity() {
 
         setToolbar()
 
-
-
-        truckNotification.setReminder(this, TruckExpireBroadCast::class.java, 0, 0, 10)
 
         if (savedInstanceState == null)
             setupBottomNavigationBar()
@@ -174,6 +173,8 @@ class MainActivity : BaseActivity() {
                     when (truckModel.stage) {
                         1 -> {
                             processingL.add(truckModel)
+
+
                         }
 
                         2 -> {
@@ -256,6 +257,41 @@ class MainActivity : BaseActivity() {
             }
 
         compositeDisposable.add(net)
+    }
+
+
+    private fun addReminder(trucks: List<TruckModel>) {
+        // cancel the existing alarms
+        truckNotification.cancelReminder(this, TruckExpireBroadCast::class.java)
+
+        trucks.forEach { truck ->
+            val stagePair = when (truck.stage) {
+                1 ->
+                    Pair("Processing", truck.stagedata?.get("1")?.data?.expiry?.get(0)?.timestamp!!)
+                2 ->
+                    Pair("Queued", truck.stagedata?.get("2")?.data?.expiry?.get(0)?.timestamp!!)
+
+                3 ->
+
+                    Pair("Loading", truck.stagedata?.get("3")?.data?.expiry?.get(0)?.timestamp!!)
+                else ->
+                    Pair("Unknow", Date())
+            }
+
+            val title = "Truck ${truck.truckId}"
+            val content = "In ${stagePair.first} has expired"
+
+            // time difference and then get hours min and sec
+
+
+            truckNotification.setReminder(
+                this,
+                TruckExpireBroadCast::class.java,
+                stagePair.second,
+                title,
+                content
+            )
+        }
     }
 
     override fun onStart() {

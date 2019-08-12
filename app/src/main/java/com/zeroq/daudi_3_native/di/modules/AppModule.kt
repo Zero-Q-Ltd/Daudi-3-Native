@@ -3,11 +3,9 @@ package com.zeroq.daudi_3_native.di.modules
 import android.app.AlarmManager
 import android.app.Application
 import android.content.Context
-import androidx.core.app.AlarmManagerCompat
 import dagger.Module
 import dagger.Provides
 import org.greenrobot.eventbus.EventBus
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
@@ -18,7 +16,8 @@ import javax.inject.Singleton
     includes = [
         ViewModelModule::class,
         AuthModule::class,
-        FirestoreModule::class
+        FirestoreModule::class,
+        BroadCastModule::class
     ]
 )
 class AppModule {
