@@ -1,7 +1,7 @@
 package com.zeroq.daudi_3_native
 
 import com.google.firebase.auth.FirebaseAuth
-import com.zeroq.daudi_3_native.di.component.DaggerAppComponent
+import com.zeroq.daudi_3_native.di.DaggerAppComponent
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
 import com.zeroq.daudi_3_native.utils.ReleaseTree
 import dagger.android.AndroidInjector

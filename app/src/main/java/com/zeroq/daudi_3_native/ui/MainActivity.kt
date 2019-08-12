@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthUI
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
+import com.zeroq.daudi_3_native.broadcasts.TruckExpireBroadCast
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
@@ -29,6 +30,7 @@ import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import com.zeroq.daudi_3_native.utils.TruckNotification
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -54,6 +56,9 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var eventBus: EventBus
 
+    @Inject
+    lateinit var truckNotification: TruckNotification
+
 
     lateinit var actionBar: ActionBar
 
@@ -74,6 +79,10 @@ class MainActivity : BaseActivity() {
         mainViewModel = getViewModel(MainViewModel::class.java)
 
         setToolbar()
+
+
+
+        truckNotification.setReminder(this, TruckExpireBroadCast::class.java, 0, 0, 10)
 
         if (savedInstanceState == null)
             setupBottomNavigationBar()
