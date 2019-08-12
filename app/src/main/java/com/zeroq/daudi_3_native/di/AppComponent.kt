@@ -1,4 +1,4 @@
-package com.zeroq.daudi_3_native.di.component
+package com.zeroq.daudi_3_native.di
 
 import android.app.Application
 import com.zeroq.daudi_3_native.DaudiApplication
@@ -26,8 +26,6 @@ interface AppComponent : AndroidInjector<DaudiApplication> {
 
     @Component.Builder
     interface Builder {
-//        @BindsInstance
-//        fun application(application: DaudiApplication): Builder
 
         @BindsInstance
         fun application(application: Application): Builder

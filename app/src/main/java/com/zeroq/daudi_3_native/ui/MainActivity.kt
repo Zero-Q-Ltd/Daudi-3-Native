@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthUI
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
+import com.zeroq.daudi_3_native.broadcasts.TruckExpireBroadCast
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
@@ -29,6 +30,7 @@ import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import com.zeroq.daudi_3_native.utils.TruckNotification
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -36,7 +38,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class MainActivity : BaseActivity() {
@@ -53,6 +57,9 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var eventBus: EventBus
+
+    @Inject
+    lateinit var truckNotification: TruckNotification
 
 
     lateinit var actionBar: ActionBar
@@ -74,6 +81,7 @@ class MainActivity : BaseActivity() {
         mainViewModel = getViewModel(MainViewModel::class.java)
 
         setToolbar()
+
 
         if (savedInstanceState == null)
             setupBottomNavigationBar()
@@ -165,6 +173,8 @@ class MainActivity : BaseActivity() {
                     when (truckModel.stage) {
                         1 -> {
                             processingL.add(truckModel)
+
+
                         }
 
                         2 -> {
@@ -176,6 +186,8 @@ class MainActivity : BaseActivity() {
                         }
                     }
                 }
+
+                addReminder(it.data()!!)
 
                 val sortedProcessing =
                     processingL.sortedBy { truck ->
@@ -201,9 +213,9 @@ class MainActivity : BaseActivity() {
                 /*
                 * set the badges on navbar
                 * **/
-                if (processingL.size > 0) bottom_nav.getBadge(R.id.processing)?.number = processingL.size
-                if (queueingL.size > 0) bottom_nav.getBadge(R.id.queued)?.number = queueingL.size
-                if (loadingL.size > 0) bottom_nav.getBadge(R.id.loading)?.number = loadingL.size
+                if (processingL.size > 0) bottom_nav.getOrCreateBadge(R.id.processing)?.number = processingL.size
+                if (queueingL.size > 0) bottom_nav.getOrCreateBadge(R.id.queued)?.number = queueingL.size
+                if (loadingL.size > 0) bottom_nav.getOrCreateBadge(R.id.loading)?.number = loadingL.size
 
             } else {
                 eventBus.postSticky(ProcessingEvent(null, it.error()))
@@ -247,6 +259,41 @@ class MainActivity : BaseActivity() {
             }
 
         compositeDisposable.add(net)
+    }
+
+
+    private fun addReminder(trucks: List<TruckModel>) {
+        // cancel the existing alarms
+        truckNotification.cancelReminder(this, TruckExpireBroadCast::class.java)
+
+        trucks.forEach { truck ->
+            val stagePair = when (truck.stage) {
+                1 ->
+                    Pair("Processing", truck.stagedata?.get("1")?.data?.expiry?.get(0)?.timestamp!!)
+                2 ->
+                    Pair("Queued", truck.stagedata?.get("2")?.data?.expiry?.get(0)?.timestamp!!)
+
+                3 ->
+
+                    Pair("Loading", truck.stagedata?.get("3")?.data?.expiry?.get(0)?.timestamp!!)
+                else ->
+                    Pair("Unknow", Date())
+            }
+
+            val title = "Truck ${truck.truckId}"
+            val content = "In ${stagePair.first} has expired"
+
+            // time difference and then get hours min and sec
+
+
+            truckNotification.setReminder(
+                this,
+                TruckExpireBroadCast::class.java,
+                stagePair.second,
+                title,
+                content
+            )
+        }
     }
 
     override fun onStart() {

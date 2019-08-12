@@ -1,5 +1,8 @@
 package com.zeroq.daudi_3_native.di.modules
 
+import android.app.AlarmManager
+import android.app.Application
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import org.greenrobot.eventbus.EventBus
@@ -13,7 +16,8 @@ import javax.inject.Singleton
     includes = [
         ViewModelModule::class,
         AuthModule::class,
-        FirestoreModule::class
+        FirestoreModule::class,
+        BroadCastModule::class
     ]
 )
 class AppModule {
@@ -22,5 +26,11 @@ class AppModule {
     @Singleton
     fun providesEventBus(): EventBus {
         return EventBus.getDefault()
+    }
+
+    @Provides
+    @Singleton
+    fun providesAlarmManager(app: Application): AlarmManager {
+        return app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 }
