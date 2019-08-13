@@ -92,6 +92,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                             holder.expireTruckIndicator?.text =
                                 MyTimeUtils.formatElapsedTime(it * 1000)
                         } else {
+                            holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
                             holder.expireTruckIndicator?.text = "Expired"
                         }
                     },

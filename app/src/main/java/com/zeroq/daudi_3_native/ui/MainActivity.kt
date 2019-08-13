@@ -272,11 +272,19 @@ class MainActivity : BaseActivity() {
                 .toInt()
 
 
-            truckNotification.cancelReminder(
-                this,
-                TruckExpireBroadCast::class.java,
-                requestCode
-            )
+
+            if (truck.stage == 4) {
+                /**
+                 * cancel the alarm that are not interested by it alarm
+                 * */
+
+                truckNotification.cancelReminder(
+                    this,
+                    TruckExpireBroadCast::class.java,
+                    requestCode
+                )
+            }
+
 
             val stagePair = when (truck.stage) {
                 1 ->
