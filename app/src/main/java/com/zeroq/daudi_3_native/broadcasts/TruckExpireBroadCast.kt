@@ -19,9 +19,12 @@ class TruckExpireBroadCast : BroadcastReceiver() {
         if (intent!!.hasExtra("CONTENT")) {
             val cont = intent.getStringExtra("CONTENT")
             val title = intent.getStringExtra("TITLE")
+            val requestCode = intent.getIntExtra("REQUEST_CODE", 100)
+
             truckNotification.showNotification(
                 context!!,
-                MainActivity::class.java, title, cont
+                MainActivity::class.java, title, cont,
+                requestCode
             )
         }
 
