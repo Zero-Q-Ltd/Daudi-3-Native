@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.zeroq.daudi_3_native.data.models.*
@@ -12,6 +13,7 @@ import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.DocumentLiveData
 import com.zeroq.daudi_3_native.vo.QueryLiveData
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -423,7 +425,7 @@ class DepotRepository
              * 1. update truck.fuel.FUELtTYPE.batches["0|1"].
              * */
             val fuels = listOf(
-                Triple("pms", truck?.fuel?.ago, loadingEvent.pmsLoaded),
+                Triple("pms", truck?.fuel?.pms, loadingEvent.pmsLoaded),
                 Triple("ago", truck?.fuel?.ago, loadingEvent.agoLoaded),
                 Triple("ik", truck?.fuel?.ik, loadingEvent.ikLoaded)
             )
@@ -434,8 +436,11 @@ class DepotRepository
 
             fuels.forEach { triple ->
                 val bQuantity = triple.second?.qty
+
                 if (bQuantity != null && bQuantity > 0) {
-                    val fuelId = mutateFuelObservered(triple.second!!, triple.third!!)
+                    Timber.e(triple.third.toString())
+
+                    val fuelId = mutateFuelObservered(triple.second!!, triple.third)
 
                     val obLost = bQuantity.minus(triple.third!!)
 
@@ -443,10 +448,10 @@ class DepotRepository
                 }
             }
 
-            // update fuel
-            transaction.update(truckRef, "fuel", truck?.fuel)
 
-            // update fuel batch
+            // store batch models
+            val batchModels: ArrayList<Pair<DocumentReference, BatchModel?>?> = ArrayList()
+
             updateFuelBatch.forEach { pair ->
                 val fuelBatchRef = depots.document(depotId)
                     .collection("batches")
@@ -461,10 +466,18 @@ class DepotRepository
                 batchModel.accumulated?.total = commulateTotalNumber
                 batchModel.accumulated?.usable = commulateUsableNumber
 
-                transaction.update(fuelBatchRef, "status", batchModel.status)
-                transaction.update(fuelBatchRef, "accumulated", batchModel.accumulated)
+                batchModels.add(Pair(fuelBatchRef, batchModel))
             }
 
+
+            // update batches
+            batchModels.forEach { batchModel ->
+                transaction.update(batchModel!!.first, "status", batchModel.second!!.status)
+                transaction.update(batchModel.first, "accumulated", batchModel.second!!.accumulated)
+            }
+
+            // update fuel
+            transaction.update(truckRef, "fuel", truck?.fuel)
 
             /*
             * update seals
@@ -489,8 +502,8 @@ class DepotRepository
         }
     }
 
-    private fun mutateFuelObservered(fuel: Batches, observed: Int): String {
-        return if (fuel.batches?.get("1")?.qty != null) {
+    private fun mutateFuelObservered(fuel: Batches, observed: Int?): String {
+        return if (fuel.batches?.get("1")?.qty!! > 0) {
             fuel.batches?.get("1")?.observed = observed
 
             fuel.batches?.get("1")?.Id!!
