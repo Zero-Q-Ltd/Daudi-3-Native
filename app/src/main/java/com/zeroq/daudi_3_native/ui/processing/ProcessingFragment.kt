@@ -127,8 +127,15 @@ class ProcessingFragment : BaseFragment() {
                 }
             }
 
+        val longCardPress: Disposable = adapter.cardBodyLongClick
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startTruckDetailActivity(it.truck.Id)
+            }
+
         compositeDisposable.add(clickSub)
         compositeDisposable.add(cardBodyClick)
+        compositeDisposable.add(longCardPress)
     }
 
 

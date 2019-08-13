@@ -11,29 +11,25 @@ import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 
 class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
 
-    companion object {
-        const val DAILY_REMINDER_REQUEST_CODE = 100
-    }
 
     fun setReminder(
         context: Context, cls: Class<*>, expireDate: Date,
-        title: String, content: String
+        title: String, content: String,
+        requestCode: Int
     ) {
         val calendar = Calendar.getInstance()
         val setcalendar = Calendar.getInstance()
 
         setcalendar.time = expireDate
 
-        if (setcalendar.before(calendar)){
+        if (setcalendar.before(calendar)) {
             // current time is greater
-            Timber.d("jumped")
             return
         }
 
@@ -50,10 +46,11 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
         val intent1 = Intent(context, cls)
         intent1.putExtra("CONTENT", content)
         intent1.putExtra("TITLE", title)
+        intent1.putExtra("REQUEST_CODE", requestCode)
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            DAILY_REMINDER_REQUEST_CODE, intent1,
+            requestCode, intent1,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
@@ -64,7 +61,7 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
         )
     }
 
-    fun cancelReminder(context: Context, cls: Class<*>) {
+    fun cancelReminder(context: Context, cls: Class<*>, requestCode: Int) {
         val receiver = ComponentName(context, cls)
 
         val pm = context.packageManager
@@ -78,7 +75,7 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
         val intent1 = Intent(context, cls)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            DAILY_REMINDER_REQUEST_CODE, intent1, PendingIntent.FLAG_UPDATE_CURRENT
+            requestCode, intent1, PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         alarmManager.cancel(pendingIntent)
@@ -87,7 +84,7 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
     }
 
 
-    fun showNotification(context: Context, cls: Class<*>, title: String, content: String) {
+    fun showNotification(context: Context, cls: Class<*>, title: String, content: String, requestCode: Int) {
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationIntent = Intent(context, cls)
@@ -98,7 +95,7 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
         stackBuilder.addNextIntent(notificationIntent)
 
         val pendingIntent = stackBuilder.getPendingIntent(
-            DAILY_REMINDER_REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT
+            requestCode, PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val builder = NotificationCompat.Builder(context)
@@ -110,7 +107,7 @@ class TruckNotification @Inject constructor(var alarmManager: AlarmManager) {
             .setContentIntent(pendingIntent).build()
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(DAILY_REMINDER_REQUEST_CODE, notification)
+        notificationManager.notify(requestCode, notification)
     }
 
 

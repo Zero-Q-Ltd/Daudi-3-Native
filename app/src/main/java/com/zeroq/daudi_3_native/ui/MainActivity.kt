@@ -264,9 +264,28 @@ class MainActivity : BaseActivity() {
 
     private fun addReminder(trucks: List<TruckModel>) {
         // cancel the existing alarms
-        truckNotification.cancelReminder(this, TruckExpireBroadCast::class.java)
 
         trucks.forEach { truck ->
+
+            val requestCode = truck.truckId!!
+                .replace("MK", "")
+                .toInt()
+
+
+
+            if (truck.stage == 4) {
+                /**
+                 * cancel the alarm that are not interested by it alarm
+                 * */
+
+                truckNotification.cancelReminder(
+                    this,
+                    TruckExpireBroadCast::class.java,
+                    requestCode
+                )
+            }
+
+
             val stagePair = when (truck.stage) {
                 1 ->
                     Pair("Processing", truck.stagedata?.get("1")?.data?.expiry?.get(0)?.timestamp!!)
@@ -291,7 +310,8 @@ class MainActivity : BaseActivity() {
                 TruckExpireBroadCast::class.java,
                 stagePair.second,
                 title,
-                content
+                content,
+                requestCode
             )
         }
     }

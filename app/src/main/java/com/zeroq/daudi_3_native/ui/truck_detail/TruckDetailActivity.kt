@@ -2,18 +2,12 @@ package com.zeroq.daudi_3_native.ui.truck_detail
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Matrix
 import android.os.Bundle
-import android.os.Environment
 import android.os.Vibrator
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
@@ -29,14 +23,15 @@ import com.zeroq.daudi_3_native.data.models.Compartment
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_truck_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import net.glxn.qrgen.android.QRCode
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -49,6 +44,9 @@ class TruckDetailActivity : BaseActivity() {
 
     @Inject
     lateinit var imageUtil: ImageUtil
+
+    @Inject
+    lateinit var activityUtil: ActivityUtil
 
     lateinit var truckDetailViewModel: TruckDetailViewModel
 
@@ -199,6 +197,15 @@ class TruckDetailActivity : BaseActivity() {
 
         btnPrint.setOnClickListener {
             validateAndPost()
+            progressDialog.show()
+        }
+
+        /**
+         * disable views if the truck is already printed
+         * */
+        if (truck.isprinted!!) {
+            activityUtil.disableViews(layout_constraint)
+            btnPrint.isEnabled = true
         }
 
     }
@@ -212,9 +219,7 @@ class TruckDetailActivity : BaseActivity() {
         progressDialog = Dialog(this)
         progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         progressDialog.setContentView(R.layout.custom_progress_dialog)
-        progressDialog.setCancelable(true)
-
-        progressDialog.show()
+        progressDialog.setCancelable(false)
     }
 
 
@@ -389,6 +394,8 @@ class TruckDetailActivity : BaseActivity() {
                 vibrator.run { vibrate(500) } // for 500 ms
 
                 Toast.makeText(this, "Make sure you have no errors", Toast.LENGTH_SHORT).show()
+
+                progressDialog.hide()
             }
         }
 
@@ -429,8 +436,10 @@ class TruckDetailActivity : BaseActivity() {
                 // create an image to print
                 cleanPageForPrinting()
             } else {
+                progressDialog.hide()
                 Snackbar.make(layout_constraint, "An error occurred", Snackbar.LENGTH_SHORT).show()
                 Timber.e(it.error()!!)
+
             }
         })
     }
@@ -441,44 +450,40 @@ class TruckDetailActivity : BaseActivity() {
     }
 
 
+    var saveImageSub: Disposable? = null
     private fun cleanPageForPrinting() {
         hideButton(false)
-        disableViews(layout_constraint)
+        activityUtil.disableViews(layout_constraint)
 
         /**
          * Take screenshot now
          * */
 
-        if (takeandSaveScreenShot()) {
-            hideButton(true)
-            PrintingActivity.startPrintingActivity(
-                this,
-                _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
-                "1"
-            )
-        } else {
-            /**
-             * An error occured
-             * */
-            Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
-            hideButton(true)
-        }
-    }
+        // clear to avoid leaks
+        saveImageSub?.dispose()
+        saveImageSub = null
 
-    private fun disableViews(layout: ViewGroup) {
-        layout.isEnabled = false
-
-        for (i in 0 until layout.childCount) {
-            var child: View = layout.getChildAt(i)
-
-            if (child is ViewGroup) {
-                disableViews(child)
-            } else {
-                if (child is EditText || child is AppCompatButton) {
-                    child.isEnabled = false
+        saveImageSub = imageUtil.reactiveTakeScreenShot(content_scroll)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    hideButton(true)
+                    progressDialog.hide()
+                    PrintingActivity.startPrintingActivity(
+                        this,
+                        _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
+                        "1"
+                    )
+                } else {
+                    /**
+                     * An error occured
+                     * */
+                    progressDialog.hide()
+                    Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
+                    hideButton(true)
                 }
             }
-        }
     }
 
 
@@ -487,77 +492,6 @@ class TruckDetailActivity : BaseActivity() {
             btnPrint.visibility = View.VISIBLE
         } else {
             btnPrint.visibility = View.GONE
-        }
-    }
-
-    private fun takeandSaveScreenShot(): Boolean {
-        val u = content_scroll as View
-        val z = content_scroll
-
-        val totalHeight = z.getChildAt(0).height
-        val totalWidth = z.getChildAt(0).width
-
-        val newHeight = totalHeight * 537 / totalWidth
-
-        val b = getBitmapFromView(u, totalHeight, totalWidth)
-        return savescreenshot(b, 537, newHeight)
-    }
-
-    private fun getBitmapFromView(view: View, totalHeight: Int, totalWidth: Int): Bitmap {
-        val returnedBitmap = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(returnedBitmap)
-        val bgDrawable = view.background
-
-        if (bgDrawable != null)
-            bgDrawable.draw(canvas)
-        else
-            canvas.drawColor(Color.WHITE)
-
-        view.draw(canvas)
-        return returnedBitmap
-    }
-
-    private fun savescreenshot(bm: Bitmap, newWidth: Int, newHeight: Int): Boolean {
-        val width = bm.width
-        val height = bm.height
-        val scaleWidth = newWidth.toFloat() / width
-        val scaleHeight = newHeight.toFloat() / height
-        // CREATE A MATRIX FOR THE MANIPULATION
-        val matrix = Matrix()
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight)
-
-        // "RECREATE" THE NEW BITMAP
-        val resizedBitmap = Bitmap.createBitmap(
-            bm, 0, 0, width, height, matrix, false
-        )
-        bm.recycle()
-
-        val file_path = Environment.getExternalStorageDirectory().absolutePath + "/Emkaynow"
-        val dir = File(file_path)
-
-
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val image = File(dir, "0.png")
-        var out: FileOutputStream? = null
-
-        try {
-            out = FileOutputStream(image)
-            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out) // bmp is your Bitmap instance
-            return true
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        } finally {
-            try {
-                out?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
         }
     }
 
