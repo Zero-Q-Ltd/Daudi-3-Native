@@ -201,6 +201,14 @@ class TruckDetailActivity : BaseActivity() {
             validateAndPost()
         }
 
+        /**
+         * disable views if the truck is already printed
+         * */
+        if (truck.isprinted!!) {
+            disableViews(layout_constraint)
+            btnPrint.isEnabled = true
+        }
+
     }
 
     private fun initToolbar() {
