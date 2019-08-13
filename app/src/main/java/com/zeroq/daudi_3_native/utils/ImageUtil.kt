@@ -9,6 +9,7 @@ import android.os.Environment
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.Observable
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -21,6 +22,10 @@ class ImageUtil @Inject constructor() {
     fun dpToPx(context: Context, dp: Int): Int {
         val r = context.resources
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics).roundToInt()
+    }
+
+    fun reactiveTakeScreenShot(parent: ViewGroup): Observable<Boolean> {
+        return Observable.just(takeandSaveScreenShot(parent))
     }
 
     fun takeandSaveScreenShot(parent: ViewGroup): Boolean {
