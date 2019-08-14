@@ -82,8 +82,10 @@ class LoadingFragment : BaseFragment() {
         if (event.error == null) {
 
             if (event.trucks.isNullOrEmpty()) {
+                adapter.clear()
+
                 activityUtil.showTextViewState(
-                    empty_view_l, true, "No trucks are in Queueing",
+                    empty_view_l, true, "No trucks are in Loading",
                     resources.getColor(R.color.colorPrimaryText)
                 )
             } else {
@@ -93,6 +95,8 @@ class LoadingFragment : BaseFragment() {
                 adapter.replaceTrucks(event.trucks)
             }
         } else {
+            adapter.clear()
+
             activityUtil.showTextViewState(
                 empty_view_l, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",
@@ -192,8 +196,6 @@ class LoadingFragment : BaseFragment() {
             startLoadingOrderActivity(truck.Id!!)
         }
     }
-
-
 
 
     private fun startLoadingOrderActivity(idTruck: String) {
