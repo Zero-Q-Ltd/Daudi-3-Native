@@ -113,7 +113,7 @@ class MainActivity : BaseActivity() {
 
     private fun setToolbar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = "Morning"
+        supportActionBar!!.title = "Emkay"
 
         actionBar = supportActionBar as ActionBar
 
@@ -213,9 +213,23 @@ class MainActivity : BaseActivity() {
                 /*
                 * set the badges on navbar
                 * **/
-                if (processingL.size > 0) bottom_nav.getOrCreateBadge(R.id.processing)?.number = processingL.size
-                if (queueingL.size > 0) bottom_nav.getOrCreateBadge(R.id.queued)?.number = queueingL.size
-                if (loadingL.size > 0) bottom_nav.getOrCreateBadge(R.id.loading)?.number = loadingL.size
+                if (processingL.size > 0) {
+                    bottom_nav.getOrCreateBadge(R.id.processing)?.number = processingL.size
+                } else {
+                    bottom_nav.removeBadge(R.id.processing)
+                }
+
+                if (queueingL.size > 0) {
+                    bottom_nav.getOrCreateBadge(R.id.queued)?.number = queueingL.size
+                } else {
+                    bottom_nav.removeBadge(R.id.queued)
+                }
+
+                if (loadingL.size > 0) {
+                    bottom_nav.getOrCreateBadge(R.id.loading)?.number = loadingL.size
+                } else {
+                    bottom_nav.removeBadge(R.id.loading)
+                }
 
             } else {
                 eventBus.postSticky(ProcessingEvent(null, it.error()))
@@ -276,6 +290,7 @@ class MainActivity : BaseActivity() {
             if (truck.stage == 4) {
                 /**
                  * cancel the alarm that are not interested by it alarm
+                 * TODO: cancel when exiting this here is just useless
                  * */
 
                 truckNotification.cancelReminder(

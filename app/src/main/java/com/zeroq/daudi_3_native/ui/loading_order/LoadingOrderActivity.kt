@@ -1,14 +1,14 @@
 package com.zeroq.daudi_3_native.ui.loading_order
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
@@ -16,10 +16,15 @@ import com.zeroq.daudi_3_native.data.models.Depot
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import com.zeroq.daudi_3_native.utils.ImageUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_loading_order.*
 import kotlinx.android.synthetic.main.toolbar.*
 import net.glxn.qrgen.android.QRCode
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,6 +37,9 @@ class LoadingOrderActivity : BaseActivity() {
 
     @Inject
     lateinit var imageUtil: ImageUtil
+
+    @Inject
+    lateinit var activityUtil: ActivityUtil
 
     lateinit var _user: UserModel
     lateinit var liveTruck: TruckModel
@@ -57,6 +65,15 @@ class LoadingOrderActivity : BaseActivity() {
         }
 
         logic()
+        createProgress()
+    }
+
+    lateinit var progressDialog: Dialog
+    private fun createProgress() {
+        progressDialog = Dialog(this)
+        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        progressDialog.setContentView(R.layout.custom_progress_dialog)
+        progressDialog.setCancelable(false)
     }
 
     private fun setUpToolbar() {
@@ -176,6 +193,8 @@ class LoadingOrderActivity : BaseActivity() {
 
 
     private fun submit() {
+        progressDialog.show()
+
         viewModel.updateSeals(
             et_seal.text.toString(), et_broken_seals.text.toString(),
             et_delivery_note.text.toString()
@@ -183,47 +202,45 @@ class LoadingOrderActivity : BaseActivity() {
             if (it.isSuccessful) {
                 print()
             } else {
+                progressDialog.hide()
+                toast("An error occurred while submitting seals")
                 Timber.e(it.error())
             }
         })
     }
 
 
+    var saveImageSub: Disposable? = null
     private fun print() {
-        disableInputs(layout_constraint, true)
+        activityUtil.disableViews(layout_constraint)
+        btnPrint?.isEnabled = true
+
         hideButton(true)
 
-        if (imageUtil.takeandSaveScreenShot(content_scroll)) {
-            hideButton(false)
-            PrintingActivity.startPrintingActivity(
-                this,
-                _user.config?.depotdata?.depotid!!, liveTruck.Id!!,
-                "3"
-            )
+        // clear to avoid leaks
+        saveImageSub?.dispose()
+        saveImageSub = null
 
-        } else {
-            hideButton(false)
-            Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
-        }
-    }
+        saveImageSub = imageUtil.reactiveTakeScreenShot(content_scroll)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                progressDialog.hide()
 
-
-    private fun disableInputs(layout: ViewGroup, disable: Boolean) {
-
-        layout.isEnabled = !disable
-
-        for (i in 0 until layout.childCount) {
-            val child: View = layout.getChildAt(i)
-
-            if (child is ViewGroup) {
-                disableInputs(child, disable)
-            } else {
-                if (child is EditText || child is AppCompatButton) {
-                    child.isEnabled = !disable
+                if (it) {
+                    hideButton(false)
+                    PrintingActivity.startPrintingActivity(
+                        this,
+                        _user.config?.depotdata?.depotid!!, liveTruck.Id!!,
+                        "3"
+                    )
+                } else {
+                    hideButton(false)
+                    toast("Sorry an error occurred")
                 }
             }
-        }
     }
+
 
     private fun hideButton(hide: Boolean) {
         if (hide) {

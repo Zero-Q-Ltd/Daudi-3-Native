@@ -81,6 +81,7 @@ class ProcessingFragment : BaseFragment() {
         if (event.error == null) {
 
             if (event.trucks.isNullOrEmpty()) {
+                adapter.clear()
                 activityUtil.showTextViewState(
                     empty_view, true, "No trucks are in Processing",
                     resources.getColor(R.color.colorPrimaryText)
@@ -92,6 +93,7 @@ class ProcessingFragment : BaseFragment() {
                 adapter.replaceTrucks(event.trucks)
             }
         } else {
+            adapter.clear()
             activityUtil.showTextViewState(
                 empty_view, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",
