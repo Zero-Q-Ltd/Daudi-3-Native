@@ -4,34 +4,26 @@
               android:orientation="vertical"
               android:id="@+id/main"
               android:layout_width="match_parent">
+
+    <include layout="@layout/toolbar"/>
+
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:layout_height="match_parent">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="40dp"
-                    android:textSize="20sp"
-                    android:layout_marginTop="20dp"
-                    android:textColor="@color/colorPrimary"
-                    android:text="Welcome to EMKAY Printing"
-                    android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
 
             <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="50dp"
                     android:layout_marginBottom="5dp"
                     android:textColor="@color/colorPrimary"
-                    android:text="STEP 1 : Connect your Bluetooth Printer"
-                    android:layout_height="wrap_content"/>
+                    android:text="@string/step_1_connect_your_bluetooth_printer"/>
             <Button
                     android:id="@+id/btnSearch"
                     android:layout_marginLeft="50dp"
@@ -39,37 +31,36 @@
                     android:layout_marginBottom="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="search">
+                    android:text="@string/search">
             </Button>
 
             <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="left"
+                    android:layout_width="wrap_content"
                     android:textStyle="bold"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginStart="50dp"
                     android:layout_marginBottom="5dp"
                     android:textColor="@color/colorPrimary"
-                    android:text="STEP 2 : Print your Reciept"
+                    android:text="@string/step_2_print_your_reciept"
                     android:layout_height="wrap_content"/>
 
             <Button
                     android:id="@+id/btn_print"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="print">
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:text="@string/print"
+                    android:enabled="false">
             </Button>
 
             <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="left"
+                    android:layout_width="wrap_content"
                     android:textStyle="bold"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginStart="50dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/colorPrimary"
-                    android:text="STEP 3 : Close Phone to Printer Connection"
+                    android:text="@string/step_3"
                     android:layout_height="wrap_content"/>
             <Button
                     android:id="@+id/btnClose"
@@ -77,16 +68,17 @@
                     android:layout_marginLeft="50dp"
                     android:layout_marginRight="50dp"
                     android:layout_height="wrap_content"
-                    android:text="close">
+                    android:text="@string/close">
             </Button>
             <Button
-                    android:id="@+id/btn_reprint"
+                    android:id="@+id/btn_sandbox"
                     android:layout_marginLeft="50dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="50dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Reprint Your Receipt">
+                    android:text="@string/test_print"
+                    android:visibility="gone">
             </Button>
 
         </LinearLayout>

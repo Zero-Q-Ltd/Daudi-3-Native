@@ -473,7 +473,8 @@ class TruckDetailActivity : BaseActivity() {
                     PrintingActivity.startPrintingActivity(
                         this,
                         _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
-                        "1"
+                        "1",
+                        DepotTruck?.config?.sandbox!!
                     )
                 } else {
                     /**
