@@ -42,6 +42,11 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
         this.notifyDataSetChanged()
     }
 
+    fun clear() {
+        trucksList.clear()
+        this.notifyDataSetChanged()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TruckViewHolder {
         val inflatedView =
@@ -87,6 +92,7 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
                                 DateUtils.formatElapsedTime(it).format("HH:mm:ss")
                         } else {
                             holder.expireTruckIndicator?.text = "Expired"
+                            holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
                         }
                     },
                         {

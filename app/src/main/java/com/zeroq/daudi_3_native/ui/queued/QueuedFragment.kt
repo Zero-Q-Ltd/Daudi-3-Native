@@ -72,10 +72,12 @@ class QueuedFragment : BaseFragment() {
         if (event.error == null) {
 
             if (event.trucks.isNullOrEmpty()) {
+                adapter.clear()
                 activityUtil.showTextViewState(
                     empty_view_q, true, "No trucks are in Queueing",
                     resources.getColor(R.color.colorPrimaryText)
                 )
+
             } else {
                 activityUtil.showTextViewState(
                     empty_view_q, false, null, null
@@ -83,6 +85,7 @@ class QueuedFragment : BaseFragment() {
                 adapter.replaceTrucks(event.trucks)
             }
         } else {
+            adapter.clear()
             activityUtil.showTextViewState(
                 empty_view_q, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",

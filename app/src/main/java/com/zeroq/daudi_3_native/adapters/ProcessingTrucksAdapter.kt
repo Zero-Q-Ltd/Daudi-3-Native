@@ -48,6 +48,11 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         this.notifyDataSetChanged()
     }
 
+    fun clear() {
+        trucksList.clear()
+        this.notifyDataSetChanged()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TruckViewHolder {
         val inflatedView =

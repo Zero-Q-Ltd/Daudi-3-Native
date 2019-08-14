@@ -135,8 +135,8 @@ class PrintingActivity : BaseActivity() {
                         applicationContext, "Device connection was lost",
                         Toast.LENGTH_SHORT
                     ).show()
-                    btnClose!!.isEnabled = false
-                    btnPrint!!.isEnabled = false
+                    btnClose?.isEnabled = false
+                    btnPrint?.isEnabled = false
                 }
                 BluetoothService.MESSAGE_UNABLE_CONNECT -> {
                     Toast.makeText(

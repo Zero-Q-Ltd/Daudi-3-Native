@@ -276,6 +276,7 @@ class MainActivity : BaseActivity() {
             if (truck.stage == 4) {
                 /**
                  * cancel the alarm that are not interested by it alarm
+                 * TODO: cancel when exiting this here is just useless
                  * */
 
                 truckNotification.cancelReminder(
