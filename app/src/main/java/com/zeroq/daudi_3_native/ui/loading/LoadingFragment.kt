@@ -1,11 +1,13 @@
 package com.zeroq.daudi_3_native.ui.loading
 
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,8 +24,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_loading.*
-import kotlinx.android.synthetic.main.fragment_processing.*
-import kotlinx.android.synthetic.main.fragment_queued.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -63,7 +63,16 @@ class LoadingFragment : BaseFragment() {
         })
 
         initRecyclerView()
+        createProgress()
         activityUtil.showProgress(spin_kit_l, true)
+    }
+
+    lateinit var progressDialog: Dialog
+    private fun createProgress() {
+        progressDialog = Dialog(activity)
+        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        progressDialog.setContentView(R.layout.custom_progress_dialog)
+        progressDialog.setCancelable(false)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -159,17 +168,19 @@ class LoadingFragment : BaseFragment() {
         sealSub = null
 
 
-        if (truck?.stagedata?.get("4")?.data == null) {
+        if (truck.stagedata?.get("4")?.data == null) {
             val sealDialog = LoadingDialogFragment(truck)
             sealSub = sealDialog.loadingEvent.subscribe {
                 sealDialog.dismiss() // hide dialog
-
+                progressDialog.show() // show dialog
 
                 viewModel.updateSeals(truck.Id!!, it).observe(this, Observer { result ->
                     if (result.isSuccessful) {
+                        progressDialog.hide() // hide progress
                         startLoadingOrderActivity(truck.Id!!)
                     } else {
-                        Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                        progressDialog.hide() // hide progress
+                        Toast.makeText(activity, "An error occurred while posting seal data", Toast.LENGTH_LONG).show()
                         Timber.e(result.error())
                     }
                 })
@@ -181,6 +192,8 @@ class LoadingFragment : BaseFragment() {
             startLoadingOrderActivity(truck.Id!!)
         }
     }
+
+
 
 
     private fun startLoadingOrderActivity(idTruck: String) {
