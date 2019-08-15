@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.broadcasts.TruckExpireBroadCast
 import com.zeroq.daudi_3_native.commons.BaseActivity
+import com.zeroq.daudi_3_native.data.models.DepotModel
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.events.ProcessingEvent
@@ -62,11 +63,13 @@ class MainActivity : BaseActivity() {
     lateinit var truckNotification: TruckNotification
 
 
-    lateinit var actionBar: ActionBar
+    private lateinit var actionBar: ActionBar
 
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
 
-    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var depot: DepotModel? = null
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     companion object {
         fun startActivity(context: Context) {
@@ -158,7 +161,17 @@ class MainActivity : BaseActivity() {
                 val userData = it.data()
                 mainViewModel.setDeportId(userData?.config?.depotdata?.depotid)
             } else {
-                Timber.e("Sorry an error occurred")
+                Timber.e(it.error())
+            }
+        })
+
+        mainViewModel.getDepot().observe(this, Observer {
+            if (it.isSuccessful) {
+                depot = it.data()
+
+            } else {
+                depot = null
+                Timber.e(it.error())
             }
         })
 

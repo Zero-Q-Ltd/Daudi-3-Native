@@ -98,7 +98,6 @@ class PrintingActivity : BaseActivity() {
         * */
         checkBluetoothState()
         operationBtns()
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
