@@ -31,6 +31,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_truck_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import net.glxn.qrgen.android.QRCode
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,6 +48,7 @@ class TruckDetailActivity : BaseActivity() {
 
     @Inject
     lateinit var activityUtil: ActivityUtil
+
 
     lateinit var truckDetailViewModel: TruckDetailViewModel
 
@@ -113,10 +115,10 @@ class TruckDetailActivity : BaseActivity() {
 
 
         initToolbar()
-        createProgress()
         topInputs()
         compartimentsButtonOps()
         compartmentsInputs()
+        initProgress()
     }
 
     private fun initialTruckValues(truck: TruckModel) {
@@ -196,8 +198,8 @@ class TruckDetailActivity : BaseActivity() {
         thread.start()
 
         btnPrint.setOnClickListener {
-            validateAndPost()
             progressDialog.show()
+            validateAndPost()
         }
 
         /**
@@ -214,9 +216,9 @@ class TruckDetailActivity : BaseActivity() {
         setSupportActionBar(toolbar)
     }
 
-    lateinit var progressDialog: Dialog
-    private fun createProgress() {
-        progressDialog = Dialog(this)
+    private lateinit var progressDialog: Dialog
+    private fun initProgress() {
+        progressDialog = Dialog(this@TruckDetailActivity)
         progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         progressDialog.setContentView(R.layout.custom_progress_dialog)
         progressDialog.setCancelable(false)
@@ -224,8 +226,6 @@ class TruckDetailActivity : BaseActivity() {
 
 
     private fun topInputs() {
-
-
         _topInputs.forEach {
             it.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
 
@@ -389,13 +389,15 @@ class TruckDetailActivity : BaseActivity() {
         if (pmsLocal == 0 && agoLocal == 0 && ikLocal == 0 && !inputErrors) {
             pushToServer()
         } else {
+
+            progressDialog.dismiss()
+
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (vibrator.hasVibrator()) {
                 vibrator.run { vibrate(500) } // for 500 ms
 
-                Toast.makeText(this, "Make sure you have no errors", Toast.LENGTH_SHORT).show()
 
-                progressDialog.hide()
+                toast("Make sure you have no errors")
             }
         }
 
@@ -436,7 +438,7 @@ class TruckDetailActivity : BaseActivity() {
                 // create an image to print
                 cleanPageForPrinting()
             } else {
-                progressDialog.hide()
+                progressDialog.dismiss()
                 Snackbar.make(layout_constraint, "An error occurred", Snackbar.LENGTH_SHORT).show()
                 Timber.e(it.error()!!)
 
@@ -469,7 +471,10 @@ class TruckDetailActivity : BaseActivity() {
             .subscribe {
                 if (it) {
                     hideButton(true)
-                    progressDialog.hide()
+
+                    progressDialog.dismiss()
+
+
                     PrintingActivity.startPrintingActivity(
                         this,
                         _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
@@ -480,7 +485,8 @@ class TruckDetailActivity : BaseActivity() {
                     /**
                      * An error occured
                      * */
-                    progressDialog.hide()
+                    progressDialog.dismiss()
+
                     Toast.makeText(this, "Sorry an error occurred", Toast.LENGTH_SHORT).show()
                     hideButton(true)
                 }

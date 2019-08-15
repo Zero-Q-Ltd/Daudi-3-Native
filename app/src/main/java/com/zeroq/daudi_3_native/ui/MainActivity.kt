@@ -33,6 +33,7 @@ import com.zeroq.daudi_3_native.ui.dialogs.ProfileDialogFragment
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import com.zeroq.daudi_3_native.utils.TruckNotification
+import com.zeroq.daudi_3_native.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -63,6 +64,9 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var truckNotification: TruckNotification
+
+    @Inject
+    lateinit var utils: Utils
 
 
     private lateinit var actionBar: ActionBar
@@ -313,9 +317,8 @@ class MainActivity : BaseActivity() {
 
         trucks.forEach { truck ->
 
-            val requestCode = truck.truckId!!
-                .replace("MK", "")
-                .toInt()
+            val requestCode = utils.stripNonDigits(truck.truckId!!)
+
 
 
 
