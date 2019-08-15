@@ -29,6 +29,7 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
+import com.zeroq.daudi_3_native.ui.dialogs.ProfileDialogFragment
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import com.zeroq.daudi_3_native.utils.TruckNotification
@@ -38,6 +39,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -107,6 +109,18 @@ class MainActivity : BaseActivity() {
             R.id.logout -> {
                 loggedOut()
             }
+
+            android.R.id.home -> {
+                if (depot != null) {
+                    val dialog = ProfileDialogFragment(
+                        firebaseAuth.currentUser!!,
+                        depot!!
+                    )
+                    dialog.show(supportFragmentManager, "PROFILE")
+                } else {
+                    toast("Check if the depot is set")
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -119,6 +133,9 @@ class MainActivity : BaseActivity() {
         supportActionBar!!.title = "Emkay"
 
         actionBar = supportActionBar as ActionBar
+
+        // default, to avoid, funny animation
+        setLogo(getDrawable(R.drawable.ic_profile)!!)
 
 
         Glide.with(this)
@@ -149,9 +166,11 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setLogo(d: Drawable) {
-        actionBar.setLogo(d)
-        actionBar.setDisplayUseLogoEnabled(true)
+//        actionBar.setLogo(d)
+        actionBar.setHomeAsUpIndicator(d)
+//        actionBar.setDisplayUseLogoEnabled(true)
         actionBar.setDisplayShowHomeEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun operations() {
