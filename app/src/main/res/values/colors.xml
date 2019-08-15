@@ -11,6 +11,7 @@
     <color name="colorDivider">#4DBDBDBD</color>
 
     <color name="yellowBack">#ABFDF011</color>
+    <color name="yellowBackDark">#ADB8AE03</color>
     <color name="white">#FFFFFF</color>
 
     <color name="pms">#ff6347</color>

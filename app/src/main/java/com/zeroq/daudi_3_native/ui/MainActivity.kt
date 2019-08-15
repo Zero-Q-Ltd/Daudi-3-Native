@@ -24,19 +24,23 @@ import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.broadcasts.TruckExpireBroadCast
 import com.zeroq.daudi_3_native.commons.BaseActivity
+import com.zeroq.daudi_3_native.data.models.DepotModel
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
+import com.zeroq.daudi_3_native.ui.dialogs.ProfileDialogFragment
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
 import com.zeroq.daudi_3_native.utils.TruckNotification
+import com.zeroq.daudi_3_native.utils.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.greenrobot.eventbus.EventBus
+import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -61,12 +65,17 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var truckNotification: TruckNotification
 
+    @Inject
+    lateinit var utils: Utils
 
-    lateinit var actionBar: ActionBar
 
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var actionBar: ActionBar
 
-    var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var mainViewModel: MainViewModel
+
+    private var depot: DepotModel? = null
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     companion object {
         fun startActivity(context: Context) {
@@ -104,6 +113,18 @@ class MainActivity : BaseActivity() {
             R.id.logout -> {
                 loggedOut()
             }
+
+            android.R.id.home -> {
+                if (depot != null) {
+                    val dialog = ProfileDialogFragment(
+                        firebaseAuth.currentUser!!,
+                        depot!!
+                    )
+                    dialog.show(supportFragmentManager, "PROFILE")
+                } else {
+                    toast("Check if the depot is set")
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -116,6 +137,9 @@ class MainActivity : BaseActivity() {
         supportActionBar!!.title = "Emkay"
 
         actionBar = supportActionBar as ActionBar
+
+        // default, to avoid, funny animation
+        setLogo(getDrawable(R.drawable.ic_profile)!!)
 
 
         Glide.with(this)
@@ -146,9 +170,11 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setLogo(d: Drawable) {
-        actionBar.setLogo(d)
-        actionBar.setDisplayUseLogoEnabled(true)
+//        actionBar.setLogo(d)
+        actionBar.setHomeAsUpIndicator(d)
+//        actionBar.setDisplayUseLogoEnabled(true)
         actionBar.setDisplayShowHomeEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun operations() {
@@ -158,7 +184,17 @@ class MainActivity : BaseActivity() {
                 val userData = it.data()
                 mainViewModel.setDeportId(userData?.config?.depotdata?.depotid)
             } else {
-                Timber.e("Sorry an error occurred")
+                Timber.e(it.error())
+            }
+        })
+
+        mainViewModel.getDepot().observe(this, Observer {
+            if (it.isSuccessful) {
+                depot = it.data()
+
+            } else {
+                depot = null
+                Timber.e(it.error())
             }
         })
 
@@ -281,9 +317,8 @@ class MainActivity : BaseActivity() {
 
         trucks.forEach { truck ->
 
-            val requestCode = truck.truckId!!
-                .replace("MK", "")
-                .toInt()
+            val requestCode = utils.stripNonDigits(truck.truckId!!)
+
 
 
 
