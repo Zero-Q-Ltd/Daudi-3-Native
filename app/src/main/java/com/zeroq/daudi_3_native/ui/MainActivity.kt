@@ -209,8 +209,6 @@ class MainActivity : BaseActivity() {
                     when (truckModel.stage) {
                         1 -> {
                             processingL.add(truckModel)
-
-
                         }
 
                         2 -> {

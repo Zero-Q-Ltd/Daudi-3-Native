@@ -16,14 +16,16 @@ data class TruckModel(
     var orderdata: OrderData?,
     var config: TruckConfig?,
     var fuel: Fuel?,
-    var stagedata: Map<String, Stage>?
+    var stagedata: Map<String, Stage>?,
+    var beforeTesting: Boolean?
 ) {
     constructor()
             : this(
         null, null,
-        null, null, null,
+        null, null, false,
         false, null, null,
         null, null, null,
-        null, null, null, null
+        null, null, null, null,
+        false
     )
 }
