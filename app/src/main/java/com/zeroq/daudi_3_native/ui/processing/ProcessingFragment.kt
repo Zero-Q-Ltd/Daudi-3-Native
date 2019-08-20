@@ -120,7 +120,7 @@ class ProcessingFragment : BaseFragment() {
         val cardBodyClick: Disposable = adapter.cardBodyClick
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                val printed = it?.truck?.isprinted
+                val printed = it?.truck?.isPrinted
 
                 if (printed!!) {
                     queueTruckDialog(it.truck)

@@ -68,6 +68,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
     override fun onBindViewHolder(holder: TruckViewHolder, position: Int) {
         val truck = trucksList[position]
+
         holder.bindPhoto(truck, context)
 
         if (holder.timerSubscription != null) {

@@ -205,7 +205,7 @@ class TruckDetailActivity : BaseActivity() {
         /**
          * disable views if the truck is already printed
          * */
-        if (truck.isprinted!!) {
+        if (truck.isPrinted!!) {
             activityUtil.disableViews(layout_constraint)
             btnPrint.isEnabled = true
         }
