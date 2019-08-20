@@ -242,7 +242,7 @@ class PrintingActivity : BaseActivity() {
     }
 
     private fun startPrintingProcess() {
-        val msg = "Tel : 0733474703       www.emkaynow.com"
+        val msg = "Tel : 0733474703       https://emkaynow.com"
         val lang = getString(R.string.strLang)
 
         printImage()

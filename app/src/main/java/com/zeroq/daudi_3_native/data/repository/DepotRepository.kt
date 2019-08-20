@@ -176,6 +176,34 @@ class DepotRepository
             transaction.update(truckRef, "isprinted", printingState)
             transaction.update(truckRef, "isPrinted", printingState)
 
+            if (!truck?.isPrinted!!) {
+
+                val minutes = 45L
+
+                // add new time
+                val startDate = Calendar.getInstance().time
+
+                val exTime: String = MyTimeUtils.formatElapsedTime(TimeUnit.MINUTES.toMillis(minutes))
+
+                val calendar = Calendar.getInstance()
+                calendar.time = startDate
+                calendar.add(Calendar.MINUTE, minutes.toInt())
+
+                val expireDate = calendar.time
+
+
+                val expireObj = Expiry(startDate, exTime, expireDate)
+                val exp: ArrayList<Expiry> = ArrayList()
+
+                exp.add(expireObj)
+
+                /**
+                 * overwrite the existing time to start calculating time at the front end
+                 * */
+                transaction.update(truckRef, "stagedata.1.data.expiry", exp)
+
+            }
+
             return@runTransaction null
         }
 
