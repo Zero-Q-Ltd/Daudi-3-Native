@@ -8,7 +8,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="2dp"
-        app:cardElevation="6dp">
+        app:cardElevation="6dp"
+        android:id="@+id/parentLayout">
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +49,7 @@
             <LinearLayout
                     android:id="@+id/card_body"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:orientation="horizontal"
                     android:layout_weight="2">
 
@@ -67,10 +69,10 @@
                         <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_company"
+                                app:srcCompat="@drawable/ic_company"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
-                                android:tint="@color/colorSecondaryText"/>
+                                app:tint="@color/icon_state_bg"/>
 
                         <TextView
                                 android:id="@+id/tv_company"
@@ -78,7 +80,7 @@
                                 android:layout_height="wrap_content"
                                 tools:text="MAFUKO MERU"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="8dp"/>
+                                android:layout_marginStart="8dp"/>
 
                     </LinearLayout>
 
@@ -94,7 +96,7 @@
                                 android:src="@drawable/ic_user"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
-                                android:tint="@color/colorSecondaryText"/>
+                                app:tint="@color/icon_state_bg"/>
 
                         <TextView
                                 android:id="@+id/tv_driver"
@@ -102,7 +104,7 @@
                                 android:layout_height="wrap_content"
                                 tools:text="KAMANA KISINGA"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="8dp"/>
+                                android:layout_marginStart="8dp"/>
 
                     </LinearLayout>
 
@@ -118,7 +120,7 @@
                                 android:src="@drawable/ic_phone"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
-                                android:tint="@color/colorSecondaryText"/>
+                                app:tint="@color/icon_state_bg"/>
 
                         <TextView
                                 android:id="@+id/tv_phone"
@@ -126,7 +128,7 @@
                                 android:layout_height="wrap_content"
                                 tools:text="718101442"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="8dp"/>
+                                android:layout_marginStart="8dp"/>
 
                     </LinearLayout>
 
@@ -138,7 +140,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingLeft="16dp">
+                        android:paddingStart="16dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -156,14 +158,14 @@
 
                             <View android:layout_width="20dp"
                                   android:layout_height="20dp"
-                                  android:background="@drawable/pms_fuel_bg"/>
+                                  android:background="@drawable/pms_state_bg"/>
 
                             <TextView
                                     android:id="@+id/tv_pms"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:layout_marginLeft="8dp"/>
+                                    android:layout_marginStart="8dp"/>
 
                         </LinearLayout>
 
@@ -177,14 +179,14 @@
 
                             <View android:layout_width="20dp"
                                   android:layout_height="20dp"
-                                  android:background="@drawable/ago_fuel_bg"/>
+                                  android:background="@drawable/ago_state_bg"/>
 
                             <TextView
                                     android:id="@+id/tv_ago"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:layout_marginLeft="8dp"/>
+                                    android:layout_marginStart="8dp"/>
 
                         </LinearLayout>
 
@@ -198,14 +200,14 @@
 
                             <View android:layout_width="20dp"
                                   android:layout_height="20dp"
-                                  android:background="@drawable/ik_fuel_bg"/>
+                                  android:background="@drawable/ik_state_bg"/>
 
                             <TextView
                                     android:id="@+id/tv_ik"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:layout_marginLeft="8dp"/>
+                                    android:layout_marginStart="8dp"/>
 
                         </LinearLayout>
                     </LinearLayout>

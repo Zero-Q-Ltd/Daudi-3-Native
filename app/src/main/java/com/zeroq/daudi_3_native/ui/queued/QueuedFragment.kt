@@ -95,7 +95,7 @@ class QueuedFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
-        adapter = QueuedTrucksAdapter()
+        adapter = QueuedTrucksAdapter(activityUtil)
 
         queueing_view.layoutManager = LinearLayoutManager(activity)
         queueing_view.adapter = adapter

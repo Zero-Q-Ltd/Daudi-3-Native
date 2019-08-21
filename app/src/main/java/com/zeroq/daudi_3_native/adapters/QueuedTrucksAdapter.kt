@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -24,7 +27,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.math.floor
 
-class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHolder>() {
+class QueuedTrucksAdapter(var activityUtil: ActivityUtil) :
+    RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHolder>() {
 
 
     private val trucksList = ArrayList<TruckModel>()
@@ -132,10 +136,23 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
         holder.cardBody?.setOnClickListener {
             cardBodyClick.onNext(RecyclerTruckEvent(position, truck))
         }
+
+        /**
+         * disable or enable views base on
+         *  frozen, field
+         * */
+
+        if (truck.frozen!!) {
+            activityUtil.totalDisableViews(holder.parentLayout as ViewGroup)
+        } else {
+            activityUtil.enableViews(holder.parentLayout as ViewGroup)
+        }
     }
 
 
     class TruckViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        var parentLayout: CardView? = null
 
         var cardBody: LinearLayout? = null
 
@@ -190,6 +207,8 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
 
 
         init {
+
+            parentLayout = v.findViewById(R.id.parentLayout)
 
             cardBody = v.findViewById(R.id.card_body)
 
@@ -262,28 +281,35 @@ class QueuedTrucksAdapter : RecyclerView.Adapter<QueuedTrucksAdapter.TruckViewHo
                 "pms" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.pms),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.pms_color_state_bg)
                     )
                 }
 
                 "ago" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.ago),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.ago_color_state_bg)
                     )
-
                 }
 
                 "ik" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.ik),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.ik_color_state_bg)
+                    )
+                }
+                else -> {
+                    varibles[index].fuelQuantity?.text = "0"
+
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.empty_color_state_bg)
                     )
                 }
             }

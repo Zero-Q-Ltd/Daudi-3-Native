@@ -1,18 +1,20 @@
 package com.zeroq.daudi_3_native.adapters
 
 import android.content.Context
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.RecyclerTruckEvent
+import com.zeroq.daudi_3_native.utils.ActivityUtil
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,7 +28,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.floor
 
 
-class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.TruckViewHolder>() {
+class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
+    RecyclerView.Adapter<ProcessingTrucksAdapter.TruckViewHolder>() {
 
 
     private val trucksList = ArrayList<TruckModel>()
@@ -55,6 +58,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TruckViewHolder {
+
+
         val inflatedView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.truck_card_layout, parent, false)
@@ -83,7 +88,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
         val diffTime = floor(stageTime.minus(currentTime).toDouble() / 1000).toLong()
 
         if (diffTime > 0) {
-            holder.bottomLinearBar?.setBackgroundResource(R.color.colorPrimary)
+            holder.bottomLinearBar?.setBackgroundResource(R.drawable.active_state)
             holder.expireTruckIndicator?.text = ""
 
             val observable = Observable.interval(1, TimeUnit.SECONDS)
@@ -98,7 +103,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                             holder.expireTruckIndicator?.text =
                                 MyTimeUtils.formatElapsedTime(it * 1000)
                         } else {
-                            holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
+                            holder.bottomLinearBar?.setBackgroundResource(R.drawable.expired_state_bg)
                             holder.expireTruckIndicator?.text = "Expired"
                         }
                     },
@@ -107,7 +112,7 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
                         })
 
         } else {
-            holder.bottomLinearBar?.setBackgroundResource(R.color.pms)
+            holder.bottomLinearBar?.setBackgroundResource(R.drawable.expired_state_bg)
             holder.expireTruckIndicator?.text = "Expired"
         }
 
@@ -148,10 +153,23 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             return@setOnLongClickListener true
         }
 
+        /**
+         * disable or enable views base on
+         *  frozen, field
+         * */
+
+        if (truck.frozen!!) {
+            activityUtil.totalDisableViews(holder.parentLayout as ViewGroup)
+        } else {
+            activityUtil.enableViews(holder.parentLayout as ViewGroup)
+        }
+
     }
 
 
     class TruckViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        var parentLayout: CardView? = null
 
         private var _orderNumber: TextView? = null
         private var numberPlate: TextView? = null
@@ -205,6 +223,8 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
 
 
         init {
+
+            parentLayout = v.findViewById(R.id.parentLayout)
 
             _orderNumber = v.findViewById(R.id.tv_order_number)
             numberPlate = v.findViewById(R.id.tv_number_plate)
@@ -267,45 +287,48 @@ class ProcessingTrucksAdapter : RecyclerView.Adapter<ProcessingTrucksAdapter.Tru
             _ikTotal?.text = truck.fuel?.ik?.qty.toString()
 
             truck.compartments?.forEachIndexed { index, compartment ->
-                setCompValues(index, compartment.fueltype, compartment.qty, context)
+                setCompValues(index, compartment.fueltype, compartment.qty, context, truck.frozen!!)
             }
         }
 
-        private fun setCompValues(index: Int, fuelType: String?, quantity: Int?, context: Context) {
+        private fun setCompValues(
+            index: Int, fuelType: String?, quantity: Int?,
+            context: Context, frozen: Boolean
+        ) {
             when (fuelType) {
                 "pms" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.pms),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.pms_color_state_bg)
                     )
                 }
 
                 "ago" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.ago),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.ago_color_state_bg)
                     )
-
                 }
 
                 "ik" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.ik),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.ik_color_state_bg)
                     )
                 }
                 else -> {
                     varibles[index].fuelQuantity?.text = "0"
 
-                    varibles[index].fuelType?.setColorFilter(
-                        ContextCompat.getColor(context, R.color.empty_comp),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable.mutate(),
+                        ContextCompat.getColorStateList(context, R.color.empty_color_state_bg)
                     )
                 }
             }

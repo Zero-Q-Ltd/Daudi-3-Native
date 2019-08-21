@@ -47,4 +47,33 @@ class ActivityUtil @Inject constructor() {
         }
     }
 
+    fun totalDisableViews(layout: ViewGroup) {
+        layout.isEnabled = false
+
+        for (i in 0 until layout.childCount) {
+            val child: View = layout.getChildAt(i)
+
+            if (child is ViewGroup) {
+                disableViews(child)
+            } else {
+                child.isEnabled = false
+            }
+        }
+    }
+
+
+    fun enableViews(layout: ViewGroup) {
+        layout.isEnabled = true
+
+        for (i in 0 until layout.childCount) {
+            val child: View = layout.getChildAt(i)
+
+            if (child is ViewGroup) {
+                enableViews(child)
+            } else {
+                child.isEnabled = true
+            }
+        }
+    }
+
 }
