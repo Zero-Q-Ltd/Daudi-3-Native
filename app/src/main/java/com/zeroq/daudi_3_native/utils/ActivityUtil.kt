@@ -2,7 +2,9 @@ package com.zeroq.daudi_3_native.utils
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import javax.inject.Inject
 
 class ActivityUtil @Inject constructor() {
@@ -38,12 +40,22 @@ class ActivityUtil @Inject constructor() {
             if (child is ViewGroup) {
                 disableViews(child)
             } else {
-                /**
-                 * if (child is EditText || child is AppCompatButton) {
-                 *    child.isEnabled = false
-                 *  }
-                 *
-                 * **/
+                if (child is EditText || child is AppCompatButton) {
+                    child.isEnabled = false
+                }
+            }
+        }
+    }
+
+    fun totalDisableViews(layout: ViewGroup) {
+        layout.isEnabled = false
+
+        for (i in 0 until layout.childCount) {
+            val child: View = layout.getChildAt(i)
+
+            if (child is ViewGroup) {
+                disableViews(child)
+            } else {
                 child.isEnabled = false
             }
         }

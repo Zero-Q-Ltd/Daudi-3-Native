@@ -106,7 +106,7 @@ class LoadingFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
-        adapter = LoadingTrucksAdapter()
+        adapter = LoadingTrucksAdapter(activityUtil)
 
         loading_view.layoutManager = LinearLayoutManager(activity)
         loading_view.adapter = adapter

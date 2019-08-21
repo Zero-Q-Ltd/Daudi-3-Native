@@ -159,7 +159,7 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
          * */
 
         if (truck.frozen!!) {
-            activityUtil.disableViews(holder.parentLayout as ViewGroup)
+            activityUtil.totalDisableViews(holder.parentLayout as ViewGroup)
         } else {
             activityUtil.enableViews(holder.parentLayout as ViewGroup)
         }
@@ -300,7 +300,7 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
                     DrawableCompat.setTintList(
-                        varibles[index].fuelType!!.drawable,
+                        varibles[index].fuelType!!.drawable.mutate(),
                         ContextCompat.getColorStateList(context, R.color.pms_color_state_bg)
                     )
                 }
@@ -309,7 +309,7 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
                     DrawableCompat.setTintList(
-                        varibles[index].fuelType!!.drawable,
+                        varibles[index].fuelType!!.drawable.mutate(),
                         ContextCompat.getColorStateList(context, R.color.ago_color_state_bg)
                     )
                 }
@@ -319,7 +319,7 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
 
 
                     DrawableCompat.setTintList(
-                        varibles[index].fuelType!!.drawable,
+                        varibles[index].fuelType!!.drawable.mutate(),
                         ContextCompat.getColorStateList(context, R.color.ik_color_state_bg)
                     )
                 }
@@ -327,7 +327,7 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
                     varibles[index].fuelQuantity?.text = "0"
 
                     DrawableCompat.setTintList(
-                        varibles[index].fuelType!!.drawable,
+                        varibles[index].fuelType!!.drawable.mutate(),
                         ContextCompat.getColorStateList(context, R.color.empty_color_state_bg)
                     )
                 }
