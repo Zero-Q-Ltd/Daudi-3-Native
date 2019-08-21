@@ -24,11 +24,10 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        requestPermissions()
-
         // get viewmodel
         viewModel = getViewModel(SplashViewModel::class.java)
         showProgress(true)
+
 
         /**
          * delay for better transition
@@ -36,8 +35,10 @@ class SplashActivity : BaseActivity() {
         Handler().postDelayed({
             operations()
         }, 1000)
-
     }
+
+
+
 
     private fun operations() {
         var signTrigger = false
@@ -65,32 +66,6 @@ class SplashActivity : BaseActivity() {
                 }
             this.finish()
         })
-    }
-
-    private fun requestPermissions() {
-        Dexter.withActivity(this)
-            .withPermissions(
-                android.Manifest.permission.GET_ACCOUNTS,
-                android.Manifest.permission.READ_CONTACTS,
-                android.Manifest.permission.VIBRATE,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-                android.Manifest.permission.WAKE_LOCK,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
-                ) {
-
-                }
-            }).check()
     }
 
     private fun showProgress(show: Boolean) {
