@@ -10,11 +10,12 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.data.repository.DepotRepository
+import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.Resource
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    adminRepo: AdminRepository,
+    var adminRepo: AdminRepository,
     depotRepository: DepotRepository,
     firebaseAuth: FirebaseAuth
 ) : ViewModel() {
@@ -51,5 +52,9 @@ class MainViewModel @Inject constructor(
 
     fun getDepot(): LiveData<Resource<DepotModel>> {
         return _depo
+    }
+
+    fun postToken(token: String): CompletionLiveData{
+        return adminRepo.postFcmToken(_userId.value!!, token)
     }
 }

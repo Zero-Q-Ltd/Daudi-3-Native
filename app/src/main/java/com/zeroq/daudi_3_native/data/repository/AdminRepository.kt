@@ -1,8 +1,8 @@
 package com.zeroq.daudi_3_native.data.repository
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.zeroq.daudi_3_native.data.models.UserModel
+import com.zeroq.daudi_3_native.vo.CompletionLiveData
 import com.zeroq.daudi_3_native.vo.DocumentLiveData
 import javax.inject.Inject
 import javax.inject.Named
@@ -17,5 +17,15 @@ constructor(@Named("admins") val admins: CollectionReference) {
         adminRef.addSnapshotListener(data)
 
         return data
+    }
+
+    fun postFcmToken(adminId: String, token: String): CompletionLiveData {
+        val adminRef = admins.document(adminId)
+        val completion = CompletionLiveData()
+
+        adminRef.update("fcmtokens.apk", token)
+            .addOnCompleteListener(completion)
+
+        return completion
     }
 }
