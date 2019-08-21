@@ -25,5 +25,10 @@
 
     <color name="warning">#ff6347</color>
 
+    <color name="expired_state">#ff6347</color>
+    <color name="state_disabled">#4DBDBDBD</color>
+
+    <color name="active_state">#03A9F4</color>
+
 
 </resources>

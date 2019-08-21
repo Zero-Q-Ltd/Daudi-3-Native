@@ -103,7 +103,7 @@ class ProcessingFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
-        adapter = ProcessingTrucksAdapter()
+        adapter = ProcessingTrucksAdapter(activityUtil)
 
         processing_view.layoutManager = LinearLayoutManager(activity)
         processing_view.adapter = adapter
