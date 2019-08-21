@@ -16,6 +16,11 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Batches
@@ -121,6 +126,7 @@ class TruckDetailActivity : BaseActivity() {
         initProgress()
     }
 
+
     private fun initialTruckValues(truck: TruckModel) {
 
         _fuelTypeList.clear()
@@ -199,7 +205,7 @@ class TruckDetailActivity : BaseActivity() {
 
         btnPrint.setOnClickListener {
             progressDialog.show()
-            validateAndPost()
+            requestPermissions()
         }
 
         /**
@@ -325,6 +331,28 @@ class TruckDetailActivity : BaseActivity() {
         }
 
         return temp ?: "****************"
+    }
+
+
+
+    private fun requestPermissions() {
+        Dexter.withActivity(this)
+            .withPermissions(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    validateAndPost()
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+
+                }
+            }).check()
     }
 
     private fun validateAndPost() {
