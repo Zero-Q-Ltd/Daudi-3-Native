@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.data.models.TruckModel
@@ -298,67 +299,37 @@ class ProcessingTrucksAdapter(var activityUtil: ActivityUtil) :
                 "pms" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    if (frozen) {
-
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.state_disabled),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-
-                    } else {
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.pms),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    }
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable,
+                        ContextCompat.getColorStateList(context, R.color.pms_color_state_bg)
+                    )
                 }
 
                 "ago" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    if (frozen) {
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.state_disabled),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    } else {
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.ago),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    }
-
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable,
+                        ContextCompat.getColorStateList(context, R.color.ago_color_state_bg)
+                    )
                 }
 
                 "ik" -> {
                     varibles[index].fuelQuantity?.text = quantity.toString()
 
-                    if (frozen) {
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.state_disabled),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    } else {
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.ik),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    }
+
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable,
+                        ContextCompat.getColorStateList(context, R.color.ik_color_state_bg)
+                    )
                 }
                 else -> {
                     varibles[index].fuelQuantity?.text = "0"
 
-                    if(frozen){
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.state_disabled),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    }else{
-                        varibles[index].fuelType?.setColorFilter(
-                            ContextCompat.getColor(context, R.color.empty_comp),
-                            android.graphics.PorterDuff.Mode.SRC_IN
-                        )
-                    }
+                    DrawableCompat.setTintList(
+                        varibles[index].fuelType!!.drawable,
+                        ContextCompat.getColorStateList(context, R.color.empty_color_state_bg)
+                    )
                 }
             }
         }
