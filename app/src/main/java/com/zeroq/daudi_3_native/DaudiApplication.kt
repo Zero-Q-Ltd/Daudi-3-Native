@@ -1,6 +1,8 @@
 package com.zeroq.daudi_3_native
 
+
 import com.google.firebase.auth.FirebaseAuth
+import com.zeroq.daudi_3_native.data.repository.AdminRepository
 import com.zeroq.daudi_3_native.di.DaggerAppComponent
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
 import com.zeroq.daudi_3_native.utils.ReleaseTree
@@ -14,6 +16,9 @@ class DaudiApplication : DaggerApplication() {
     private lateinit var fireAuthListener: FirebaseAuth.AuthStateListener
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+
+    @Inject
+    lateinit var adminRepository: AdminRepository
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         val appComponent = DaggerAppComponent

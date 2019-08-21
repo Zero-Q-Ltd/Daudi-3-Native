@@ -20,7 +20,9 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.broadcasts.TruckExpireBroadCast
 import com.zeroq.daudi_3_native.commons.BaseActivity
@@ -96,6 +98,9 @@ class MainActivity : BaseActivity() {
             setupBottomNavigationBar()
 
         operations()
+
+        // set token to server
+        postTokenToServer()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
@@ -362,6 +367,28 @@ class MainActivity : BaseActivity() {
                 requestCode
             )
         }
+    }
+
+    fun postTokenToServer() {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Timber.e(task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+
+                mainViewModel.postToken(token!!).observe(this, Observer {
+                    if (!it.isSuccessful) {
+                        Timber.e(it.error())
+                    }
+                })
+
+                Timber.d(token)
+            })
+
     }
 
     override fun onStart() {
