@@ -3,17 +3,28 @@ package com.zeroq.daudi_3_native.ui.average_prices
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
+import com.zeroq.daudi_3_native.commons.BaseActivity
+import com.zeroq.daudi_3_native.data.models.OmcModel
+import com.zeroq.daudi_3_native.ui.dialogs.AverageDialogFragment
 import kotlinx.android.synthetic.main.activity_average_price.*
 import kotlinx.android.synthetic.main.pms_average_card.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.toast
+import timber.log.Timber
 
-class AveragePriceActivity : AppCompatActivity() {
+class AveragePriceActivity : BaseActivity() {
+
+
+    lateinit var viewModel: AverageViewModel
+    private var omcs: List<OmcModel>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_average_price)
+
+        viewModel = getViewModel(AverageViewModel::class.java)
 
         setupToolbar()
 
@@ -21,8 +32,22 @@ class AveragePriceActivity : AppCompatActivity() {
             toggleSlide(pmsPriceList)
         }
 
-        addFuel.setOnClickListener {
+        viewModel.getOmcs().observe(this, Observer {
+            if (it.isSuccessful) {
+                omcs = it.data()
+            } else {
+                omcs = null
+                Timber.e(it.error())
+            }
+        })
 
+        addFuel.setOnClickListener {
+            if (!omcs.isNullOrEmpty()) {
+                val dialog = AverageDialogFragment(omcs!!)
+                dialog.show(supportFragmentManager, "average")
+            } else {
+                toast("No Omcs vailable, wait and then try again")
+            }
         }
 
     }

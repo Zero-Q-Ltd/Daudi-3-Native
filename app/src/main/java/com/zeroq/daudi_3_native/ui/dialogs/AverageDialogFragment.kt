@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.zeroq.daudi_3_native.R
+import com.zeroq.daudi_3_native.adapters.OmcSpinnerAdapter
 import com.zeroq.daudi_3_native.data.models.OmcModel
+import kotlinx.android.synthetic.main.fragment_average_dialog.*
 
-class AverageDialogFragment(var omcs: ArrayList<OmcModel>) : DialogFragment() {
+class AverageDialogFragment(var omcs: List<OmcModel>) : DialogFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,6 +37,7 @@ class AverageDialogFragment(var omcs: ArrayList<OmcModel>) : DialogFragment() {
 
 
     private fun initView() {
-
+        val adapter = OmcSpinnerAdapter(activity!!.baseContext, R.layout.spinner_row, ArrayList(omcs))
+        spinner.adapter = adapter
     }
 }

@@ -3,6 +3,7 @@ package com.zeroq.daudi_3_native.di.modules
 import com.zeroq.daudi_3_native.di.fragment_modules.FragmentMainModules
 import com.zeroq.daudi_3_native.ui.MainActivity
 import com.zeroq.daudi_3_native.ui.activate.ActivateActivity
+import com.zeroq.daudi_3_native.ui.average_prices.AveragePriceActivity
 import com.zeroq.daudi_3_native.ui.device_list.DeviceListActivity
 import com.zeroq.daudi_3_native.ui.loading_order.LoadingOrderActivity
 import com.zeroq.daudi_3_native.ui.login.LoginActivity
@@ -38,6 +39,9 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector
     internal abstract fun bindLoadingOrderActivity(): LoadingOrderActivity
+
+    @ContributesAndroidInjector
+    internal abstract fun bindAveragePriceActivity(): AveragePriceActivity
 
 
     @ContributesAndroidInjector
