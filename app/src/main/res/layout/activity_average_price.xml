@@ -7,4 +7,106 @@
         android:layout_height="match_parent"
         tools:context=".ui.average_prices.AveragePriceActivity">
 
+    <include
+            layout="@layout/toolbar"
+            app:layout_constraintTop_toBottomOf="parent"/>
+
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="16dp">
+
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="2dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:background="@color/pms">
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                              android:text="@string/pms_averange"
+                              android:textColor="@color/white"/>
+
+                </FrameLayout>
+
+                <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:background="@color/semi_white">
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                              android:text="69.98"
+                              android:textColor="@color/grey_700"/>
+
+                </FrameLayout>
+
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:background="@color/semi_white_2"
+                        android:orientation="vertical">
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Last edited by"
+                              android:textColor="@color/grey_700"/>
+
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="Mutheu kim @ 11.40 pm"
+                              android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                              android:textColor="@color/grey_700"/>
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/price_list"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+
+                    <include layout="@layout/single_price_row"/>
+                    <include layout="@layout/single_price_row"/>
+                    <include layout="@layout/single_price_row"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </ScrollView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_fuel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@color/white"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
