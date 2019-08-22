@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.zeroq.daudi_3_native.R
+import kotlinx.android.synthetic.main.activity_average_price.*
 import kotlinx.android.synthetic.main.pms_average_card.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -20,6 +21,9 @@ class AveragePriceActivity : AppCompatActivity() {
             toggleSlide(pmsPriceList)
         }
 
+        addFuel.setOnClickListener {
+
+        }
 
     }
 

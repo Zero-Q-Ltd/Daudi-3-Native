@@ -12,10 +12,10 @@ class DocumentLiveData<T>(private val ref: DocumentReference, private val type: 
 
     override fun onEvent(snapshot: DocumentSnapshot?, e: FirebaseFirestoreException?) {
         if (e != null) {
-            setValue(Resource(e))
+            value = Resource(e)
             return
         }
-        setValue(Resource(snapshot!!.toObject(type) as T))
+        value = Resource(snapshot!!.toObject(type) as T)
     }
 
     override fun onActive() {
