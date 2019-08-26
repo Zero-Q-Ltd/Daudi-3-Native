@@ -16,4 +16,7 @@ class OmcRepository @Inject constructor(
     fun getAllOmcs(): QueryLiveData<OmcModel> {
         return QueryLiveData(omc, OmcModel::class.java)
     }
+
+
+
 }
