@@ -3,6 +3,7 @@ package com.zeroq.daudi_3_native.ui.average_prices
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
@@ -182,6 +183,7 @@ class AveragePriceActivity : BaseActivity() {
             // empty values
             pmsPriceAverage.amount = 0.00f
             pmsLastEdit.text = "Never"
+            pmsPriceList.removeAllViews()
         } else {
 
             pmsLastEdit.text = getFormattedDateUser(
@@ -202,14 +204,21 @@ class AveragePriceActivity : BaseActivity() {
                 val fuelPrice: TextView = view.findViewById(R.id.fuelPrice)
                 val fuelOmc: TextView = view.findViewById(R.id.fuelOmc)
                 val userAdd: TextView = view.findViewById(R.id.userAdd)
+                val priceId: TextView = view.findViewById(R.id.priceId)
+
 
                 fuelPrice.text = it.price.toString()
                 fuelOmc.text = getOmcName(it.omcId!!)
-
-
-
                 userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
 
+
+                val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
+                priceId.text = it.snapshotid
+
+                priceRow.setOnLongClickListener {
+                    deletePrice(priceId.text.toString())
+                    true
+                }
 
                 pmsPriceList.addView(view)
             }
@@ -221,6 +230,7 @@ class AveragePriceActivity : BaseActivity() {
             // empty values
             agoPriceAverage.amount = 0.00f
             agoLastEdit.text = "Never"
+            agoPriceList.removeAllViews()
         } else {
 
             agoLastEdit.text = getFormattedDateUser(
@@ -249,6 +259,15 @@ class AveragePriceActivity : BaseActivity() {
 
                 userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
 
+                val priceId: TextView = view.findViewById(R.id.priceId)
+                val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
+                priceId.text = it.snapshotid
+
+                priceRow.setOnLongClickListener {
+                    deletePrice(priceId.text.toString())
+                    true
+                }
+
 
                 agoPriceList.addView(view)
             }
@@ -261,6 +280,7 @@ class AveragePriceActivity : BaseActivity() {
             // empty values
             ikPriceAverage.amount = 0.00f
             ikLastEdit.text = "Never"
+            ikPriceList.removeAllViews()
         } else {
 
             ikLastEdit.text = getFormattedDateUser(
@@ -285,13 +305,30 @@ class AveragePriceActivity : BaseActivity() {
                 fuelPrice.text = it.price.toString()
                 fuelOmc.text = getOmcName(it.omcId!!)
 
-
-
                 userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
+
+                val priceId: TextView = view.findViewById(R.id.priceId)
+                val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
+                priceId.text = it.snapshotid
+
+                priceRow.setOnLongClickListener {
+                    deletePrice(priceId.text.toString())
+                    true
+                }
 
 
                 ikPriceList.addView(view)
             }
         }
+    }
+
+    private fun deletePrice(avg: String) {
+        viewModel.deletePrice(avg!!).observe(this, Observer {
+            if (it.isSuccessful) {
+                toast("Deleted")
+            } else {
+                Timber.e(it.error())
+            }
+        })
     }
 }

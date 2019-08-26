@@ -674,8 +674,7 @@ class DepotRepository
         depotId: String,
         firebaseUser: FirebaseUser,
         omcEvent: AverageDialogEvent
-    ):
-            Task<Void> {
+    ): Task<Void> {
 
 
         return firestore.runTransaction { transaction ->
@@ -755,6 +754,18 @@ class DepotRepository
             .orderBy("user.time", Query.Direction.ASCENDING)
 
         return QueryLiveData(query, AveragePriceModel::class.java)
+    }
+
+    fun deleteFuelPrices(depotId: String, priceFuel: String): CompletionLiveData {
+        val query = depots
+            .document(depotId)
+            .collection("avgprices")
+            .document(priceFuel)
+            .delete()
+        val completion = CompletionLiveData()
+        query.addOnCompleteListener(completion)
+
+        return completion
     }
 
 }

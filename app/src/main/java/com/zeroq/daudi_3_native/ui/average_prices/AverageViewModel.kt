@@ -68,4 +68,8 @@ class AverageViewModel @Inject constructor(
     fun getTodayPrices(): LiveData<Resource<List<AveragePriceModel>>> {
         return todaysFuelPrices
     }
+
+    fun deletePrice(fuelPriceId: String): CompletionLiveData {
+        return depotRepository.deleteFuelPrices(_depotId.value!!, fuelPriceId)
+    }
 }

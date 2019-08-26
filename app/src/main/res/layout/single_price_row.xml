@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/priceRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -41,5 +42,11 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="@color/grey_700"
             tools:text="Mutheu Kim @ 11.45 AM" />
+
+    <TextView
+            android:id="@+id/priceId"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:visibility="gone" />
 
 </LinearLayout>
