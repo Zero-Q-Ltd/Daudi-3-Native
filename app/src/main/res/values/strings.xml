@@ -28,4 +28,6 @@
     <string name="print">print</string>
     <string name="test_print">Test Print</string>
     <string name="pms_averange">PMS AVERANGE</string>
+    <string name="ago_averange">AGO AVERANGE</string>
+    <string name="ik_averange">IK AVERAGE</string>
 </resources>

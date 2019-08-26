@@ -3,6 +3,7 @@ package com.zeroq.daudi_3_native.ui.average_prices
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
@@ -12,10 +13,15 @@ import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.ui.dialogs.AverageDialogFragment
 import com.zeroq.daudi_3_native.ui.dialogs.data.AverageDialogEvent
 import kotlinx.android.synthetic.main.activity_average_price.*
+import kotlinx.android.synthetic.main.ago_average_card.*
+import kotlinx.android.synthetic.main.ik_average_card.*
 import kotlinx.android.synthetic.main.pms_average_card.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AveragePriceActivity : BaseActivity() {
 
@@ -24,17 +30,20 @@ class AveragePriceActivity : BaseActivity() {
     private var omcs: List<OmcModel>? = null
     private var userModel: UserModel? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override
+
+    fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_average_price)
 
         viewModel = getViewModel(AverageViewModel::class.java)
 
+
         setupToolbar()
 
-        pmsAverageParent.setOnClickListener {
-            toggleSlide(pmsPriceList)
-        }
+        pmsAverageParent.setOnClickListener { toggleSlide(pmsPriceList) }
+        agoAverageParent.setOnClickListener { toggleSlide(agoPriceList) }
+        ikAverageParent.setOnClickListener { toggleSlide(ikPriceList) }
 
         viewModel.getOmcs().observe(this, Observer {
             if (it.isSuccessful) {
@@ -142,9 +151,147 @@ class AveragePriceActivity : BaseActivity() {
                     }
                 }
 
+                pmsView(pmsPrices)
+                agoView(agoPrices)
+                ikView(ikPrices)
+
             } else {
                 Timber.e(it.error())
             }
         })
+    }
+
+    private fun getOmcName(omcId: String): String? {
+        var v: OmcModel? = null
+
+        omcs?.forEach {
+            if (it.snapshotid == omcId) v = it
+        }
+
+        v.let { return it?.name }
+    }
+
+    private fun getFormattedDateUser(d: Date, u: String): String? {
+        val dateFormat = SimpleDateFormat("hh:mm a")
+        val dateString = dateFormat.format(d)
+        return "$u @ $dateString"
+    }
+
+    private fun pmsView(pmsPrices: ArrayList<AveragePriceModel>) {
+        if (pmsPrices.isEmpty()) {
+            // empty values
+            pmsPriceAverage.amount = 0.00f
+            pmsLastEdit.text = "Never"
+        } else {
+
+            pmsLastEdit.text = getFormattedDateUser(
+                pmsPrices[pmsPrices.lastIndex].user?.time!!,
+                pmsPrices[pmsPrices.lastIndex].user?.name!!
+            )
+
+            var totalPrice: Double = 0.0
+            pmsPrices.forEach {
+                totalPrice += it.price!!
+            }
+
+            pmsPriceAverage.amount = (totalPrice / pmsPrices.size).toFloat()
+
+            pmsPriceList.removeAllViews()
+            pmsPrices.forEach {
+                val view: View = layoutInflater.inflate(R.layout.single_price_row, null)
+                val fuelPrice: TextView = view.findViewById(R.id.fuelPrice)
+                val fuelOmc: TextView = view.findViewById(R.id.fuelOmc)
+                val userAdd: TextView = view.findViewById(R.id.userAdd)
+
+                fuelPrice.text = it.price.toString()
+                fuelOmc.text = getOmcName(it.omcId!!)
+
+
+
+                userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
+
+
+                pmsPriceList.addView(view)
+            }
+        }
+    }
+
+    private fun agoView(agoPrices: ArrayList<AveragePriceModel>) {
+        if (agoPrices.isEmpty()) {
+            // empty values
+            agoPriceAverage.amount = 0.00f
+            agoLastEdit.text = "Never"
+        } else {
+
+            agoLastEdit.text = getFormattedDateUser(
+                agoPrices[agoPrices.lastIndex].user?.time!!,
+                agoPrices[agoPrices.lastIndex].user?.name!!
+            )
+
+            var totalPrice: Double = 0.0
+            agoPrices.forEach {
+                totalPrice += it.price!!
+            }
+
+            agoPriceAverage.amount = (totalPrice / agoPrices.size).toFloat()
+
+            agoPriceList.removeAllViews()
+            agoPrices.forEach {
+                val view: View = layoutInflater.inflate(R.layout.single_price_row, null)
+                val fuelPrice: TextView = view.findViewById(R.id.fuelPrice)
+                val fuelOmc: TextView = view.findViewById(R.id.fuelOmc)
+                val userAdd: TextView = view.findViewById(R.id.userAdd)
+
+                fuelPrice.text = it.price.toString()
+                fuelOmc.text = getOmcName(it.omcId!!)
+
+
+
+                userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
+
+
+                agoPriceList.addView(view)
+            }
+        }
+    }
+
+
+    private fun ikView(ikPrices: ArrayList<AveragePriceModel>) {
+        if (ikPrices.isEmpty()) {
+            // empty values
+            ikPriceAverage.amount = 0.00f
+            ikLastEdit.text = "Never"
+        } else {
+
+            ikLastEdit.text = getFormattedDateUser(
+                ikPrices[ikPrices.lastIndex].user?.time!!,
+                ikPrices[ikPrices.lastIndex].user?.name!!
+            )
+
+            var totalPrice: Double = 0.0
+            ikPrices.forEach {
+                totalPrice += it.price!!
+            }
+
+            ikPriceAverage.amount = (totalPrice / ikPrices.size).toFloat()
+
+            ikPriceList.removeAllViews()
+            ikPrices.forEach {
+                val view: View = layoutInflater.inflate(R.layout.single_price_row, null)
+                val fuelPrice: TextView = view.findViewById(R.id.fuelPrice)
+                val fuelOmc: TextView = view.findViewById(R.id.fuelOmc)
+                val userAdd: TextView = view.findViewById(R.id.userAdd)
+
+                fuelPrice.text = it.price.toString()
+                fuelOmc.text = getOmcName(it.omcId!!)
+
+
+
+                userAdd.text = getFormattedDateUser(it.user?.time!!, it.user?.name!!)
+
+
+                ikPriceList.addView(view)
+            }
+        }
     }
 }

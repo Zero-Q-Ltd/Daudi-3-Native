@@ -104,6 +104,9 @@ dependencies {
     // loading
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
+    // money
+    implementation 'org.fabiomsr:moneytextview:1.1.0'
+
     // testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

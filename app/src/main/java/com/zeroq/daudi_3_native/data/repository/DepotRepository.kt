@@ -752,6 +752,7 @@ class DepotRepository
             .document(depotId)
             .collection("avgprices")
             .whereGreaterThanOrEqualTo("user.time", cal.time)
+            .orderBy("user.time", Query.Direction.ASCENDING)
 
         return QueryLiveData(query, AveragePriceModel::class.java)
     }
