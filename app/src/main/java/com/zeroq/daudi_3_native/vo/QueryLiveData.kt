@@ -3,27 +3,22 @@ package com.zeroq.daudi_3_native.vo
 
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.gson.Gson
-import timber.log.Timber
-
-import java.util.ArrayList
+import com.zeroq.daudi_3_native.data.models.Model
+import java.util.*
 
 
-class QueryLiveData<T>(private val query: Query, private val type: Class<T>) : LiveData<Resource<List<T>>>(),
+class QueryLiveData<T : Model>(private val query: Query, private val type: Class<T>) : LiveData<Resource<List<T>>>(),
     EventListener<QuerySnapshot> {
     private var registration: ListenerRegistration? = null
 
     override fun onEvent(snapshots: QuerySnapshot?, e: FirebaseFirestoreException?) {
         if (e != null) {
-            setValue(Resource(e))
+            value = Resource(e)
             return
         }
-        setValue(Resource(documentToList(snapshots!!)))
+        value = Resource(documentToList(snapshots!!))
     }
 
 
@@ -48,7 +43,7 @@ class QueryLiveData<T>(private val query: Query, private val type: Class<T>) : L
         }
 
         for (document in snapshots.documents) {
-            retList.add(document.toObject(type)!!)
+            retList.add(document.toObject(type)!!.withSnapshotId(document.id))
         }
 
         return retList

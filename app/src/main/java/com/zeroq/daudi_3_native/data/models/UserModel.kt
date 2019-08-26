@@ -5,7 +5,7 @@ data class UserModel(
     var config: Config?, var data: UserData?, var dev: Boolean?,
     var email: String?, var fcmtokens: FcmToken?, var profiledata: ProfileData?,
     var qbconfig: QbConfig?, var status: UserStatus?
-) {
+) : Model() {
     constructor() : this(
         null, null, null, null,
         null, null, null, null, null, null, null

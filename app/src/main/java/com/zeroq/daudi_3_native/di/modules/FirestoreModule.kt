@@ -31,4 +31,12 @@ class FirestoreModule {
     fun providesDepots(fireStore: FirebaseFirestore): CollectionReference {
         return fireStore.collection("depots")
     }
+
+
+    @Singleton
+    @Provides
+    @Named("omc")
+    fun providesOmc(fireStore: FirebaseFirestore): CollectionReference {
+        return fireStore.collection("omc")
+    }
 }

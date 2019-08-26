@@ -8,6 +8,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.zeroq.daudi_3_native.data.models.*
+import com.zeroq.daudi_3_native.ui.dialogs.data.AverageDialogEvent
 import com.zeroq.daudi_3_native.ui.dialogs.data.LoadingDialogEvent
 import com.zeroq.daudi_3_native.utils.MyTimeUtils
 import com.zeroq.daudi_3_native.vo.CompletionLiveData
@@ -71,7 +72,11 @@ class DepotRepository
 
     }
 
-    private fun updateProcessingExpireTask(depotId: String, t: TruckModel, minutes: Long): Task<Void> {
+    private fun updateProcessingExpireTask(
+        depotId: String,
+        t: TruckModel,
+        minutes: Long
+    ): Task<Void> {
         val truckRef = depots
             .document(depotId)
             .collection("trucks").document(t.Id!!)
@@ -116,7 +121,14 @@ class DepotRepository
         driverId: String, driverName: String, numberPlate: String
     ): CompletionLiveData {
         val completion = CompletionLiveData()
-        updateCompartmentAndDriverTask(depotId, idTruck, compartmentList, driverId, driverName, numberPlate)
+        updateCompartmentAndDriverTask(
+            depotId,
+            idTruck,
+            compartmentList,
+            driverId,
+            driverName,
+            numberPlate
+        )
             .addOnCompleteListener(completion)
 
         return completion
@@ -183,7 +195,8 @@ class DepotRepository
                 // add new time
                 val startDate = Calendar.getInstance().time
 
-                val exTime: String = MyTimeUtils.formatElapsedTime(TimeUnit.MINUTES.toMillis(minutes))
+                val exTime: String =
+                    MyTimeUtils.formatElapsedTime(TimeUnit.MINUTES.toMillis(minutes))
 
                 val calendar = Calendar.getInstance()
                 calendar.time = startDate
@@ -219,7 +232,12 @@ class DepotRepository
         idTruck: String, minutes: Long, firebaseUser: FirebaseUser
     ): CompletionLiveData {
         val completion = CompletionLiveData()
-        pushToQueueingTask(depotId, idTruck, minutes, firebaseUser).addOnCompleteListener(completion)
+        pushToQueueingTask(
+            depotId,
+            idTruck,
+            minutes,
+            firebaseUser
+        ).addOnCompleteListener(completion)
 
         return completion
     }
@@ -331,7 +349,9 @@ class DepotRepository
     ): CompletionLiveData {
 
         val completionLiveData = CompletionLiveData()
-        pushToLoadingTask(depotId, idTruck, minutes, firebaseUser).addOnCompleteListener(completionLiveData)
+        pushToLoadingTask(depotId, idTruck, minutes, firebaseUser).addOnCompleteListener(
+            completionLiveData
+        )
 
         return completionLiveData
     }
@@ -399,7 +419,11 @@ class DepotRepository
         return completion
     }
 
-    private fun updateLoadingExpireTask(depotId: String, idTruck: String, minutes: Long): Task<Void> {
+    private fun updateLoadingExpireTask(
+        depotId: String,
+        idTruck: String,
+        minutes: Long
+    ): Task<Void> {
         val truckRef =
             depots.document(depotId)
                 .collection("trucks").document(idTruck)
@@ -439,16 +463,24 @@ class DepotRepository
      * update seals and actual fuels
      * */
     fun updateSeal(
-        depotId: String, idTruck: String, loadingEvent: LoadingDialogEvent, firebaseUser: FirebaseUser
+        depotId: String,
+        idTruck: String,
+        loadingEvent: LoadingDialogEvent,
+        firebaseUser: FirebaseUser
     ): CompletionLiveData {
         val completion = CompletionLiveData()
-        updateSealTask(depotId, idTruck, loadingEvent, firebaseUser).addOnCompleteListener(completion)
+        updateSealTask(depotId, idTruck, loadingEvent, firebaseUser).addOnCompleteListener(
+            completion
+        )
 
         return completion
     }
 
     private fun updateSealTask(
-        depotId: String, idTruck: String, loadingEvent: LoadingDialogEvent, firebaseUser: FirebaseUser
+        depotId: String,
+        idTruck: String,
+        loadingEvent: LoadingDialogEvent,
+        firebaseUser: FirebaseUser
     ): Task<Void> {
         val truckRef =
             depots.document(depotId)
@@ -531,7 +563,11 @@ class DepotRepository
             /**
              * update delivery note number
              * */
-            transaction.update(truckRef, "stagedata.4.data.deliveryNote", loadingEvent.DeliveryNumber)
+            transaction.update(
+                truckRef,
+                "stagedata.4.data.deliveryNote",
+                loadingEvent.DeliveryNumber
+            )
 
             // update user
             val user = _User(firebaseUser.displayName, Timestamp.now(), firebaseUser.uid)
@@ -559,7 +595,13 @@ class DepotRepository
         depotId: String, idTruck: String, sealRange: String, brokenSeals: String, delivery: String
     ): CompletionLiveData {
         val completion = CompletionLiveData()
-        updateSealInfoTask(depotId, idTruck, sealRange, brokenSeals, delivery).addOnCompleteListener(completion)
+        updateSealInfoTask(
+            depotId,
+            idTruck,
+            sealRange,
+            brokenSeals,
+            delivery
+        ).addOnCompleteListener(completion)
 
         return completion
     }
@@ -608,6 +650,122 @@ class DepotRepository
             transaction.update(truckRef, "stage", 4)
             return@runTransaction null
         }
+    }
+
+
+    /**
+     * submit fuel prices from omcs
+     * */
+
+    fun addFuelPriceFromOmcs(
+        depotId: String,
+        firebaseUser: FirebaseUser,
+        omcEvent: AverageDialogEvent
+    )
+            : CompletionLiveData {
+        val completion = CompletionLiveData()
+
+        addFuelPriceFromOmcsTask(depotId, firebaseUser, omcEvent).addOnCompleteListener(completion)
+
+        return completion
+    }
+
+    private fun addFuelPriceFromOmcsTask(
+        depotId: String,
+        firebaseUser: FirebaseUser,
+        omcEvent: AverageDialogEvent
+    ): Task<Void> {
+
+
+        return firestore.runTransaction { transaction ->
+
+            val _user = AveragePriceUser(
+                firebaseUser.displayName,
+                Date(),
+                firebaseUser.uid
+            )
+
+            omcEvent.ago?.let {
+
+                val avgPricesRef =
+                    depots.document(depotId).collection("avgprices")
+                        .document()
+
+                val averagePriceModel = AveragePriceModel(
+                    "ago",
+                    omcEvent.omc?.snapshotid,
+                    omcEvent.ago, _user
+                )
+
+                transaction.set(avgPricesRef, averagePriceModel)
+            }
+
+            omcEvent.pms?.let {
+
+                val avgPricesRef =
+                    depots.document(depotId).collection("avgprices")
+                        .document()
+
+                val averagePriceModel = AveragePriceModel(
+                    "pms",
+                    omcEvent.omc?.snapshotid,
+                    omcEvent.pms,
+                    _user
+                )
+
+                transaction.set(avgPricesRef, averagePriceModel)
+            }
+
+            omcEvent.ik?.let {
+
+                val avgPricesRef =
+                    depots.document(depotId).collection("avgprices")
+                        .document()
+
+                val averagePriceModel = AveragePriceModel(
+                    "ik",
+                    omcEvent.omc?.snapshotid,
+                    omcEvent.ik,
+                    _user
+                )
+
+                transaction.set(avgPricesRef, averagePriceModel)
+            }
+
+
+            return@runTransaction null
+        }
+    }
+
+
+    fun getTodaysFuelPrices(depotId: String): QueryLiveData<AveragePriceModel> {
+
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+
+
+        val query = depots
+            .document(depotId)
+            .collection("avgprices")
+            .whereGreaterThanOrEqualTo("user.time", cal.time)
+            .orderBy("user.time", Query.Direction.ASCENDING)
+
+        return QueryLiveData(query, AveragePriceModel::class.java)
+    }
+
+    fun deleteFuelPrices(depotId: String, priceFuel: String): CompletionLiveData {
+        val query = depots
+            .document(depotId)
+            .collection("avgprices")
+            .document(priceFuel)
+            .delete()
+        val completion = CompletionLiveData()
+        query.addOnCompleteListener(completion)
+
+        return completion
     }
 
 }

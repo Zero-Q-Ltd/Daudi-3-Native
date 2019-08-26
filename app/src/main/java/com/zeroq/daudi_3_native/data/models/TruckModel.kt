@@ -18,7 +18,7 @@ data class TruckModel(
     var fuel: Fuel?,
     var stagedata: Map<String, Stage>?,
     var beforeTesting: Boolean?
-) {
+): Model() {
     constructor()
             : this(
         null, null,

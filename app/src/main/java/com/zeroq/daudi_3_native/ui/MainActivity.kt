@@ -31,6 +31,7 @@ import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.events.LoadingEvent
 import com.zeroq.daudi_3_native.events.ProcessingEvent
 import com.zeroq.daudi_3_native.events.QueueingEvent
+import com.zeroq.daudi_3_native.ui.average_prices.AveragePriceActivity
 import com.zeroq.daudi_3_native.ui.dialogs.ProfileDialogFragment
 import com.zeroq.daudi_3_native.ui.main.MainViewModel
 import com.zeroq.daudi_3_native.utils.ImageUtil
@@ -129,6 +130,10 @@ class MainActivity : BaseActivity() {
                 } else {
                     toast("Check if the depot is set")
                 }
+            }
+
+            R.id.depo_average -> {
+                startActivity(Intent(this, AveragePriceActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)
