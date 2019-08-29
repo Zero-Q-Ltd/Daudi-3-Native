@@ -1,6 +1,7 @@
 package com.zeroq.daudi_3_native.utils
 
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import timber.log.Timber
 
 class ReleaseTree : Timber.Tree() {
@@ -10,10 +11,8 @@ class ReleaseTree : Timber.Tree() {
             return
         }
 
-        /*
-        * write logic to sed to error reporting services
-        * **/
-        // FirebaseCrash.report(message);
-        // FirebaseCrash.report(new Exception(message));
+        // push to firebase crash reporting
+        Crashlytics.logException(t)
+        Crashlytics.log(message)
     }
 }
