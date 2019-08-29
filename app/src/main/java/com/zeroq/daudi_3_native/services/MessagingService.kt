@@ -9,18 +9,21 @@ import com.google.firebase.messaging.RemoteMessage
 import com.zeroq.daudi_3_native.R
 
 class MessagingService : FirebaseMessagingService() {
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+
+
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
 
-        val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, "channel_id")
-            .setContentTitle(remoteMessage?.notification?.title)
-            .setContentText(remoteMessage?.notification?.body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setStyle(NotificationCompat.BigTextStyle())
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setAutoCancel(true)
+        val notificationBuilder: NotificationCompat.Builder =
+            NotificationCompat.Builder(this, "channel_id")
+                .setContentTitle(remoteMessage?.notification?.title)
+                .setContentText(remoteMessage?.notification?.body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(NotificationCompat.BigTextStyle())
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
 
 
         val notificationManager: NotificationManager =
