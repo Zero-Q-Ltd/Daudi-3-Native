@@ -59,7 +59,7 @@ class ProcessingFragment : BaseFragment() {
         processingViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                processingViewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+                processingViewModel.setDepoId(user?.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }

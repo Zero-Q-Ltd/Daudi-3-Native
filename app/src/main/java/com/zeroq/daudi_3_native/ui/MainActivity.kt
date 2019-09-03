@@ -193,7 +193,7 @@ class MainActivity : BaseActivity() {
         mainViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val userData = it.data()
-                mainViewModel.setDeportId(userData?.config?.depotdata?.depotid)
+                mainViewModel.setDeportId(userData?.config?.depotid)
             } else {
                 Timber.e(it.error())
             }

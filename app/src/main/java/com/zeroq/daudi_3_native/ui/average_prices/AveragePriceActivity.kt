@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import com.google.firebase.auth.FirebaseAuth
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.AveragePriceModel
@@ -22,6 +23,7 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AveragePriceActivity : BaseActivity() {
@@ -30,6 +32,9 @@ class AveragePriceActivity : BaseActivity() {
     lateinit var viewModel: AverageViewModel
     private var omcs: List<OmcModel>? = null
     private var userModel: UserModel? = null
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     override
 
@@ -59,7 +64,7 @@ class AveragePriceActivity : BaseActivity() {
             if (it.isSuccessful) {
                 userModel = it.data()
 
-                viewModel.setDeportId(userModel?.config?.depotdata?.depotid)
+                viewModel.setDeportId(userModel?.config?.depotid)
             } else {
                 userModel = null
                 Timber.e(it.error())
@@ -215,8 +220,14 @@ class AveragePriceActivity : BaseActivity() {
                 val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
                 priceId.text = it.snapshotid
 
-                priceRow.setOnLongClickListener {
-                    deletePrice(priceId.text.toString())
+                priceRow.setOnLongClickListener { v ->
+                    it.user?.name.let { n ->
+                        if (n!! == firebaseAuth.currentUser?.displayName) {
+                            deletePrice(priceId.text.toString())
+                        } else {
+                            toast("Sorry you cant delete this record")
+                        }
+                    }
                     true
                 }
 
@@ -263,8 +274,16 @@ class AveragePriceActivity : BaseActivity() {
                 val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
                 priceId.text = it.snapshotid
 
-                priceRow.setOnLongClickListener {
-                    deletePrice(priceId.text.toString())
+
+                priceRow.setOnLongClickListener { v ->
+                    it.user?.name.let { n ->
+                        if (n!! == firebaseAuth.currentUser?.displayName) {
+                            deletePrice(priceId.text.toString())
+                        } else {
+                            toast("Sorry you cant delete this record")
+                        }
+                    }
+
                     true
                 }
 
@@ -311,8 +330,14 @@ class AveragePriceActivity : BaseActivity() {
                 val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
                 priceId.text = it.snapshotid
 
-                priceRow.setOnLongClickListener {
-                    deletePrice(priceId.text.toString())
+                priceRow.setOnLongClickListener { v ->
+                    it.user?.name.let { n ->
+                        if (n!! == firebaseAuth.currentUser?.displayName) {
+                            deletePrice(priceId.text.toString())
+                        } else {
+                            toast("Sorry you cant delete this record")
+                        }
+                    }
                     true
                 }
 

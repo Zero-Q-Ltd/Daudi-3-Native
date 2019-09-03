@@ -91,7 +91,7 @@ class LoadingOrderActivity : BaseActivity() {
         viewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 _user = it.data()!!
-                viewModel.setDepotId(_user.config?.depotdata?.depotid!!)
+                viewModel.setDepotId(_user.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }
@@ -159,7 +159,7 @@ class LoadingOrderActivity : BaseActivity() {
 
         // qr
         val depotUrl =
-            "https://us-central1-emkaybeta.cloudfunctions.net/truckDetail?D=${_user.config?.depotdata?.depotid}&T=${truck.truckId}"
+            "https://us-central1-emkaybeta.cloudfunctions.net/truckDetail?D=${_user.config?.depotid}&T=${truck.truckId}"
 
         val dimensions = imageUtil.dpToPx(this, 150)
 
@@ -255,7 +255,7 @@ class LoadingOrderActivity : BaseActivity() {
                     hideButton(false)
                     PrintingActivity.startPrintingActivity(
                         this,
-                        _user.config?.depotdata?.depotid!!, liveTruck.Id!!,
+                        _user.config?.depotid!!, liveTruck.Id!!,
                         "3",
                         liveTruck.config?.sandbox!!
                     )

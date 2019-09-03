@@ -56,7 +56,7 @@ class LoadingFragment : BaseFragment() {
         viewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                viewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+                viewModel.setDepoId(user?.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }
