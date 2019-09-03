@@ -18,9 +18,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crashlytics.android.Crashlytics
 import com.firebase.ui.auth.AuthUI
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
+import com.github.pwittchen.reactivenetwork.library.rx2.internet.observing.InternetObservingSettings
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
@@ -141,7 +141,8 @@ class MainActivity : BaseActivity() {
     }
 
 
-    override fun onSupportNavigateUp(): Boolean = findNavController(R.id.mainNavFragment).navigateUp()
+    override fun onSupportNavigateUp(): Boolean =
+        findNavController(R.id.mainNavFragment).navigateUp()
 
     private fun setToolbar() {
         setSupportActionBar(toolbar)
@@ -305,6 +306,7 @@ class MainActivity : BaseActivity() {
 
 
     private fun internetEvent() {
+
         val net = ReactiveNetwork
             .observeInternetConnectivity()
             .subscribeOn(Schedulers.io())
