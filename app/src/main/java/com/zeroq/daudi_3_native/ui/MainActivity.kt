@@ -19,8 +19,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
+import com.github.javiersantos.appupdater.enums.Duration
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import com.github.pwittchen.reactivenetwork.library.rx2.internet.observing.InternetObservingSettings
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
@@ -99,6 +102,7 @@ class MainActivity : BaseActivity() {
         if (savedInstanceState == null)
             setupBottomNavigationBar()
 
+        checkAppUpdate()
         operations()
 
         // set token to server
@@ -397,6 +401,19 @@ class MainActivity : BaseActivity() {
                 Timber.d(token)
             })
 
+    }
+
+    private fun checkAppUpdate() {
+        val updater = AppUpdater(this)
+            .setUpdateFrom(UpdateFrom.JSON)
+            .setDisplay(Display.SNACKBAR)
+            .setUpdateJSON("https://www.dropbox.com/s/x8173qba1rsdhi7/update.json?dl=1")
+            .setTitleOnUpdateAvailable("Update available")
+            .setContentOnUpdateAvailable("You should update.")
+            .setDuration(Duration.INDEFINITE)
+            .setCancelable(false)
+
+        updater.start()
     }
 
     override fun onStart() {
