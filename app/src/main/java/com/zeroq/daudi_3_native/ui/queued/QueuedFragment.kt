@@ -53,7 +53,7 @@ class QueuedFragment : BaseFragment() {
         queuedViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                queuedViewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+                queuedViewModel.setDepoId(user?.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }

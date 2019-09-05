@@ -56,7 +56,7 @@ class LoadingFragment : BaseFragment() {
         viewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                viewModel.setDepoId(user?.config?.depotdata?.depotid!!)
+                viewModel.setDepoId(user?.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }
@@ -69,7 +69,7 @@ class LoadingFragment : BaseFragment() {
 
     lateinit var progressDialog: Dialog
     private fun createProgress() {
-        progressDialog = Dialog(activity)
+        progressDialog = Dialog(activity!!)
         progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         progressDialog.setContentView(R.layout.custom_progress_dialog)
         progressDialog.setCancelable(false)

@@ -8,11 +8,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.zeroq.daudi_3_native"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:29.0.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     // anko
@@ -58,13 +58,13 @@ dependencies {
     compileOnly 'org.glassfish:javax.annotation:3.1.1'
 
     // firebase dependencies
-    implementation "com.google.firebase:firebase-core:17.1.0"
+    implementation "com.google.firebase:firebase-core:17.2.0"
     implementation "com.google.firebase:firebase-auth:19.0.0"
     implementation "com.google.android.gms:play-services-auth:17.0.0"
     implementation "com.google.firebase:firebase-firestore:21.0.0"
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
-    implementation 'com.google.firebase:firebase-analytics:17.1.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // Timber
@@ -75,7 +75,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "androidx.lifecycle:lifecycle-livedata:2.0.0"
     implementation "androidx.lifecycle:lifecycle-runtime:2.0.0"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+//    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.0.0"
 
     // glide
@@ -117,7 +117,8 @@ dependencies {
     // money
     implementation 'org.fabiomsr:moneytextview:1.1.0'
 
-    //
+    // auto update
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
 
     // testing
     testImplementation 'junit:junit:4.12'

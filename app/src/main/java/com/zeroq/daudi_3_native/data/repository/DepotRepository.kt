@@ -555,7 +555,7 @@ class DepotRepository
             * */
             val sealsTemp: Seals = Seals(
                 loadingEvent.sealRange,
-                ArrayList(loadingEvent.brokenSeal?.split("-"))
+                ArrayList(loadingEvent.brokenSeal?.split("-")!!)
             )
 
             transaction.update(truckRef, "stagedata.4.data.seals", sealsTemp)

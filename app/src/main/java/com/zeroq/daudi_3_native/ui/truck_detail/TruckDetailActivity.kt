@@ -100,7 +100,7 @@ class TruckDetailActivity : BaseActivity() {
         truckDetailViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 _user = it.data()!!
-                truckDetailViewModel.setDepotId(_user.config?.depotdata?.depotid!!)
+                truckDetailViewModel.setDepotId(_user.config?.depotid!!)
             } else {
                 Timber.e(it.error()!!)
             }
@@ -187,7 +187,7 @@ class TruckDetailActivity : BaseActivity() {
 
 
         val depotUrl =
-            "https://us-central1-emkaybeta.cloudfunctions.net/truckDetail?D=${_user.config?.depotdata?.depotid}&T=${truck.truckId}"
+            "https://us-central1-emkaybeta.cloudfunctions.net/truckDetail?D=${_user.config?.depotid}&T=${truck.truckId}"
 
         val dimensions = imageUtil.dpToPx(this, 150)
 
@@ -458,7 +458,7 @@ class TruckDetailActivity : BaseActivity() {
         val numberPlate = et_driver_plate.text.toString().toUpperCase()
 
         truckDetailViewModel.updateTruckComAndDriver(
-            _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
+            _user.config?.depotid!!, DepotTruck?.Id!!,
             compList, driverId, driverName, numberPlate
         ).observe(this, Observer {
 
@@ -505,7 +505,7 @@ class TruckDetailActivity : BaseActivity() {
 
                     PrintingActivity.startPrintingActivity(
                         this,
-                        _user.config?.depotdata?.depotid!!, DepotTruck?.Id!!,
+                        _user.config?.depotid!!, DepotTruck?.Id!!,
                         "1",
                         DepotTruck?.config?.sandbox!!
                     )
