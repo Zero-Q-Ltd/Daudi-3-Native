@@ -65,7 +65,9 @@ class LoadingOrderActivity : BaseActivity() {
 
         if (intent.hasExtra(ID_TRUCK_EXTRA)) {
             val idTruck = intent.getStringExtra(ID_TRUCK_EXTRA)
-            viewModel.setTruckId(idTruck)
+            idTruck?.let {
+                viewModel.setTruckId(idTruck)
+            }
         }
 
         logic()
@@ -91,7 +93,7 @@ class LoadingOrderActivity : BaseActivity() {
         viewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 _user = it.data()!!
-                viewModel.setDepotId(_user.config?.depotid!!)
+                viewModel.setDepotId(_user.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
             }
@@ -107,7 +109,13 @@ class LoadingOrderActivity : BaseActivity() {
                     }
                 }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (s.isNullOrEmpty()) {
@@ -255,7 +263,7 @@ class LoadingOrderActivity : BaseActivity() {
                     hideButton(false)
                     PrintingActivity.startPrintingActivity(
                         this,
-                        _user.config?.depotid!!, liveTruck.Id!!,
+                        _user.config?.depotid.toString(), liveTruck.Id!!,
                         "3",
                         liveTruck.config?.sandbox!!
                     )

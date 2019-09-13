@@ -100,7 +100,7 @@ class TruckDetailActivity : BaseActivity() {
         truckDetailViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 _user = it.data()!!
-                truckDetailViewModel.setDepotId(_user.config?.depotid!!)
+                truckDetailViewModel.setDepotId(_user.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
             }
@@ -236,7 +236,12 @@ class TruckDetailActivity : BaseActivity() {
             it.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
 
             it.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     if (s.isNullOrEmpty()) {
                         it.error = "This field cant be blank"
                     } else {
@@ -303,7 +308,12 @@ class TruckDetailActivity : BaseActivity() {
                 override fun afterTextChanged(s: Editable?) {
                 }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -332,7 +342,6 @@ class TruckDetailActivity : BaseActivity() {
 
         return temp ?: "****************"
     }
-
 
 
     private fun requestPermissions() {
@@ -458,7 +467,7 @@ class TruckDetailActivity : BaseActivity() {
         val numberPlate = et_driver_plate.text.toString().toUpperCase()
 
         truckDetailViewModel.updateTruckComAndDriver(
-            _user.config?.depotid!!, DepotTruck?.Id!!,
+            _user.config?.depotid.toString(), DepotTruck?.Id!!,
             compList, driverId, driverName, numberPlate
         ).observe(this, Observer {
 
@@ -505,7 +514,7 @@ class TruckDetailActivity : BaseActivity() {
 
                     PrintingActivity.startPrintingActivity(
                         this,
-                        _user.config?.depotid!!, DepotTruck?.Id!!,
+                        _user.config?.depotid.toString(), DepotTruck?.Id!!,
                         "1",
                         DepotTruck?.config?.sandbox!!
                     )
