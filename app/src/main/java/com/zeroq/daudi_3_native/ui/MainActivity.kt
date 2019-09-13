@@ -109,7 +109,7 @@ class MainActivity : BaseActivity() {
         postTokenToServer()
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         setupBottomNavigationBar()
     }
@@ -198,7 +198,7 @@ class MainActivity : BaseActivity() {
         mainViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val userData = it.data()
-                mainViewModel.setDeportId(userData?.config?.depotid)
+                mainViewModel.setDeportId(userData?.config?.depotid.toString())
             } else {
                 Timber.e(it.error())
             }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zeroq.daudi_3_native.R
@@ -56,7 +57,7 @@ class LoadingFragment : BaseFragment() {
         viewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                viewModel.setDepoId(user?.config?.depotid!!)
+                viewModel.setDepoId(user?.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
             }
@@ -86,7 +87,7 @@ class LoadingFragment : BaseFragment() {
 
                 activityUtil.showTextViewState(
                     empty_view_l, true, "No trucks are in Loading",
-                    resources.getColor(R.color.colorPrimaryText)
+                    ContextCompat.getColor(activity!!, R.color.colorPrimaryText)
                 )
             } else {
                 activityUtil.showTextViewState(
@@ -100,7 +101,7 @@ class LoadingFragment : BaseFragment() {
             activityUtil.showTextViewState(
                 empty_view_l, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",
-                resources.getColor(R.color.pms)
+                ContextCompat.getColor(activity!!, R.color.pms)
             )
         }
     }
@@ -184,7 +185,11 @@ class LoadingFragment : BaseFragment() {
                         startLoadingOrderActivity(truck.Id!!)
                     } else {
                         progressDialog.hide() // hide progress
-                        Toast.makeText(activity, "An error occurred while posting seal data", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            activity,
+                            "An error occurred while posting seal data",
+                            Toast.LENGTH_LONG
+                        ).show()
                         Timber.e(result.error())
                     }
                 })

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zeroq.daudi_3_native.R
@@ -18,7 +19,6 @@ import com.zeroq.daudi_3_native.utils.ActivityUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_processing.*
 import kotlinx.android.synthetic.main.fragment_queued.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -53,7 +53,7 @@ class QueuedFragment : BaseFragment() {
         queuedViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                queuedViewModel.setDepoId(user?.config?.depotid!!)
+                queuedViewModel.setDepoId(user?.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
             }
@@ -75,7 +75,7 @@ class QueuedFragment : BaseFragment() {
                 adapter.clear()
                 activityUtil.showTextViewState(
                     empty_view_q, true, "No trucks are in Queueing",
-                    resources.getColor(R.color.colorPrimaryText)
+                    ContextCompat.getColor(activity!!, R.color.colorPrimaryText)
                 )
 
             } else {
@@ -89,7 +89,7 @@ class QueuedFragment : BaseFragment() {
             activityUtil.showTextViewState(
                 empty_view_q, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",
-                resources.getColor(R.color.pms)
+                ContextCompat.getColor(activity!!, R.color.pms)
             )
         }
     }
@@ -145,7 +145,8 @@ class QueuedFragment : BaseFragment() {
             queuedViewModel.updateExpire(results.truck.Id!!, results.minutes.toLong())
                 .observe(this, Observer { state ->
                     if (!state.isSuccessful) {
-                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT)
+                            .show()
                         Timber.e(state.error())
                     }
                 })
@@ -167,7 +168,8 @@ class QueuedFragment : BaseFragment() {
             queuedViewModel.pushToLoading(results.truck.Id!!, results.minutes.toLong())
                 .observe(this, Observer { state ->
                     if (!state.isSuccessful) {
-                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT)
+                            .show()
                         Timber.e(state.error())
                     }
                 })

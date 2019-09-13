@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -59,7 +60,7 @@ class ProcessingFragment : BaseFragment() {
         processingViewModel.getUser().observe(this, Observer {
             if (it.isSuccessful) {
                 val user = it.data()
-                processingViewModel.setDepoId(user?.config?.depotid!!)
+                processingViewModel.setDepoId(user?.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
             }
@@ -84,7 +85,7 @@ class ProcessingFragment : BaseFragment() {
                 adapter.clear()
                 activityUtil.showTextViewState(
                     empty_view, true, "No trucks are in Processing",
-                    resources.getColor(R.color.colorPrimaryText)
+                    ContextCompat.getColor(activity!!, R.color.colorPrimaryText)
                 )
             } else {
                 activityUtil.showTextViewState(
@@ -97,7 +98,7 @@ class ProcessingFragment : BaseFragment() {
             activityUtil.showTextViewState(
                 empty_view, true,
                 "Something went wrong please, close the application to see if the issue wll be solved",
-                resources.getColor(R.color.pms)
+                ContextCompat.getColor(activity!!, R.color.pms)
             )
         }
     }
@@ -149,12 +150,14 @@ class ProcessingFragment : BaseFragment() {
 
         val expireDialog = TimeDialogFragment("Enter Additional Time", truck)
         expireSub = expireDialog.timeEvent.subscribe {
-            processingViewModel.updateExpire(truck, it.minutes.toLong()).observe(this, Observer { state ->
-                if (!state.isSuccessful) {
-                    Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT).show()
-                    Timber.e(state.error())
-                }
-            })
+            processingViewModel.updateExpire(truck, it.minutes.toLong())
+                .observe(this, Observer { state ->
+                    if (!state.isSuccessful) {
+                        Toast.makeText(activity, "sorry an error occurred", Toast.LENGTH_SHORT)
+                            .show()
+                        Timber.e(state.error())
+                    }
+                })
         }
 
         expireDialog.show(fragmentManager!!, _TAG)
@@ -171,7 +174,8 @@ class ProcessingFragment : BaseFragment() {
             processingViewModel.moveToQueuing(it.truck.Id!!, it.minutes.toLong())
                 .observe(this, Observer { result ->
                     if (result.isSuccessful) {
-                        Toast.makeText(activity, "Truck moved to processing", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Truck moved to processing", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         Timber.e(result.error())
                     }

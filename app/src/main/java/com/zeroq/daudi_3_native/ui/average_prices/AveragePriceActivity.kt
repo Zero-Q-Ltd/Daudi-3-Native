@@ -64,7 +64,7 @@ class AveragePriceActivity : BaseActivity() {
             if (it.isSuccessful) {
                 userModel = it.data()
 
-                viewModel.setDeportId(userModel?.config?.depotid)
+                viewModel.setDeportId(userModel?.config?.depotid.toString())
             } else {
                 userModel = null
                 Timber.e(it.error())
@@ -220,7 +220,7 @@ class AveragePriceActivity : BaseActivity() {
                 val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
                 priceId.text = it.snapshotid
 
-                priceRow.setOnLongClickListener { v ->
+                priceRow.setOnLongClickListener { _ ->
                     it.user?.name.let { n ->
                         if (n!! == firebaseAuth.currentUser?.displayName) {
                             deletePrice(priceId.text.toString())
@@ -275,7 +275,7 @@ class AveragePriceActivity : BaseActivity() {
                 priceId.text = it.snapshotid
 
 
-                priceRow.setOnLongClickListener { v ->
+                priceRow.setOnLongClickListener { _ ->
                     it.user?.name.let { n ->
                         if (n!! == firebaseAuth.currentUser?.displayName) {
                             deletePrice(priceId.text.toString())
@@ -330,7 +330,7 @@ class AveragePriceActivity : BaseActivity() {
                 val priceRow: LinearLayout = view.findViewById(R.id.priceRow)
                 priceId.text = it.snapshotid
 
-                priceRow.setOnLongClickListener { v ->
+                priceRow.setOnLongClickListener { _ ->
                     it.user?.name.let { n ->
                         if (n!! == firebaseAuth.currentUser?.displayName) {
                             deletePrice(priceId.text.toString())
@@ -348,7 +348,7 @@ class AveragePriceActivity : BaseActivity() {
     }
 
     private fun deletePrice(avg: String) {
-        viewModel.deletePrice(avg!!).observe(this, Observer {
+        viewModel.deletePrice(avg).observe(this, Observer {
             if (it.isSuccessful) {
                 toast("Deleted")
             } else {
