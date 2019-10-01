@@ -152,6 +152,7 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Emkay"
 
+
         actionBar = supportActionBar as ActionBar
 
         // default, to avoid, funny animation
@@ -207,7 +208,7 @@ class MainActivity : BaseActivity() {
         mainViewModel.getDepot().observe(this, Observer {
             if (it.isSuccessful) {
                 depot = it.data()
-
+                supportActionBar?.subtitle = depot?.Name?.toLowerCase()
             } else {
                 depot = null
                 Timber.e(it.error())
