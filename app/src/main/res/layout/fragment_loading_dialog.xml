@@ -81,8 +81,7 @@
                         android:layout_marginTop="16dp"
                         android:fontFamily="sans-serif-condensed"
                         android:hint="@string/provide_seal_number_range"
-                        android:inputType="number"
-                        android:digits="0123456789-"
+                        android:inputType="text"
                         android:textColor="@color/grey_700"
                         android:textColorHint="@color/grey_500"/>
 
@@ -94,8 +93,7 @@
                         android:layout_marginTop="16dp"
                         android:fontFamily="sans-serif-condensed"
                         android:hint="@string/provide_broken_seals"
-                        android:inputType="number"
-                        android:digits="0123456789-"
+                        android:inputType="text"
                         android:textColor="@color/grey_700"
                         android:textColorHint="@color/grey_500"/>
 

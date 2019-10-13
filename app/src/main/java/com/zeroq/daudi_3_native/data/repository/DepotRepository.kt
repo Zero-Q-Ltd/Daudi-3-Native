@@ -283,7 +283,7 @@ class DepotRepository
 
             // add user
             val user = _User(firebaseUser.displayName, Timestamp.now(), firebaseUser.uid)
-            transaction.update(truckRef, "stagedata.2.data.user", user)
+            transaction.update(truckRef, "stagedata.2.user", user)
 
             // change stage number
             transaction.update(truckRef, "stage", 2)
@@ -398,7 +398,7 @@ class DepotRepository
 
             // add user
             val user = _User(firebaseUser.displayName, Timestamp.now(), firebaseUser.uid)
-            transaction.update(truckRef, "stagedata.3.data.user", user)
+            transaction.update(truckRef, "stagedata.3.user", user)
 
             // change stage number
             transaction.update(truckRef, "stage", 3)
