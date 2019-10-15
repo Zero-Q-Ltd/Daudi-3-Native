@@ -208,6 +208,9 @@ class MainActivity : BaseActivity() {
             if (it.isSuccessful) {
                 depot = it.data()
 
+                depot?.Name?.let { name ->
+                    supportActionBar?.subtitle = name
+                }
             } else {
                 depot = null
                 Timber.e(it.error())
