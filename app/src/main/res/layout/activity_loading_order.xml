@@ -52,7 +52,7 @@
             <TextView android:id="@+id/tv_loading_order"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="LOADING ORDER"
+                      android:text="GATE PASS"
                       app:layout_constraintTop_toBottomOf="@id/tv_company_name"
                       app:layout_constraintLeft_toLeftOf="parent"
                       app:layout_constraintRight_toRightOf="parent"
@@ -75,7 +75,7 @@
                       app:layout_constraintLeft_toLeftOf="parent"
                       app:layout_constraintRight_toRightOf="parent"
                       android:layout_marginTop="5dp"
-                      android:text="[ GULF SBOX ]"/>
+                      android:text="[ ]"/>
 
 
             <View android:id="@+id/v_top_separator"
