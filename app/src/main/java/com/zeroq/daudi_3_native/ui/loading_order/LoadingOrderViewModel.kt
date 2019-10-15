@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.zeroq.daudi_3_native.data.models.DepotModel
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.data.repository.AdminRepository
@@ -28,6 +29,7 @@ class LoadingOrderViewModel @Inject constructor(
     private var _depotId = MutableLiveData<String>()
 
     private var _combinedDepoTruckId = MutableLiveData<Pair<String, String>>()
+    private var _depo: LiveData<Resource<DepotModel>> = MutableLiveData()
 
 
     init {
@@ -38,6 +40,7 @@ class LoadingOrderViewModel @Inject constructor(
         }
 
         _truck = Transformations.switchMap(_combinedDepoTruckId, depotRepository::getTruck)
+        _depo = Transformations.switchMap(_depotId, depotRepository::getDepot)
 
         _userId.value = firebaseAuth.uid
     }
@@ -56,6 +59,10 @@ class LoadingOrderViewModel @Inject constructor(
 
     fun getTruck(): LiveData<Resource<TruckModel>> {
         return _truck
+    }
+
+    fun getDepot(): LiveData<Resource<DepotModel>> {
+        return _depo
     }
 
     fun updateSeals(

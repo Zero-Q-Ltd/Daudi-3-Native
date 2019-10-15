@@ -34,6 +34,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_truck_detail.*
+import kotlinx.android.synthetic.main.activity_truck_detail.btnPrint
+import kotlinx.android.synthetic.main.activity_truck_detail.content_scroll
+import kotlinx.android.synthetic.main.activity_truck_detail.layout_constraint
+import kotlinx.android.synthetic.main.activity_truck_detail.tv_ago
+import kotlinx.android.synthetic.main.activity_truck_detail.tv_ik
+import kotlinx.android.synthetic.main.activity_truck_detail.tv_pms
+import kotlinx.android.synthetic.main.activity_truck_detail.tv_today_date
+import kotlinx.android.synthetic.main.activity_truck_detail.tv_truck_id
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import net.glxn.qrgen.android.QRCode
 import org.jetbrains.anko.toast
@@ -103,6 +111,17 @@ class TruckDetailActivity : BaseActivity() {
                 truckDetailViewModel.setDepotId(_user.config?.depotid.toString())
             } else {
                 Timber.e(it.error()!!)
+            }
+        })
+
+        truckDetailViewModel.getDepot().observe(this, Observer {
+            if (it.isSuccessful) {
+
+                it.data()?.let { depo ->
+                    tv_depot_name_d.text = "[ ${depo.Name} ]"
+                }
+            } else {
+                Timber.e(it.error())
             }
         })
 
