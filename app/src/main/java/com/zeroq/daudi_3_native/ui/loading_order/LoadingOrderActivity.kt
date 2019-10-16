@@ -17,6 +17,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zeroq.daudi_3_native.R
 import com.zeroq.daudi_3_native.commons.BaseActivity
 import com.zeroq.daudi_3_native.data.models.Depot
+import com.zeroq.daudi_3_native.data.models.DepotModel
 import com.zeroq.daudi_3_native.data.models.TruckModel
 import com.zeroq.daudi_3_native.data.models.UserModel
 import com.zeroq.daudi_3_native.ui.printing.PrintingActivity
@@ -37,7 +38,6 @@ import javax.inject.Inject
 class LoadingOrderActivity : BaseActivity() {
 
     lateinit var viewModel: LoadingOrderViewModel
-    lateinit var depot: Depot
 
     @Inject
     lateinit var imageUtil: ImageUtil
@@ -99,6 +99,17 @@ class LoadingOrderActivity : BaseActivity() {
             }
         })
 
+        viewModel.getDepot().observe(this, Observer {
+            if (it.isSuccessful) {
+
+                it.data()?.let { depo ->
+                    tv_depot_name.text = "[ ${depo.Name} ]"
+                }
+            } else {
+                Timber.e(it.error())
+            }
+        })
+
         inputs = listOf(et_seal, et_broken_seals, et_delivery_note)
 
         inputs.forEach { et ->
@@ -144,7 +155,6 @@ class LoadingOrderActivity : BaseActivity() {
 
 
         tv_truck_id.text = truck.truckId
-        // TODO: tv_depot_name.text =
 
         // driver data
         tv_driver_value.text = truck.drivername

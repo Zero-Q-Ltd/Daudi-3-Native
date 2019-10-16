@@ -208,7 +208,10 @@ class MainActivity : BaseActivity() {
         mainViewModel.getDepot().observe(this, Observer {
             if (it.isSuccessful) {
                 depot = it.data()
-                supportActionBar?.subtitle = depot?.Name?.toLowerCase()
+
+                depot?.Name?.let { name ->
+                    supportActionBar?.subtitle = name
+                }
             } else {
                 depot = null
                 Timber.e(it.error())
