@@ -152,6 +152,7 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Emkay"
 
+
         actionBar = supportActionBar as ActionBar
 
         // default, to avoid, funny animation
